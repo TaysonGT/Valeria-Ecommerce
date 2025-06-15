@@ -1,0 +1,53 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "start:debug": "DEBUG=* vite"
+  },
+  "dependencies": {
+    "@babel/types": "^7.26.3",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.1.1",
+    "@tailwindcss/postcss": "^4.1.10",
+    "@tailwindcss/vite": "^4.1.10",
+    "axios": "^1.7.9",
+    "eruda": "^3.4.1",
+    "js-cookie": "^3.0.5",
+    "json-schema": "^0.4.0",
+    "react": "^19.0.0",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.4.0",
+    "react-router": "^7.1.0",
+    "react-router-dom": "^7.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@types/babel-template": "^6.25.5",
+    "@types/babel-traverse": "^6.25.10",
+    "@types/cookie": "^0.6.0",
+    "@types/estree": "^1.0.6",
+    "@types/js-cookie": "^3.0.6",
+    "@types/json-schema": "^7.0.15",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "globals": "^15.12.0",
+    "postcss": "^8.5.5",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.1.10",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.1"
+  }
+}

@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: Arabic;
+  src: url('./assets/fonts/Alexandria-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-family: Comfortaa;
+  src: url('./assets/fonts/Comfortaa-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-family: Abominable;
+  src: url('./assets/fonts/Abominable-Condensed-fc.otf');
+}
+
+body{
+  font-family: Arabic;
+}
+
+.dark-background{
+  position: fixed;
+  z-index: 99;
+  background: rgba(0,0,0, .4);
+  height: 100vh;
+  width: 100vw;
+  left: 0;
+  top: 0;
+}
