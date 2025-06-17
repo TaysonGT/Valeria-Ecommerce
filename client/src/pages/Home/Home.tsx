@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Hero from '../../assets/imgs/landing/hero.jpg';
 import EidOffer from '../../assets/imgs/landing/EID60mainEN.webp'
 import FatherOffer from '../../assets/imgs/landing/FatherDisEN2.png'
@@ -69,17 +69,17 @@ const footerLinks = [
 ]
 
 
-const Home: React.FC = ()=>{
+const HomePage: React.FC = ()=>{
   return (
     <div className=''>
       <div className='h-screen flex justify-center items-center overflow-y-hidden relative bg-[#4d4d26]'>
         <img className='absolute top-0 w-full object-fill opacity-[.4]' loading='lazy' src={Hero}/>
         <div className="z-[2] w-[67%] text-white">
-          <h1 className='text-8xl font-[abominable]'>Elegance</h1>
-          <h1 className='text-8xl font-[abominable]'>Charisma</h1>
-          <h1 className='text-8xl font-[abominable]'>Simplicity</h1>
-          <p className='mt-4 text-md text-wrap'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi praesentium quia delectus mollitia at quibusdam assumenda maiores quae, est.</p>
-          <Link to='/' className='bg-[#eab308] text-lg text-[#fff] font-bold inline-block py-4 px-5 rounded mt-4 duration-150 hover:bg-[#ca8a04]'>
+          <h1 className='text-7xl font-[abominable]'>Elegance</h1>
+          <h1 className='text-7xl font-[abominable]'>Charisma</h1>
+          <h1 className='text-7xl font-[abominable]'>Simplicity</h1>
+          <p className='mt-6 text-md text-wrap'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi praesentium quia delectus mollitia at quibusdam assumenda maiores quae, est.</p>
+          <Link to='/' className='bg-[#eab308] text-lg text-[#fff] font-bold inline-block py-4 px-5 rounded mt-6 duration-150 hover:bg-[#ca8a04]'>
             Start Shopping
           </Link>
         </div>
@@ -119,7 +119,7 @@ const Home: React.FC = ()=>{
             </button>
           </form>
         </div>
-        <div className='grid grid-cols-4 gap-10 border-t border-gray-500 py-16 w-[90%] mx-auto'>
+        <div className='grid grid-cols-4 gap-10 border-t border-gray-500 py-16 w-[85%] mx-auto'>
           {footerLinks.map(sec=>
             <div>
               <h1 className='mb-6 text-sm'>{sec.head}</h1>
@@ -168,4 +168,4 @@ const Home: React.FC = ()=>{
   )
 }
 
-export default Home
+export default HomePage

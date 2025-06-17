@@ -9,7 +9,7 @@ interface Props extends AxiosRequestHeaders {
   user_data: string;
 }
 
-axios.defaults.baseURL = 'http://192.168.1.49:5000';
+axios.defaults.baseURL = 'http://localhost:5000';
 axios.interceptors.request.use((config) => {
    const current_user = Cookies.get('current_user');
    const authorization = Cookies.get('access_token');
