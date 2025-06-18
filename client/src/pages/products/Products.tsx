@@ -42,6 +42,24 @@ const products = [
         price: 499,
         oldPrice: 599,
         img: 'src/assets/1.jpg',
+        sizes: [
+            {
+                id: '1',
+                size: 'M',
+            },
+            {
+                id: '1',
+                size: 'L',
+            },
+            {
+                id: '1',
+                size: 'XL',
+            },
+            {
+                id: '1',
+                size: '2XL',
+            },
+        ],
         feature: {
             name: "Sale 50%",
             color: "red"
@@ -49,11 +67,17 @@ const products = [
     },
     {
         id: '123456879',
-        name: "RFC Drip Sweatshirt - Rose RFC Drip Sweatshirt - Rose",
+        name: "AFC Drip Sweatshirt - Rose RFC Drip Sweatshirt - Rose",
         description: "Lorem ipsum dolor sit amet.",
         price: 599,
         oldPrice: 799,
         img: 'src/assets/2.jpg',
+        sizes: [
+            {
+                id: '1',
+                size: 'XL',
+            }
+        ],
         feature: {
             name: "Sale 50%",
             color: "red"
@@ -66,6 +90,12 @@ const products = [
         price: 499,
         oldPrice: 599,
         img: 'src/assets/1.jpg',
+        sizes: [
+            {
+                id: '1',
+                size: 'XL',
+            }
+        ],
         feature: {
             name: "Sale 50%",
             color: "red"
@@ -78,6 +108,12 @@ const products = [
         price: 599,
         oldPrice: 799,
         img: 'src/assets/2.jpg',
+        sizes: [
+            {
+                id: '1',
+                size: 'XL',
+            }
+        ],
         feature: {
             name: "Sale 50%",
             color: "red"

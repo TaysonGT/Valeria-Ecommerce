@@ -31,11 +31,11 @@ const FilterSect:React.FC<Props> = ({filter, type})=>{
         )  
     }else return (
         <div className='mb-2'>
-            <div className='select-none text-md py-1 border-b border-black cursor-pointer flex justify-between items-center mb-2' onClick={()=>setCollapse(prev=> !prev)}>
+            <div className='select-none text-md py-1 border-b border-black cursor-pointer flex justify-between items-center mb-4' onClick={()=>setCollapse(prev=> !prev)}>
                 Price
                 <FaCaretDown className={'text-sm duration-300 '+ (collapse&& 'rotate-180')}/>
             </div>
-            <div className='flex items-center justify-between'>
+            <div className={`flex items-center duration-300 justify-between overflow-hidden ${collapse? 'max-h-30': 'max-h-0'}`}>
                 <input 
                     type="number" 
                     className='border border-gray-700 rounded-sm p-2 w-1/3' 

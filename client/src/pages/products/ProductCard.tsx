@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import prod1 from '../../assets/1.jpg'
-import { FaCartPlus, FaHeart, FaRegHeart } from 'react-icons/fa'
-import { RiShoppingBag2Fill, RiShoppingBag3Fill, RiShoppingCart2Fill, RiShoppingCartLine } from 'react-icons/ri'
+import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import { Link } from 'react-router'
 
 interface Props {
@@ -12,6 +10,10 @@ interface Props {
         price: number,
         oldPrice?: number,
         img: string,
+        sizes: {
+            id: string
+            size: string, 
+        }[],
         feature: {
             name: string,
             color: string,
@@ -23,11 +25,12 @@ const ProductCard:React.FC<Props> = ({product})=>{
     const [favourite, setFavourite] = useState(false);
     const [inCart, setInCart] = useState(false);
 
+
     return (
         <div className='w-[250px] group h-auto rounded shadow-hard flex flex-col overflow-hidden hover:shadow-hover duration-200'>
             <div className="relative select-none h-[200px] overflow-hidden">
                 <Link to={`/product/${product.id}`}>
-                    <img loading='lazy' className='object-cover object-center h-full w-full group-hover:scale-[1.20] duration-300' src={product.img} alt="1" />
+                    <img loading='lazy' className='object-cover object-center h-full w-full group-hover:scale-105 duration-300' src={product.img} alt="1" />
                 </Link>
                 <span className='absolute top-[3px] right-[3px] p-1 bg-red-500 text-white rounded-sm text-xs font-bold'>Discount %{Math.ceil(100-(product.price/product.oldPrice!)*100)}</span>
                 <button onClick={()=> setFavourite(prev=>!prev)} className='absolute top-0 left-0 cursor-pointer text-red-500 hover:text-red-400 duration-150 p-2 text-xl'>
@@ -40,15 +43,22 @@ const ProductCard:React.FC<Props> = ({product})=>{
             </div>
             <div className='p-4'>
                 <Link to={`/product/${product.id}`}><p className='text-nowrap overflow-hidden'>{product.name}</p></Link>
-                <div className='gap-2 items-center flex mt-1 mb-1 justify-center'>
+                <div className='gap-2 items-center flex mt-1 mb-2 justify-center'>
                     <p className='text-red-600'>${product.price}</p>
                     {product.oldPrice&&
                         <p className='line-through text-gray-700 text-sm'>${product.oldPrice}</p>
                     }
                 </div>
+                <div className='flex justify-center gap-2 mb-3'>
+                    {product.sizes?.map(size=>
+                        <div key={size.id} className='rounded-full px-2 py-1 bg-black text-white text-xs select-none cursor-pointer border border-black hover:text-black hover:bg-transparent duration-200'>
+                            {size.size}
+                        </div>
+                    )}
+                </div>
                 <button 
                     onClick={()=> setInCart(prev=>!prev)} 
-                    className='cursor-pointer p-2 w-full text-md bg-[#eab308] rounded-sm hover:bg-[#e6c35a] text-gray-900 duration-150 '>
+                    className='cursor-pointer p-2 w-full text-md rounded-sm bg-[#ffd041] hover:bg-[#ffe084] text-gray-900 duration-150 '>
                     Add To Cart
                 </button>
             </div>

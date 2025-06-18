@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { RiCloseFill } from 'react-icons/ri'
 
 interface Props {
     show: boolean,
@@ -51,9 +52,10 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
 
     return (
         <div className={`fixed flex flex-col h-screen bg-white text-black left-full duration-300 z-[200] px-6 py-8 w-[300px] ${show&& '-translate-x-full'}`}>
-            <div className='flex flex-col gap-1 border-b-1 border-gray-400 pb-1 '>
+            <div className='flex flex-col gap-1 border-b-1 border-gray-400 pb-1 relative'>
                 <h1 className='text-lg font-bold'>Shopping Cart</h1>
                 <p className='text-gray-800 font-light'>{list.length} Items</p>
+                <RiCloseFill onClick={()=>setShow(false)} className='text-red-700 hover:text-red-400 duration-150 cursor-pointer text-3xl absolute top-0 right-0'/>
             </div>
             <div className='flex flex-col gap-2 py-3'>
                 {cartItems.map(item=>
@@ -75,7 +77,7 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
                 </div>
                 )}
             </div>
-            <button className='cursor-pointer py-2 px-4 bg-[#ffd041] hover:bg-[#e7c355] duration-150 mt-auto'>Checkout</button>
+            <button className='cursor-pointer py-2 px-4 bg-[#ffd041] hover:bg-[#ffe084] duration-150 mt-auto'>Checkout</button>
         </div>
     )
 }

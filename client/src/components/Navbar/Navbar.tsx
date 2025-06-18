@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { RiAccountCircleLine } from "react-icons/ri";
-import { MdOutlineShoppingBag, MdOutlineFavoriteBorder, MdOutlineSearch, MdClose } from "react-icons/md";
+import { RiAccountCircleLine, RiMenuFill } from "react-icons/ri";
+import { MdOutlineShoppingBag, MdOutlineFavoriteBorder, MdOutlineSearch } from "react-icons/md";
 import { FaArrowRight } from 'react-icons/fa';
 import SearchBar from '../SearchBar';
 import LightBackground from '../LightBackground';
@@ -119,7 +119,7 @@ const Navbar: React.FC = () => {
                       <FaArrowRight className='text-xs'/>
                     </Link>
                   {child.children&&
-                    <div className='absolute left-[90%] top-0 shadow-lg opacity-0 group-hover/secondary:opacity-100 group-hover/secondary:left-[100%] bg-white text-black text-sm duration-400 '>
+                    <div className='absolute left-[90%] top-0 shadow-lg opacity-0 group-hover/secondary:opacity-100 group-hover/secondary:left-[100%]  pointer-events-none group-hover/secondary:pointer-events-auto bg-white text-black text-sm duration-400 '>
                       {child.children.map((grandchild, y)=>
                         <Link key={y} to={grandchild.path} className='flex relative justify-between items-center p-4 not-first:border-t gap-3 border-gray-400 text-nowrap'>
                           {grandchild.text}
@@ -134,14 +134,15 @@ const Navbar: React.FC = () => {
             </div>
           )}
         </ul>
-        <div className='flex items-center gap-6'>
-          <MdOutlineSearch onClick={()=>setShowSearchbar(true)} className='cursor-pointer text-[25px] hover:scale-[1.15] duration-200'/>
-          <Link to='/'><MdOutlineFavoriteBorder className='text-[25px] hover:scale-[1.15] duration-200'/></Link>
-          <Link to='/'><RiAccountCircleLine className='text-[25px] hover:scale-[1.15] duration-200'/></Link>
+        <div className='flex items-center gap-6 text-[28px]'>
+          <MdOutlineSearch onClick={()=>setShowSearchbar(true)} className='cursor-pointer hover:scale-[1.15] duration-200'/>
+          <Link to='/'><MdOutlineFavoriteBorder className=' hover:scale-[1.15] duration-200'/></Link>
+          <Link to='/'><RiAccountCircleLine className='hover:scale-[1.15] duration-200'/></Link>
           <div onClick={()=> setShowCart(true)} className='cursor-pointer group relative'>
-            <MdOutlineShoppingBag className='text-[25px] group-hover:scale-[1.15] duration-200 '/>
-            <span className='absolute -top-1 -left-2 text-[12px] bg-[#eab308] text-[#fff] font-bold rounded-full w-4.5 h-4.5 flex justify-center items-center'>0</span>
+            <MdOutlineShoppingBag className='group-hover:scale-[1.15] duration-200 '/>
+            <span className='absolute -top-1 -left-2 text-[12px] bg-[#ffd041] text-gray-700 font-bold rounded-full w-4.5 h-4.5 flex justify-center items-center'>0</span>
           </div>
+          <RiMenuFill className='cursor-pointer hover:scale-[1.15] duration-75'/>
         </div>
       </div>
     </div>
