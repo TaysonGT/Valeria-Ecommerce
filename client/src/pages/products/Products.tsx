@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from 'react'
 import FilterSect from './FilterSect'
-import PriceRange from './PriceRange'
 import ProductCard from './ProductCard'
 import { useParams } from 'react-router'
 // import { useAuth } from '../context/AuthContext';
@@ -49,7 +48,7 @@ const products = [
         }
     },
     {
-        id: '132145646',
+        id: '123456879',
         name: "RFC Drip Sweatshirt - Rose RFC Drip Sweatshirt - Rose",
         description: "Lorem ipsum dolor sit amet.",
         price: 599,
@@ -61,7 +60,7 @@ const products = [
         },
     },
     {
-        id: '132145646',
+        id: '32165497',
         name: "RFC Drip Hoodie - Red",
         description: "Lorem ipsum dolor sit amet.",
         price: 499,
@@ -73,7 +72,7 @@ const products = [
         }
     },
     {
-        id: '132145646',
+        id: '987546232',
         name: "RFC Drip Sweatshirt - Rose",
         description: "Lorem ipsum dolor sit amet.",
         price: 599,
@@ -103,7 +102,7 @@ const ProductsPage:React.FC = () => {
                 )}
                 <FilterSect {... {i: 0, type: 'price'}} />
             </div>
-            <div className='grow p-10 flex flex-wrap gap-6'>
+            <div className='grow p-10 flex flex-wrap gap-8'>
                 {results.map((product)=>
                     <ProductCard key={product.id} {... {product}} />
                 )}

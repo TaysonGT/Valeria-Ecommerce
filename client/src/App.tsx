@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import './App.css'
 import PrivateRoutes from './routes/PrivateRoutes';
 import HomePage from './pages/Home/Home';
-import ProductsPage from './pages/products/Products';
+import ProductsPage from './pages/Products/Products';
 
 function App() {
 
@@ -17,7 +17,7 @@ function App() {
         <Routes>
           <Route path='/' element={<PrivateRoutes/>}>
             <Route index path='/' element={<HomePage />}   />
-            <Route path='/products' element={<ProductsPage />}   />
+            <Route path='/products' element={<ProductsPage />}/>
           </Route>
         </Routes>
       </BrowserRouter>

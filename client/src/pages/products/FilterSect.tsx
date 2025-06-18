@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { FaCaretDown } from 'react-icons/fa';
-import PriceRange from './PriceRange';
 
 interface Props {
     filter?: {

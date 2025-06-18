@@ -11,7 +11,7 @@ const PrivateRoutes = () => {
 
   return (
     // token? 
-    <div className='relative'> 
+    <div className='relative max-w-screen overflow-x-hidden'> 
       <Navbar /> 
       <Outlet /> 
     </div> 
