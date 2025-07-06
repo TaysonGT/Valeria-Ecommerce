@@ -120,12 +120,12 @@ const HomePage: React.FC = ()=>{
           </form>
         </div>
         <div className='grid grid-cols-4 gap-10 border-t border-gray-500 py-16 w-[85%] mx-auto'>
-          {footerLinks.map(sec=>
-            <div>
+          {footerLinks.map((sec, i)=>
+            <div key={i}>
               <h1 className='mb-6 text-sm'>{sec.head}</h1>
               <div className='flex flex-col gap-4 text-gray-400 text-sm'>
-                {sec.links.map(link=>
-                  <Link className='block hover:underline hover:text-white duration-300' to={link.path}>{link.text}</Link>
+                {sec.links.map((link, x)=>
+                  <Link key={x} className='block hover:underline hover:text-white duration-300' to={link.path}>{link.text}</Link>
                 )}
               </div>
             </div>
@@ -153,8 +153,8 @@ const HomePage: React.FC = ()=>{
               <div className='flex flex-wrap items-center gap-x-4 gap-y-2'>
                 <FaCcVisa size={40}/>
                 <FaCcMastercard size={40}/>
-                {paymentMethods.map(method=>
-                  <img className='w-20 h-full' src={method.src} alt="none" />
+                {paymentMethods.map((method, y)=>
+                  <img key={y} className='w-20 h-full' src={method.src} alt="none" />
                 )}
               </div>
             </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
 import { MdClose } from 'react-icons/md'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 
 interface Props {
     setShowSearchbar: (arg0:boolean)=> void;
@@ -14,12 +14,15 @@ const SearchBar:React.FC<Props> = ({setShowSearchbar, showSearchbar})=>{
 
     const [searchString, setSearchString] = useState<string>('')
     const [currentLocation, setCurrentLocation] =  useState(location)  
-    
+    const [searchParams, setSearchParams] = useSearchParams()
+
     const inputRef = useRef<HTMLInputElement>(null)
 
     const handleSearch = (e:React.FormEvent<HTMLFormElement>)=> {
         e.preventDefault(); 
-        navigate(`/products?q=${encodeURIComponent(searchString)}`)
+        searchParams.set('s', encodeURIComponent(searchString))
+        setSearchParams(searchParams)
+        navigate(`/products?${searchParams.toString()}`)
         setShowSearchbar(false)
     }
     

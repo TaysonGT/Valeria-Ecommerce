@@ -1,47 +1,50 @@
-export type UserType = {
-  id: string;
-  firstname: string;
-  lastname: string;
-  username: string;
-  email: string;
-  created_at: Date;
+
+export interface productType {
+  _id: string;
+  title: string;
+  description: string;
+  basePrice: number;
+  discountPrice?: number;
+  currency: string;
+  variants: variantType[];
+  categories: categoryRefType[];
+  collections: collectionRefType[];
+  imgs: imageType[];
 }
 
-export type PostType = {
-  id: string;
-  user_id: string;
-  content: string;
-  created_at: Date;
+export interface variantType {
+  _id: string;
+  sizeCode: string;
+  inventory: {
+    stock: number;
+    barcode: string;
+    reserved: number;
+    warehouseLocation?: string;
+  }
+  priceAdjustment?: number;
 }
 
-export type FriendRequestType = {
-  id: string;
-  sender_id: string;
-  receiver_id: string;
-  status: string;
+export interface categoryRefType {
+  categoryId: string;
+  name: string;
 }
 
-export type LikeType = {
-  id: string;
-  user_id: string;
-  type: string;
-  comment_id: string | null;
-  post_id: string | null;
+export interface collectionRefType {
+  collectionId: string;
+  title: string;
 }
 
-export type CommentType = {
-  id: string;
-  user_id: string;
-  content: string;
-  post_id: string;
-  created_at: Date;
+export interface imageType {
+  url: string;
+  altText: string;
+  isPrimary?: boolean;
 }
 
 export type FriendsContextType = {
-  myFriends: UserType[];
-  friendRequests: FriendRequestType[];
-  sentFriendRequests: FriendRequestType[];
-  friendRequestUsers: UserType[];
+  // myFriends: UserType[];
+  // friendRequests: FriendRequestType[];
+  // sentFriendRequests: FriendRequestType[];
+  // friendRequestUsers: UserType[];
   sendFriendRequest: (id: string) => void;
   acceptFriendRequest: (id: string)=> void;
   declineFriendRequest: (id: string)=> void;
@@ -52,7 +55,7 @@ export type FriendsContextType = {
 };
 
 export type AuthContextType = {
-  currentUser: UserType | null;
+  // currentUser: UserType | null;
   token: string | null;
   refreshCurrentUser: ()=> void
   refreshToken: ()=> void

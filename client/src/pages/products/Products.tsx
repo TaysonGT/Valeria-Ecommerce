@@ -2,16 +2,26 @@
 import React, { useEffect, useState } from 'react'
 import FilterSect from './FilterSect'
 import ProductCard from './ProductCard'
-import { useParams } from 'react-router'
+import { useParams, useSearchParams } from 'react-router'
+import axios from 'axios'
 // import { useAuth } from '../context/AuthContext';
+import { productType } from '../../types/types'
 
-const filters = [
+export interface filterType {
+    head: string;
+    opts: {
+        name: string;
+        count: number;
+    }[];
+}
+
+const list = [
     {
         head: "Availability",
         opts: [
             {name: 'In Stock', count: 54}, 
             {name: 'Out of Stock', count: 76}
-        ] 
+        ]
     },
     {
         head: "Gender",
@@ -34,101 +44,24 @@ const filters = [
         ] 
     }
 ]
-const products = [
-    {
-        id: '132145646',
-        name: "RFC Drip Hoodie - Red",
-        description: "Lorem ipsum dolor sit amet.",
-        price: 499,
-        oldPrice: 599,
-        img: 'src/assets/1.jpg',
-        sizes: [
-            {
-                id: '1',
-                size: 'M',
-            },
-            {
-                id: '1',
-                size: 'L',
-            },
-            {
-                id: '1',
-                size: 'XL',
-            },
-            {
-                id: '1',
-                size: '2XL',
-            },
-        ],
-        feature: {
-            name: "Sale 50%",
-            color: "red"
-        }
-    },
-    {
-        id: '123456879',
-        name: "AFC Drip Sweatshirt - Rose RFC Drip Sweatshirt - Rose",
-        description: "Lorem ipsum dolor sit amet.",
-        price: 599,
-        oldPrice: 799,
-        img: 'src/assets/2.jpg',
-        sizes: [
-            {
-                id: '1',
-                size: 'XL',
-            }
-        ],
-        feature: {
-            name: "Sale 50%",
-            color: "red"
-        },
-    },
-    {
-        id: '32165497',
-        name: "RFC Drip Hoodie - Red",
-        description: "Lorem ipsum dolor sit amet.",
-        price: 499,
-        oldPrice: 599,
-        img: 'src/assets/1.jpg',
-        sizes: [
-            {
-                id: '1',
-                size: 'XL',
-            }
-        ],
-        feature: {
-            name: "Sale 50%",
-            color: "red"
-        }
-    },
-    {
-        id: '987546232',
-        name: "RFC Drip Sweatshirt - Rose",
-        description: "Lorem ipsum dolor sit amet.",
-        price: 599,
-        oldPrice: 799,
-        img: 'src/assets/2.jpg',
-        sizes: [
-            {
-                id: '1',
-                size: 'XL',
-            }
-        ],
-        feature: {
-            name: "Sale 50%",
-            color: "red"
-        },
-    },
-]
+
 const ProductsPage:React.FC = () => {
-    const params = useParams()
-    const [results, setResults] = useState<typeof products>([])
+    const [results, setResults] = useState<productType[]>([])
+    const [filters, setFilters] = useState<filterType[]>([])
+    const [searchParams, setSearchParams] = useSearchParams()
+    
+    const handleFilter = (e:React.FormEvent<HTMLSelectElement>)=>{
+        searchParams.set(e.currentTarget.name.toString(), e.currentTarget.value)
+        setSearchParams(searchParams)
+    }
 
     useEffect(()=>{
-        if(params){
-            setResults(products)
-        }
-    }, [params])
+        axios.get('/products')
+        .then(({data})=>{
+            setResults(data.products)
+        })
+        setFilters(list)
+    }, [searchParams])
 
     return (
         <div className='flex min-h-screen'>
@@ -138,10 +71,29 @@ const ProductsPage:React.FC = () => {
                 )}
                 <FilterSect {... {i: 0, type: 'price'}} />
             </div>
-            <div className='grow p-10 flex flex-wrap gap-8'>
-                {results.map((product)=>
-                    <ProductCard key={product.id} {... {product}} />
+            <div className='h-full'>
+                <div className='py-4 px-10 flex gap-10 border-b border-gray-300'>
+                    <div>
+                        <label className='block'>Sort By:</label>
+                        <select onInput={handleFilter} name='sort' className='p-2 border border-black rounded-sm'>
+                            <option value="name">Name</option>
+                            <option value="price">Price</option>
+                            <option value="stock">Stock</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className='block'>Per Page:</label>
+                        <select onInput={handleFilter} name='pagination' className='p-2 border border-black rounded-sm'>
+                            <option value="10">10 Items</option>
+                            <option value="20">20 Items</option>
+                        </select>
+                    </div>
+                </div>
+                <div className='grow  px-10 py-4 flex flex-wrap gap-8'>
+                {results?.map((product)=>
+                    <ProductCard key={product._id} {... {product}} />
                 )}
+                </div>
             </div>
         </div>
     )
