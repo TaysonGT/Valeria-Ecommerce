@@ -15,7 +15,7 @@ const list = [
         price: 499,
         oldPrice: 599,
         quantity: 2,
-        img: 'src/assets/1.jpg',
+        img: 'src/assets/1.webp',
         feature: {
             name: "Sale 50%",
             color: "red"
@@ -28,7 +28,7 @@ const list = [
         price: 599,
         quantity: 1,
         oldPrice: 799,
-        img: 'src/assets/2.jpg',
+        img: 'src/assets/2.webp',
         feature: {
             name: "Sale 50%",
             color: "red"

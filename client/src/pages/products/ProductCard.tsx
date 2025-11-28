@@ -1,21 +1,25 @@
 import React, { useState } from 'react'
-import { FaHeart, FaRegHeart } from 'react-icons/fa'
+import { FaHeart, FaRegHeart, FaShoppingCart } from 'react-icons/fa'
 import { Link } from 'react-router'
-import { productType } from '../../types/types'
+import { productType, variantType } from '../../types/types'
+import { useCart } from '../../context/CartContext'
+import { MdRemoveShoppingCart } from 'react-icons/md'
 
 interface Props {
     product: productType
+    autoWidth?: boolean
 }
 
-const ProductCard:React.FC<Props> = ({product})=>{
+const ProductCard:React.FC<Props> = ({product, autoWidth=false})=>{
     const [favourite, setFavourite] = useState(false);
-    const [inCart, setInCart] = useState(false);
+    const [selectedVariant, setSelectedVariant] = useState<variantType>();
+    const {addToCart, removeFromCart, isInCart} = useCart()
 
 
     return (
-        <div className='w-[250px] group h-auto rounded shadow-hard flex flex-col overflow-hidden hover:shadow-hover duration-200'>
+        <div className={`${!autoWidth?'w-[250px] h-auto':'h-full w-full'} bg-white group rounded shadow-hard flex flex-col overflow-hidden hover:shadow-hover duration-200`}>
             <div className="relative select-none h-[200px] overflow-hidden">
-                <Link to={`/product/${product._id}`}>
+                <Link to={`/products/${product._id}`}>
                     <img loading='lazy' className='object-cover object-center h-full w-full group-hover:scale-105 duration-300' src={product.imgs[0].url} alt="1" />
                 </Link>
                 {
@@ -31,8 +35,8 @@ const ProductCard:React.FC<Props> = ({product})=>{
                     }
                 </button>
             </div>
-            <div className='p-4'>
-                <Link to={`/product/${product._id}`}><p className='text-nowrap overflow-hidden'>{product.title}</p></Link>
+            <div className='p-4 flex flex-col grow'>
+                <Link to={`/product/${product._id}`}><p className='text-nowrap text-center overflow-hidden'>{product.title}</p></Link>
                 <div className='gap-2 items-center flex mt-1 mb-2 justify-center'>
                     {
                         product.discountPrice?
@@ -44,18 +48,21 @@ const ProductCard:React.FC<Props> = ({product})=>{
                         <p className='text-red-600'>${product.basePrice}</p>
                     }
                 </div>
-                <div className='flex justify-center gap-2 mb-3'>
-                    {product.variants?.map((variant, i)=>
-                        <div key={i} className='rounded-full px-2 py-1 bg-black text-white text-xs select-none cursor-pointer border border-black hover:text-black hover:bg-transparent duration-200'>
-                            {variant.sizeCode}
-                        </div>
-                    )}
-                </div>
-                <button 
-                    onClick={()=> setInCart(prev=>!prev)} 
-                    className='cursor-pointer p-2 w-full text-md rounded-sm bg-[#ffd041] hover:bg-[#ffe084] text-gray-900 duration-150 '>
-                    Add To Cart
-                </button>
+                {
+                    isInCart(product._id)?
+                    <button onClick={()=>removeFromCart(product._id)} className=' px-4 text-sm w-full py-2 bg-red-600   text-white hover:bg-transparent cursor-pointer hover:border-red-600 hover:text-red-600 z-2 border border-red-600 ltr duration-300 text-nowrap flex items-center justify-center gap-2 mt-auto'><MdRemoveShoppingCart /> Remove From Cart</button> 
+                    :
+                    <>
+                    <div className='flex justify-center gap-2 mb-3'>
+                        {product.variants?.map((variant, i)=>
+                            <div key={i} onClick={()=>selectedVariant?._id==variant._id?setSelectedVariant(undefined):setSelectedVariant(variant)} className={`rounded-full px-2 py-1 ${variant._id===selectedVariant?._id&&' bg-black text-white'} text-xs select-none cursor-pointer border border-black duration-200 active:bg-gray-300`}>
+                                {variant.sizeCode}
+                            </div>
+                        )}
+                    </div>
+                    <button onClick={()=>addToCart(product, 1, selectedVariant)} className='px-4 text-sm w-full py-2 hover:bg-transparent cursor-pointer hover:text-[#071c1f] bg-[#FFB400] before:bg-[#FFB400] hover:before:bg-[#071c1f] text-white z-2 relative rtl duration-300 text-nowrap flex items-center justify-center gap-2 border border-[#FFB400] hover:border-[#071c1f] mt-auto'><FaShoppingCart/> Add to Cart</button>
+                    </>
+                }
             </div>
         </div>
     )

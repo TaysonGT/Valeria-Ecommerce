@@ -1,9 +1,8 @@
-import { useEffect } from 'react'
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
 
-const PrivateRoutes = () => {
-  const location = useLocation()
+const PrivateRoutes = ({withNav=false}) => {
+  
 
   // useEffect(() => {
   //   checkAuth()
@@ -11,9 +10,11 @@ const PrivateRoutes = () => {
 
   return (
     // token? 
-    <div className='relative max-w-screen overflow-x-hidden'> 
-      <Navbar /> 
-      <Outlet /> 
+    <div className='relative max-w-screen flex flex-col h-screen overflow-x-hidden'> 
+      {withNav&& <Navbar /> }
+      <div className='grow'>
+        <Outlet /> 
+      </div>
     </div> 
     // : <Navigate to='/auth/login' replace state={{from: location}} />
   )

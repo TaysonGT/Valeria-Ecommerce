@@ -1,6 +1,6 @@
 import React from 'react'
 import FilterSect from './FilterSect'
-import { filterType } from '.'
+import { filterType } from './Products'
 import PriceFilter from './PriceFilter'
 
 interface Props {

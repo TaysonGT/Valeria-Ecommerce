@@ -1,18 +1,23 @@
+import { Document } from 'mongoose';
 import { Schema, model } from 'mongoose';
+import { ICategory } from './category.schema';
+import { ICollection } from './collection.schema';
 
-export interface productType {
+export interface IProduct extends Document {
   title: string;
   description: string;
   basePrice: number;
   discountPrice?: number;
   currency: string;
-  variants: variantType[];
-  categories: categoryRefType[];
-  collections: collectionRefType[];
+  fitting: string;
+  gender: string;
+  variants: IVariant[];
+  categories: ICategory[];
+  collections: ICollection[];
   imgs: imageType[];
 }
 
-export interface variantType {
+export interface IVariant {
   _id: Schema.Types.ObjectId;
   sizeCode: string;
   inventory: {
@@ -24,28 +29,20 @@ export interface variantType {
   priceAdjustment?: number;
 }
 
-export interface categoryRefType {
-  categoryId: string;
-  name: string;
-}
-
-export interface collectionRefType {
-  collectionId: string;
-  title: string;
-}
-
 export interface imageType {
   url: string;
   altText: string;
   isPrimary?: boolean;
 }
 
-export const ProductSchema = new Schema<productType>({
+export const ProductSchema = new Schema<IProduct>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   basePrice: { type: Number, required: true },
   discountPrice: Number,
   currency: { type: String, default: 'USD' },
+  fitting: { type: String, required: true },
+  gender: { type: String, required: true },
   variants: [{
     _id: { type: Schema.Types.ObjectId, auto: true },
     sizeCode: {type: String, required: true},
@@ -58,12 +55,12 @@ export const ProductSchema = new Schema<productType>({
     priceAdjustment: { type: Number, default: 0 }
   }],
   categories: [{
-    categoryId: { type: Schema.Types.ObjectId, required: true },
+    _id: { type: Schema.Types.ObjectId, required: true },
     name: { type: String, required: true }
   }],
   collections: [{
-    collectionId: String,
-    title: String
+    _id: { type: Schema.Types.ObjectId, required: true },
+    title: { type: String, required: true }
   }],
   imgs: [{
     url: {type: String, required: true},

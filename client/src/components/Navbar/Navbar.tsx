@@ -7,6 +7,7 @@ import SearchBar from '../SearchBar';
 import LightBackground from '../LightBackground';
 import DarkBackground from '../DarkBackground';
 import Cart from '../Cart';
+import { useCart } from '../../context/CartContext';
 
  const links = [
   {
@@ -15,63 +16,63 @@ import Cart from '../Cart';
   },
   {
     name: "Collections",
-    path: "/products",
+    path: "/shop",
     children: [
       {
         text: "Winter Collection",
-        path: "/products",
+        path: "/shop",
         children: [
           {
             text: "Men's Wear",
-            path: "/products",
+            path: "/shop",
           },
           {
             text: "Women's Wear",
-            path: "/products",
+            path: "/shop",
           },
           {
             text: "Kids' Wear",
-            path: "/products",
+            path: "/shop",
           },
         ]
       },
       {
         text: "Summer Collection",
-        path: "/products",
+        path: "/shop",
         children: [
           {
             text: "Men's Shirts",
-            path: "/products",
+            path: "/shop",
           },
           {
             text: "Men's Shades",
-            path: "/products",
+            path: "/shop",
           },
           {
             text: "Kids' Trousers",
-            path: "/products",
+            path: "/shop",
           },
         ]
       },
       {
         text: "Men's Collection",
-        path: "/products",
+        path: "/shop",
         children: [
           {
             text: "Apparel",
-            path: "/products",
+            path: "/shop",
           },
           {
             text: "Accessories",
-            path: "/products",
+            path: "/shop",
           },
           {
             text: "Pajamas",
-            path: "/products",
+            path: "/shop",
           },
           {
             text: "Sweatshirts",
-            path: "/products",
+            path: "/shop",
           },
         ]
       },
@@ -89,24 +90,25 @@ import Cart from '../Cart';
  ]
 
 const Navbar: React.FC = () => {
-  // const { token, currentUser, resetAuth } = useAuth()
-  
   const [showSearchbar, setShowSearchbar] = useState<boolean>(false)
   const [showCart, setShowCart] = useState<boolean>(false)
+  const {cartItems} = useCart()
 
   return ( 
-    <div className='bg-black relative text-white w-screen'>
+    <div className='bg-black relative text-white w-full z-105 font-[Arabic]'>
       {/* SEARCH BAR COMPONENT */}
       <LightBackground {...{setShow: (v)=> setShowSearchbar(v), show: showSearchbar}} />
       <SearchBar {...{showSearchbar, setShowSearchbar: (v)=> setShowSearchbar(v)}} />
 
       {/* CART COMPONENT */}
       <DarkBackground {... {setShow: (v)=> setShowCart(v), show: showCart}} />
-      <Cart {...{setShow: (v)=> setShowCart(v), show: showCart}}/>
+      <Cart {...{setShow: (v:boolean)=> setShowCart(v), show: showCart}}/>
 
-      <div className='flex justify-between items-center w-[90%] m-auto py-6'>
-        <Link to='/'><h1 className='text-4xl font-[Comfortaa] font-extrabold select-none hover:text-[#418791] duration-300'>Valeria</h1></Link>
-        <ul className='flex gap-12 text-md justify-center items-center'>
+      <div className='flex justify-between items-center max-w-7xl w-full m-auto py-6'>
+        <div className='flex-1 flex justify-start items-stretch'>
+          <Link to='/'><h1 className='text-4xl font-[Comfortaa] font-extrabold select-none hover:text-[#e0fbff] duration-300'>Valeria</h1></Link>
+        </div>
+        <ul className='flex-1 flex gap-12 text-md justify-center items-center'>
           {links.map((link, i)=>
             <div key={i} className='group-hover:text-[#418791] duration-150 relative group/primary select-none z-[9] cursor-pointer'>
               <Link className='inline-block py-3' to={link.path}>{link.name}</Link>
@@ -134,13 +136,13 @@ const Navbar: React.FC = () => {
             </div>
           )}
         </ul>
-        <div className='flex items-center gap-6 text-[28px]'>
+        <div className='flex-1 flex items-center gap-6 text-[28px] justify-end'>
           <MdOutlineSearch onClick={()=>setShowSearchbar(true)} className='cursor-pointer hover:scale-[1.15] duration-200'/>
           <Link to='/'><MdOutlineFavoriteBorder className=' hover:scale-[1.15] duration-200'/></Link>
           <Link to='/'><RiAccountCircleLine className='hover:scale-[1.15] duration-200'/></Link>
           <div onClick={()=> setShowCart(true)} className='cursor-pointer group relative'>
             <MdOutlineShoppingBag className='group-hover:scale-[1.15] duration-200 '/>
-            <span className='absolute -top-1 -left-2 text-[12px] bg-[#ffd041] text-gray-700 font-bold rounded-full w-4.5 h-4.5 flex justify-center items-center'>0</span>
+            <span className='absolute -top-1 -left-2 text-[12px] bg-[#ffd041] text-gray-700 font-bold rounded-full w-4.5 h-4.5 flex justify-center items-center'>{cartItems.length}</span>
           </div>
           <RiMenuFill className='cursor-pointer hover:scale-[1.15] duration-75'/>
         </div>

@@ -1,100 +1,76 @@
-
-import React, { useEffect, useState } from 'react'
-import FilterSect from './FilterSect'
-import ProductCard from './ProductCard'
-import { useParams, useSearchParams } from 'react-router'
+import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
-// import { useAuth } from '../context/AuthContext';
 import { productType } from '../../types/types'
+import ProductsList from './ProductsList'
+import FiltersList from './FiltersList'
+import { useSearch } from '../../context/SearchContext'
 
 export interface filterType {
-    head: string;
+    title: string;
     opts: {
+        code: string;
         name: string;
         count: number;
     }[];
 }
 
-const list = [
-    {
-        head: "Availability",
-        opts: [
-            {name: 'In Stock', count: 54}, 
-            {name: 'Out of Stock', count: 76}
-        ]
-    },
-    {
-        head: "Gender",
-        opts: [
-            {name: 'Men', count: 10}, 
-            {name: 'Men Jeans & Bottoms', count: 3}
-        ]
-    },
-    {
-        head: "Fitting",
-        opts: [
-            {name: 'Oversized Fit', count: 50}, 
-            {name: 'Slim Fit', count: 32}, 
-            {name: 'Regular Fit', count: 64}, 
-            {name: 'Relaxed Fit', count: 76}, 
-            {name: 'Comfort Fit', count: 12}, 
-            {name: 'Baggy Fit', count: 5}, 
-            {name: 'All Sizes', count: 126}, 
-            {name: 'All Seasons', count: 112}
-        ] 
-    }
-]
+// const list = [
+//     {
+//         head: "Availability",
+//         opts: [
+//             {code:'in', name: 'In Stock', count: 54}, 
+//             {code:'out', name: 'Out of Stock', count: 76}
+//         ]
+//     },
+//     {
+//         head: "Gender",
+//         opts: [
+//             {code:"men", name: 'Men', count: 10}, 
+//             {code:"mjb", name: 'Men Jeans & Bottoms', count: 3}
+//         ]
+//     },
+//     {
+//         head: "Fitting",
+//         opts: [
+//             {code:'ovs', name: 'Oversized Fit', count: 50}, 
+//             {code:'slm', name: 'Slim Fit', count: 32}, 
+//             {code:'rgl', name: 'Regular Fit', count: 64}, 
+//             {code:'rlx', name: 'Relaxed Fit', count: 76}, 
+//             {code:'cmf', name: 'Comfort Fit', count: 12}, 
+//             {code:'bgy', name: 'Baggy Fit', count: 5},
+//         ] 
+//     }
+// ]
 
 const ProductsPage:React.FC = () => {
     const [results, setResults] = useState<productType[]>([])
     const [filters, setFilters] = useState<filterType[]>([])
-    const [searchParams, setSearchParams] = useSearchParams()
-    
-    const handleFilter = (e:React.FormEvent<HTMLSelectElement>)=>{
-        searchParams.set(e.currentTarget.name.toString(), e.currentTarget.value)
-        setSearchParams(searchParams)
-    }
+    const {searchParams, setMaxPages} = useSearch()
+    const lastQ = useRef<string>(searchParams.get('q'))
+
+    const {isLoading, setIsLoading} = useSearch()
+
 
     useEffect(()=>{
-        axios.get('/products')
+        setResults([])
+        setIsLoading(true)
+        const currentQ = searchParams.get('q');
+        axios.get(`/products/search?${searchParams.toString()}`)
         .then(({data})=>{
             setResults(data.products)
+            setMaxPages(Math.ceil(data.totalCount/parseInt(searchParams.get('pagination')||'10')))
+            if (!filters.length || currentQ !== lastQ.current) {
+                setFilters(data.filters);
+                lastQ.current = currentQ;
+            }
+            setIsLoading(false)
         })
-        setFilters(list)
     }, [searchParams])
 
     return (
-        <div className='flex min-h-screen'>
-            <div className='border-r border-gray-300 px-6 py-10 w-[300px]'>
-                {filters?.map((filter, i)=>
-                <FilterSect key={i} {... {filter, type: 'list'}}/>
-                )}
-                <FilterSect {... {i: 0, type: 'price'}} />
-            </div>
-            <div className='h-full'>
-                <div className='py-4 px-10 flex gap-10 border-b border-gray-300'>
-                    <div>
-                        <label className='block'>Sort By:</label>
-                        <select onInput={handleFilter} name='sort' className='p-2 border border-black rounded-sm'>
-                            <option value="name">Name</option>
-                            <option value="price">Price</option>
-                            <option value="stock">Stock</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className='block'>Per Page:</label>
-                        <select onInput={handleFilter} name='pagination' className='p-2 border border-black rounded-sm'>
-                            <option value="10">10 Items</option>
-                            <option value="20">20 Items</option>
-                        </select>
-                    </div>
-                </div>
-                <div className='grow  px-10 py-4 flex flex-wrap gap-8'>
-                {results?.map((product)=>
-                    <ProductCard key={product._id} {... {product}} />
-                )}
-                </div>
-            </div>
+        <div className='flex'>
+            <FiltersList {...{filters}}/>
+            <ProductsList {... {results, isLoading, filters}}/>
         </div>
     )
 }

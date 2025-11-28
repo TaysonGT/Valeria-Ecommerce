@@ -1,18 +1,19 @@
 import { Document, model, Schema, Types } from "mongoose";
 
-interface Image {
+export interface Image {
   url: string;
   altText: string;
 }
 
-interface Category extends Document {
+export interface ICategory extends Document {
+  _id: string;
   name: string;
   parentId?: Types.ObjectId;
   path: string;
   bannerImage?: Image;
 }
 
-const CategorySchema = new Schema<Category>({
+const CategorySchema = new Schema<ICategory>({
     name: {type: String, required: true},
     parentId: Types.ObjectId,
     path: {type: String, required: true},
@@ -22,4 +23,4 @@ const CategorySchema = new Schema<Category>({
     }
 })
 
-export const Category = model<Category>('categories', CategorySchema)
+export const Category = model<ICategory>('categories', CategorySchema)

@@ -10,14 +10,15 @@ interface Image {
   altText: string;
 }
 
-interface Collection extends Document {
+export interface ICollection extends Document {
+  _id: string;
   title: string;
   handle: string;
   activeDates: DateRange;
   featuredImage: Image;
 }
 
-const CollectionSchema = new Schema<Collection>({
+const CollectionSchema = new Schema<ICollection>({
   title: { type: String, required: true },
   handle: { type: String, required: true, unique: true },
   activeDates: {
@@ -34,4 +35,4 @@ const CollectionSchema = new Schema<Collection>({
 CollectionSchema.index({ handle: 1 });
 CollectionSchema.index({ 'activeDates.startDate': 1, 'activeDates.endDate': 1 });
 
-export const CollectionModel = model<Collection>('collections', CollectionSchema);
+export const CollectionModel = model<ICollection>('collections', CollectionSchema);

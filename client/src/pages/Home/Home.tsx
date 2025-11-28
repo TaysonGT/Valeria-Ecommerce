@@ -1,14 +1,12 @@
 import React from 'react'
-import Hero from '../../assets/imgs/landing/hero.jpg';
-import EidOffer from '../../assets/imgs/landing/EID60mainEN.webp'
-import FatherOffer from '../../assets/imgs/landing/FatherDisEN2.png'
-import valuBanner from '../../assets/imgs/landing/BannerValu.png'
 import icon1 from '../../assets/imgs/landing/icon-1.png'
 import icon2 from '../../assets/imgs/landing/icon-2.png'
 import icon3 from '../../assets/imgs/landing/icon-3.png'
-
 import { Link } from 'react-router';
 import { FaCcMastercard, FaCcVisa, FaFacebookF, FaInstagram, FaTiktok, FaYoutube} from 'react-icons/fa';
+import FeaturedSection from './sections/FeaturedSection';
+import HeroSection from './sections/HeroSection';
+import ServicesSection from './sections/ServicesSection';
 
 
 const paymentMethods = [
@@ -71,44 +69,21 @@ const footerLinks = [
 
 const HomePage: React.FC = ()=>{
   return (
-    <div className=''>
-      <div className='h-screen flex justify-center items-center overflow-y-hidden relative bg-[#4d4d26]'>
-        <img className='absolute top-0 w-full object-fill opacity-[.4]' loading='lazy' src={Hero}/>
-        <div className="z-[2] w-[67%] text-white">
-          <h1 className='text-7xl font-[abominable]'>Elegance</h1>
-          <h1 className='text-7xl font-[abominable]'>Charisma</h1>
-          <h1 className='text-7xl font-[abominable]'>Simplicity</h1>
-          <p className='mt-6 text-md text-wrap'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi praesentium quia delectus mollitia at quibusdam assumenda maiores quae, est.</p>
-          <Link to='/' className='bg-[#eab308] text-lg text-[#fff] font-bold inline-block py-4 px-5 rounded mt-6 duration-150 hover:bg-[#ca8a04]'>
-            Start Shopping
-          </Link>
-        </div>
-      </div>
-      <div>
-        <Link className='block border border-slate-50 w-full m-0' to='/'>
-          <img className='w-full' loading='lazy' src={EidOffer} alt="" />
-        </Link>
-        <Link className='block border border-slate-50' to='/'>
-          <img className='w-full' loading='lazy' src={valuBanner} alt="" />
-        </Link>
-        <Link className='block border border-slate-50' to='/'>
-          <img className='w-full' loading='lazy' src={FatherOffer} alt="" />
-        </Link>
-      </div>
-      {/* <div className='mt-16 mb-6 w-[67%] mx-auto'>
-        <h1 className='text-center font-semibold text-4xl'>PVC Marble Sheet</h1>
-        <p className='mt-4 w-3/4 mx-auto'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi praesentium quia delectus mollitia at quibusdam assumenda maiores quae.</p>
-        <div className='flex w-full justify-between gap-8 mt-4'>
-          {cards.map((card)=>
-            <div className='flex-1 flex flex-col select-none items-center text-center rounded py-8 px-4 shadow-md duration-300 hover:shadow-2xl'>
-              <h1 className='text-xl'>{card.header}</h1>
-              <img className='w-1/3 mt-6' src={card.img} alt="test" />
-              <p className='text-sm mt-6'>{card.body}</p>
+    <div>
+      <HeroSection/>
+      <div className='w-full py-6 bg-[#98eee0]'>
+        <div className='flex justify-between items-center max-w-7xl w-full mx-auto'>
+          {[...Array(4)].map((i)=>
+            <div key={i}>
+              <p className='uppercase text-lg font-bold'>Work hard for it</p>
+              <span className='not-last:block hidden h-1 aspect-square rounded-full bg-[#737373]'/>
             </div>
           )}
         </div>
-      </div> */}
-      <div className='bg-black text-white'>
+      </div>
+      <FeaturedSection/>
+      <ServicesSection/>
+      <section className='bg-black text-white'>
         <div className='text-center py-16'>
           <h1 className='uppercase font-[abominable] text-4xl mb-1'>Sign Up for Valeria's Newsletter</h1>
           <p className='text-slate-100 text-sm mb-4'>be the first to know about our newest arrivals, special offers and store events near you.</p>
@@ -160,7 +135,7 @@ const HomePage: React.FC = ()=>{
             </div>
           </div>
         </div>
-      </div>
+      </section>
       <div className='bg-white text-slate-800 text-center py-6'>
         © Valeria 2025
       </div>
