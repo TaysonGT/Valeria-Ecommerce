@@ -18,7 +18,7 @@ const SearchBar:React.FC<Props> = ({setShowSearchbar, showSearchbar})=>{
 
     const inputRef = useRef<HTMLInputElement>(null)
 
-    const handleSearch = (e:React.FormEvent<HTMLFormElement>)=> {
+    const handleSearch = (e:React.SubmitEvent<HTMLFormElement>)=> {
         e.preventDefault(); 
         const newParams = new URLSearchParams()
         newParams.set('q', encodeURIComponent(searchString))
@@ -36,7 +36,7 @@ const SearchBar:React.FC<Props> = ({setShowSearchbar, showSearchbar})=>{
     },[location])
     
     return (
-        <div className={`bg-white text-black w-full top-0 absolute py-4 z-[100] -translate-y-full duration-300 ${showSearchbar&& 'translate-y-0'}`}>
+        <div className={`bg-white text-black w-full top-0 absolute py-4 z-100 -translate-y-full duration-300 ${showSearchbar&& 'translate-y-0'}`}>
         <MdClose className='ml-auto mr-10 mb-2 text-2xl hover:text-red-500 duration-200 cursor-pointer' onClick={()=>setShowSearchbar(false)}/>
         <form
             onSubmit={handleSearch}  
@@ -50,7 +50,7 @@ const SearchBar:React.FC<Props> = ({setShowSearchbar, showSearchbar})=>{
             ref={inputRef}
             />
             <button type='submit'>
-            <FaSearch className='cursor-pointer'/>
+                <FaSearch className='cursor-pointer'/>
             </button>
         </form>
         </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { productType, variantType } from '../../types/types'
+import { productType, variantType } from '../../types'
 import { Link, useParams } from 'react-router'
 import axios from 'axios'
 import { toast } from 'react-toastify'

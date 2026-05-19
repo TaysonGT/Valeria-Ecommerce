@@ -1,39 +1,62 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
 import './App.css'
 import PrivateRoutes from './routes/PrivateRoutes';
+import LoginRoute from './routes/LoginRoute';
 import HomePage from './pages/Home/Home';
-import ProductsPage from './pages/Products/Products';
+import ShoppingPage from './pages/Shopping';
 import { SearchProvider } from './context/SearchContext';
 import { ToastContainer } from 'react-toastify';
 import { CartProvider } from './context/CartContext';
 import ProductPage from './pages/Product';
+import CheckoutPage from './pages/Checkout';
+import LoginPage from './pages/Auth/Login';
+import RegisterPage from './pages/Auth/Register';
+import { AuthProvider } from './context/AuthContext';
+import PublicRoute from './routes/PublicRoute';
+import OrdersPage from './pages/Orders';
+import OrderPage from './pages/Order';
+import TestPage from './pages/TestPage';
+import ProductsPage from './pages/Dashboard/Products';
+import ProductDetails from './pages/Dashboard/ProductDetails';
 
 function App() {
 
   return (
-    <>
-      {/* <AuthProvider> */}
+    <AuthProvider>
       <BrowserRouter>
-      <SearchProvider>
-      <ToastContainer 
-        position='top-left' 
-        // theme='light'
-        autoClose={2000}
-      />
-      <CartProvider>
-        <Routes>
-          <Route index path='/' element={<HomePage />}   />
-          <Route path='/' element={<PrivateRoutes withNav/>}>
-            <Route path='/shop' element={<ProductsPage />}/>
-            <Route path='/products/:productId' element={<ProductPage />}/>
-          </Route>
-        </Routes>
-      </CartProvider>
-      </SearchProvider>
+        <SearchProvider>
+          <ToastContainer
+            position='top-left'
+            autoClose={2000}
+          />
+          <CartProvider>
+            <Routes>
+              <Route path='/' element={<PublicRoute withNav />}>
+                <Route path='shop' element={<ShoppingPage />} />
+                <Route path='test' element={<TestPage/>}/>
+                <Route index element={<HomePage />} />
+                <Route path='products/:productId' element={<ProductPage />} />
+              </Route>
+              <Route path='/auth' element={<LoginRoute />}>
+                <Route path='login' element={<LoginPage />} />
+                <Route path='register' element={<RegisterPage />} />
+              </Route>
+              <Route path='/' element={<PrivateRoutes withNav withSidebar />}>
+                <Route path='my-orders' element={<OrdersPage />} />
+              </Route>
+              <Route path='dashboard' element={<PrivateRoutes withNav withSidebar />}>
+                <Route path='orders/:orderId' element={<OrderPage />} />
+                <Route path='products' element={<ProductsPage />} />
+                <Route path='products/:productId' element={<ProductDetails />} />
+              </Route>
+              <Route path='/' element={<PrivateRoutes withNav />}>
+                <Route path='checkout' element={<CheckoutPage />} />
+              </Route>
+            </Routes>
+          </CartProvider>
+        </SearchProvider>
       </BrowserRouter>
-      {/* </AuthProvider>  */}
-    </>
+    </AuthProvider>
   )
 }
 

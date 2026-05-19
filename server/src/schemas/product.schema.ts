@@ -14,6 +14,7 @@ export interface IProduct extends Document {
   variants: IVariant[];
   categories: ICategory[];
   collections: ICollection[];
+  publicationStatus: 'active'|'inactive';
   imgs: imageType[];
 }
 
@@ -40,6 +41,11 @@ export const ProductSchema = new Schema<IProduct>({
   description: { type: String, required: true },
   basePrice: { type: Number, required: true },
   discountPrice: Number,
+  publicationStatus: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active'
+  },
   currency: { type: String, default: 'USD' },
   fitting: { type: String, required: true },
   gender: { type: String, required: true },

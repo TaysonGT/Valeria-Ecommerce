@@ -1,21 +1,22 @@
 import { Navigate, useLocation, Outlet } from 'react-router-dom'
-import { useEffect } from 'react'
-// import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext'
 
 const LoginRoute = () => {
     const location = useLocation();
-    // const { token, checkAuth } = useAuth()
-    // useEffect(() => {
-    //     checkAuth()
-    // }, [location])
-    
-    if(location.pathname == '/auth') return <Navigate to={'/auth/login'} replace /> 
+    const { token, loading } = useAuth()
+    const from = (location.state as any)?.from?.pathname || '/'
 
-    // if(!token){
-        return <Outlet />
-    // }else{
-    //     return <Navigate to="/"  replace state={{from: location}} />
-    // }
+    if(location.pathname === '/auth') return <Navigate to={'/auth/login'} replace state={location.state} />
+
+    if (loading) {
+      return <div className='min-h-screen flex items-center justify-center'>Loading...</div>
+    }
+
+    if (token) {
+      return <Navigate to={from} replace />
+    }
+
+    return <Outlet />
 }
 
 export default LoginRoute

@@ -3,12 +3,15 @@ import cors from 'cors'
 import BodyParser from 'body-parser'
 import CookieParser from 'cookie-parser'
 import productRouter from './routes/product.route'
+import userRouter from './routes/user.route'
+import orderRouter from './routes/order.route'
 import mongoose from 'mongoose'
 
-mongoose.connect('mongodb://localhost:27017/Valeria', {dbName: 'Valeria'})
-.then(()=>{
+mongoose.connect('mongodb://localhost:27017/Valeria', { dbName: 'Valeria' })
+  .then(() => {
     console.log('connected to MongoDB!')
-}).catch((err)=> console.error(err))
+  })
+  .catch((err) => console.error(err))
 
 const PORT = 5000
 const app = express()
@@ -19,10 +22,12 @@ app.use(cors({
 app.use(express.json())
 app.use(BodyParser.json())
 app.use(CookieParser())
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }))
 
 app.use('/products', productRouter)
+app.use('/users', userRouter)
+app.use('/orders', orderRouter)
 
-app.listen(PORT, ()=>{
+app.listen(PORT, () => {
     console.log(`Started Express Server on Port: ${PORT}`)
 })

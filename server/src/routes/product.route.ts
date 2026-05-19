@@ -1,18 +1,20 @@
 import express from 'express'
 import { ProductController } from '../controllers/product.controller'
+import { auth, isPermitted } from '../middlewares/auth.middleware'
 
 const productController = new ProductController()
 const productRouter = express.Router()
 
-productRouter.get('/all', productController.allProducts)
+productRouter.get('/', productController.allProducts)
 productRouter.get('/search', productController.searchProducts)
 productRouter.get('/categories', productController.allCategories)
 productRouter.get('/featured', productController.featuredProducts)
 productRouter.get('/related/:id', productController.relatedProducts)
 productRouter.get('/:id', productController.singleProduct)
-productRouter.post('/', productController.createProduct)
-productRouter.post('/fittings', productController.createFitting)
-productRouter.post('/genders', productController.createGender)
+productRouter.post('/', auth, isPermitted('admin'), productController.createProduct)
+productRouter.post('/fittings', auth, isPermitted('admin'), productController.createFitting)
+productRouter.post('/genders', auth, isPermitted('admin'), productController.createGender)
+
 // productRouter.post('/categories', productController.createCategory)
 
 export default productRouter

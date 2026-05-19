@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { productType, variantType } from '../types/types';
-
-type CartItem = {product: productType, quantity: number, variant: variantType}
+import { productType, variantType } from '../types';
 
 interface ICartContext{
     cartItems: CartItem[];
@@ -22,7 +20,7 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
 
   const cartAction = (items:CartItem[])=>{
     setTotal(items.reduce((total, item) => total + (item.product.discountPrice||item.product.basePrice) * item.quantity, 0))
-    localStorage.setItem("cartItems", JSON.stringify(items));
+    localStorage.setItem("cartItems_valeria", JSON.stringify(items));
   }
 
   const addToCart = (product: productType, quantity: number, variant?: variantType) => {
@@ -60,7 +58,7 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     if(cartItems.length===0) return;
     setCartItems([]);
     cartAction([])
-    localStorage.removeItem("cartItems");
+    localStorage.removeItem("cartItems_valeria");
     toast.success("Cleared cart successfully!")
   }
 
@@ -92,9 +90,8 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
   }
   
   useEffect(()=>{
-    const items = localStorage.getItem("cartItems");
+    const items = localStorage.getItem("cartItems_valeria");
     const parsedItems:any[] = items ? JSON.parse(items) : []
-    console.log(parsedItems)
     setCartItems(parsedItems);
     setTotal(parsedItems.reduce((total, item) => total + (item.product.discountPrice||item.product.basePrice) * item.quantity, 0))
   },[])

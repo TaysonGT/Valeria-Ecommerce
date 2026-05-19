@@ -145,10 +145,10 @@ export const findProducts = async (req: Request) => {
 
     // Build the aggregation pipeline
     const pipeline: PipelineStage[] = [];
-    const productFilter: any = {};
+    const productFilter: any = {};  // <-- THIS gets built below
     let sortStage: PipelineStage = { $sort: { createdAt: -1 } };
 
-    // Text search handling
+    // Text search handling - this ADDS to productFilter
     if (q) {
         const searchTerms = q.trim().split(/\s+/);
         
@@ -171,69 +171,69 @@ export const findProducts = async (req: Request) => {
         }
     }
 
-    // Additional filters
+    // Gender filter - this ADDS to productFilter
     if (gender) {
         const codes = gender.split(',');
         productFilter.gender = { $in: codes };
     }
     
+    // Fitting filter - this ADDS to productFilter
     if (fitting) {
         const codes = fitting.split(',');
         productFilter.fitting = { $in: codes };
     }
     
+    // Availability filter - this ADDS to productFilter
     if (availability) {
         const statuses = availability.split(',');
-        const stockConditions = [];
         
-        if (statuses.includes('in')) {
-            stockConditions.push({
-                $expr: {
-                    $gt: [
-                        { $max: "$variants.inventory.stock" },
-                        0
-                    ]
+        if (statuses.includes('in') && statuses.includes('out')) {
+            // Both - no filter needed
+        } else if (statuses.includes('in')) {
+            productFilter['variants.inventory.stock'] = { $gt: 0 };
+        } else if (statuses.includes('out')) {
+            // For 'out', we need an aggregation stage because we need to check ALL variants
+            pipeline.push({
+                $match: {
+                    $expr: {
+                        $allElementsTrue: {
+                            $map: {
+                                input: "$variants",
+                                as: "variant",
+                                in: { $lte: ["$$variant.inventory.stock", 0] }
+                            }
+                        }
+                    }
                 }
             });
         }
-        
-        if (statuses.includes('out')) {
-            stockConditions.push({
-                $expr: {
-                    $lte: [
-                        { $max: "$variants.inventory.stock" },
-                        0
-                    ]
-                }
-            });
-        }
-
-        productFilter.$or = stockConditions;
     }
 
-    // Add $match stage if we have any filters
+    // ✅ CRITICAL: Call getSearchFilters HERE with the productFilter we just built
+    // This ensures filters are based on currently applied search/filters
+    const filters = await getSearchFilters(req, productFilter);
+
+    // Add $match stage if we have any filters in productFilter
     if (Object.keys(productFilter).length > 0) {
-        pipeline.push({ $match: productFilter });
+        pipeline.unshift({ $match: productFilter });
     }
 
     // Handle sorting
     if (sort !== 'none') {
         switch (sort) {
             case 'price':
-                // Add effective price calculation and sort by it
                 pipeline.push(
-                    { $addFields: { effectivePrice: { $ifNull: ["$discountPrice", "$basePrice"] } }},
+                    { $addFields: { effectivePrice: { $ifNull: ["$discountPrice", "$basePrice"] } } },
                 );
-                if(order==='asc') pipeline.push(
+                if(order === 'asc') pipeline.push(
                     { $sort: { effectivePrice: 1 } }
                 );
                 else pipeline.push(
                     { $sort: { effectivePrice: -1 } }
                 );
-                
                 break;
             case 'name':
-                if(order==='asc') pipeline.push(
+                if(order === 'asc') pipeline.push(
                     { $sort: { title: 1 } }
                 );
                 else pipeline.push(
@@ -242,7 +242,6 @@ export const findProducts = async (req: Request) => {
                 break;
         }
     } else {
-        // Default sort (either textScore or createdAt)
         pipeline.push(sortStage);
     }
 
@@ -256,12 +255,13 @@ export const findProducts = async (req: Request) => {
     // Execute aggregation
     const [products, totalCount] = await Promise.all([
         Product.aggregate(pipeline),
-        Product.countDocuments(productFilter)
+        Product.countDocuments(productFilter)  // ← Uses the SAME productFilter
     ]);
 
     return {
         products: products as IProduct[],
         totalCount,
+        filters,  // ← Return the filters too
         searchFilter: productFilter
     };
 };

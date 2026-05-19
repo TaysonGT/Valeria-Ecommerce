@@ -4,9 +4,15 @@ import icon2 from '../../assets/imgs/landing/icon-2.png'
 import icon3 from '../../assets/imgs/landing/icon-3.png'
 import { Link } from 'react-router';
 import { FaCcMastercard, FaCcVisa, FaFacebookF, FaInstagram, FaTiktok, FaYoutube} from 'react-icons/fa';
-import FeaturedSection from './sections/FeaturedSection';
-import HeroSection from './sections/HeroSection';
-import ServicesSection from './sections/ServicesSection';
+import FeaturedSection from './sections/Featured';
+import HeroSection from './sections/Hero';
+import ServicesSection from './sections/Services';
+import OfferSection from './sections/Offers';
+import CategoriesSection from './sections/Categories';
+import TestimonialsSection from './sections/Testimonials';
+import StatsSection from './sections/Stats';
+import TestSection from './sections/TestSection';
+import TestSection2 from './sections/TestSection2';
 
 
 const paymentMethods = [
@@ -69,32 +75,39 @@ const footerLinks = [
 
 const HomePage: React.FC = ()=>{
   return (
-    <div>
+    <div className='font-'>
       <HeroSection/>
-      <div className='w-full py-6 bg-[#98eee0]'>
-        <div className='flex justify-between items-center max-w-7xl w-full mx-auto'>
-          {[...Array(4)].map((i)=>
-            <div key={i}>
-              <p className='uppercase text-lg font-bold'>Work hard for it</p>
+      <div className='w-full overflow-x-hidden py-6 bg-[#98eee0] font-[Elms_Sans]'>
+        <div className='flex justify-between items-center max-w-7xl px-10 w-full mx-auto'>
+          {[...Array(5)].map((_i,x)=>
+            <div key={x}>
+              <p className='uppercase text-lg font-bold'>{x%2===0?'Buy 2 Get 1 Free':'Special Offer'}</p>
               <span className='not-last:block hidden h-1 aspect-square rounded-full bg-[#737373]'/>
             </div>
           )}
         </div>
       </div>
+      <TestSection/>
+      <TestSection2/>
       <FeaturedSection/>
-      <ServicesSection/>
-      <section className='bg-black text-white'>
-        <div className='text-center py-16'>
-          <h1 className='uppercase font-[abominable] text-4xl mb-1'>Sign Up for Valeria's Newsletter</h1>
-          <p className='text-slate-100 text-sm mb-4'>be the first to know about our newest arrivals, special offers and store events near you.</p>
-          <form className='flex gap-2 w-[600px] mx-auto'>
-            <input  className='bg-white grow px-4 text-black' placeholder='Type Your Email Address' type="email" />
-            <button className='bg-[#eab308] text-black py-2 px-6 duration-150 hover:bg-[#ca8a04] cursor-pointer'>
-              Submit
+      {/* <ServicesSection/> */}
+      <CategoriesSection/>
+      <StatsSection/>
+      <TestimonialsSection/>
+      <OfferSection/>
+      <section className='bg-black text-white w-full'>
+        <div className='text-center py-16 px-10'>
+          <h1 className='uppercase font-[abominable] text-4xl mb-1'>Stay in Style</h1>
+          <p className='text-slate-100 text-lg mb-6 max-w-2xl mx-auto'>Be the first to know about exclusive drops, limited-time offers, styling tips, and behind-the-scenes content from Valeria.</p>
+          <form className='flex gap-2 md:w-150 w-full mx-auto'>
+            <input  className='bg-white grow px-4 py-3 text-black rounded-md' placeholder='Enter your email address' type="email" />
+            <button className='bg-[#eab308] text-black py-3 px-8 rounded-md duration-150 hover:bg-[#ca8a04] cursor-pointer font-semibold'>
+              Subscribe
             </button>
           </form>
+          <p className='text-slate-300 text-sm mt-4'>No spam, unsubscribe at any time.</p>
         </div>
-        <div className='grid grid-cols-4 gap-10 border-t border-gray-500 py-16 w-[85%] mx-auto'>
+        <div className='grid md:grid-cols-4 grid-cols-2 md:gap-10 border-t border-gray-500 py-16 w-full px-10'>
           {footerLinks.map((sec, i)=>
             <div key={i}>
               <h1 className='mb-6 text-sm'>{sec.head}</h1>
@@ -105,10 +118,10 @@ const HomePage: React.FC = ()=>{
               </div>
             </div>
           )}
-          <div className='grid grid-rows-2'>
+          <div className='flex flex-col md:gap-6 gap-2'>
             <div>
               <h1 className='mb-6 text-sm'>Keep In Touch</h1>
-              <div className='flex gap-4 text-xl'>
+              <div className='flex gap-4 text-xl flex-wrap'>
                 <Link to='/' className='relative group rounded-full p-2 hover:bg-white hover:scale-[1.15] border-t duration-300'>
                   <FaFacebookF className='group-hover:text-black duration-300'/>
                 </Link>
@@ -124,7 +137,7 @@ const HomePage: React.FC = ()=>{
               </div>
             </div>
             <div>
-              <h1 className='mb-6 text-sm'>Payment Accept</h1>
+              <h1 className='text-sm mb-4'>Payment Accept</h1>
               <div className='flex flex-wrap items-center gap-x-4 gap-y-2'>
                 <FaCcVisa size={40}/>
                 <FaCcMastercard size={40}/>

@@ -4,7 +4,7 @@ import { Types } from "mongoose";
 import { Fitting } from "../schemas/fitting.schema";
 import { Gender } from "../schemas/gender.schema";
 import { Category, ICategory } from "../schemas/category.schema";
-import { findProducts, getSearchFilters } from "../services/search.service";
+import { findProducts } from "../services/search.service";
 import { ICollection } from "../schemas/collection.schema";
 
 
@@ -60,9 +60,7 @@ export class ProductController {
 
     async searchProducts(req: Request, res: Response){
         try{
-            const {products, totalCount, searchFilter} = await findProducts(req)
-            const filters = await getSearchFilters(req, searchFilter)
-    
+            const {products, totalCount, filters} = await findProducts(req)
             res.json({
                 products,
                 totalCount,
@@ -189,10 +187,7 @@ export class ProductController {
 
         if(relatedProducts.length<4){
             const fillRelated = await Product.find().limit(4-relatedProducts.length)
-            // console.log({fillRelated})
             relatedProducts.push(...fillRelated)
-            // console.log(fillRelated.flatMap(p=>p.categories))
-            // console.log({relatedProducts})
         }
 
         res.json({relatedProducts, success:true})
