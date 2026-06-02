@@ -4,7 +4,7 @@ import { RiCloseFill } from 'react-icons/ri'
 import { useNavigate } from 'react-router'
 import { useCart } from '../context/CartContext'
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa'
-import { formatCurrency } from '../utils/helpers'
+import { formatNumber } from '../utils/helpers'
 
 interface Props {
     show: boolean,
@@ -39,8 +39,8 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
                             <input type="number" className='w-10 text-center bg-gray-100 outline-none' defaultValue={item.quantity} />
                             <button onClick={()=>editItemQuantity(item.product._id, 'decrement')} className=' w-6 aspect-square flex items-center justify-center bg-red-500 text-white cursor-pointer'><FaAngleDown/></button>
                         </div>
-                        <p className='mt-2'>{formatCurrency(item.product.discountPrice||item.product.basePrice)} x {item.quantity}</p>
-                        <p className=''>Cost: {formatCurrency((item.product.discountPrice||item.product.basePrice)*item.quantity)}</p>
+                        <p className='mt-2'>{formatNumber(item.product.discountPrice||item.product.basePrice)} x {item.quantity}</p>
+                        <p className=''>Cost: {formatNumber((item.product.discountPrice||item.product.basePrice)*item.quantity)}</p>
                     </div>
                 </div>
                 )}
@@ -50,7 +50,7 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
             </div>
             <div className='flex font-bold text-lg py-4 mb-4 border-y border-gray-200 justify-between gap-4'>
                 <p>Subtotal:</p>
-                <p className='text-[#FFB400]'>{formatCurrency(total)}</p>
+                <p className='text-[#FFB400]'>{formatNumber(total)}</p>
             </div>
             <div className='flex text-nowrap mt-auto justify-between gap-4 text-base'>
                 <button onClick={()=>{

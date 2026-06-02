@@ -23,7 +23,7 @@ export interface productType {
   discountPrice?: number;
   currency: string;
   variants: variantType[];
-  categories: categoryRefType[];
+  categories: ICategory[];
   collections: collectionRefType[];
   imgs: imageType[];
 }
@@ -40,9 +40,12 @@ export interface variantType {
   priceAdjustment?: number;
 }
 
-export interface categoryRefType {
-  categoryId: string;
+export interface ICategory {
+  _id: string;
   name: string;
+  parentId?: string;
+  path: string;
+  bannerImage?: imageType;
 }
 
 export interface collectionRefType {
@@ -51,6 +54,7 @@ export interface collectionRefType {
 }
 
 export interface imageType {
+  _id: string;
   url: string;
   altText: string;
   isPrimary?: boolean;
@@ -102,7 +106,6 @@ export type SignupDataType = {
   gender: string;
 }
 
-
 export interface IOrderItem {
   _id: string;
   productId: string;
@@ -121,8 +124,8 @@ export interface IOrderItem {
   totalPrice: number;
 }
 
-export type FulfillmentStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'refunded';
-export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
+export type FulfillmentStatus = 'pending' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'refunded';
+export enum PaymentStatus { pending = 'pending', paid = 'paid', failed = 'failed', refunded = 'refunded' }
 
 export interface IOrderItem {
   productId: string;

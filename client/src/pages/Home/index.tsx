@@ -1,24 +1,18 @@
 import React from 'react'
-import icon1 from '../../assets/imgs/landing/icon-1.png'
-import icon2 from '../../assets/imgs/landing/icon-2.png'
-import icon3 from '../../assets/imgs/landing/icon-3.png'
 import { Link } from 'react-router';
 import { FaCcMastercard, FaCcVisa, FaFacebookF, FaInstagram, FaTiktok, FaYoutube} from 'react-icons/fa';
 import FeaturedSection from './sections/Featured';
 import HeroSection from './sections/Hero';
-import ServicesSection from './sections/Services';
-import OfferSection from './sections/Offers';
 import CategoriesSection from './sections/Categories';
 import TestimonialsSection from './sections/Testimonials';
-import StatsSection from './sections/Stats';
-import TestSection from './sections/TestSection';
-import TestSection2 from './sections/TestSection2';
+import TrendingSection from './sections/Trending';
+import LimitedOffer from './sections/LimitedOffer';
 
 
 const paymentMethods = [
-  {src: icon1},
-  {src: icon2},
-  {src: icon3},
+  {src: '/imgs/landing/payment-methods/icon-1.webp'},
+  {src: '/imgs/landing/payment-methods/icon-2.webp'},
+  {src: '/imgs/landing/payment-methods/icon-3.webp'},
 ]
 
 const footerLinks = [
@@ -75,7 +69,7 @@ const footerLinks = [
 
 const HomePage: React.FC = ()=>{
   return (
-    <div className='font-'>
+    <div className=''>
       <HeroSection/>
       <div className='w-full overflow-x-hidden py-6 bg-[#98eee0] font-[Elms_Sans]'>
         <div className='flex justify-between items-center max-w-7xl px-10 w-full mx-auto'>
@@ -87,18 +81,15 @@ const HomePage: React.FC = ()=>{
           )}
         </div>
       </div>
-      <TestSection/>
-      <TestSection2/>
+      <TrendingSection/>
       <FeaturedSection/>
-      {/* <ServicesSection/> */}
       <CategoriesSection/>
-      <StatsSection/>
+      <LimitedOffer/>
       <TestimonialsSection/>
-      <OfferSection/>
       <section className='bg-black text-white w-full'>
         <div className='text-center py-16 px-10'>
-          <h1 className='uppercase font-[abominable] text-4xl mb-1'>Stay in Style</h1>
-          <p className='text-slate-100 text-lg mb-6 max-w-2xl mx-auto'>Be the first to know about exclusive drops, limited-time offers, styling tips, and behind-the-scenes content from Valeria.</p>
+          <h1 className='uppercase text-4xl mb-3 font-[Elms_Sans]'>Stay in Style</h1>
+          <p className='text-slate-100 mb-6 max-w-2xl mx-auto'>Be the first to know about exclusive drops, limited-time offers, styling tips, and behind-the-scenes content from Valeria.</p>
           <form className='flex gap-2 md:w-150 w-full mx-auto'>
             <input  className='bg-white grow px-4 py-3 text-black rounded-md' placeholder='Enter your email address' type="email" />
             <button className='bg-[#eab308] text-black py-3 px-8 rounded-md duration-150 hover:bg-[#ca8a04] cursor-pointer font-semibold'>

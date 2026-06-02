@@ -1,11 +1,9 @@
 import { Link } from 'react-router'
-import { FaTshirt, FaGem, FaHome, FaShoppingBag } from 'react-icons/fa'
-import { MdArrowRight } from 'react-icons/md'
 import { FiArrowRight } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
 import { LuClock12 } from 'react-icons/lu'
 
-const TestSection2 = () => {
+const LimitedOffer = () => {
   const [clock, setClock] = useState(0)
   const [endDate, setEndDate] = useState(new Date().setHours(new Date().getHours()+2))
 
@@ -34,15 +32,18 @@ const TestSection2 = () => {
   },[])
 
   return (
-    <section className='bg-white border-6 border-amber-300'>
-      <div className='w-full flex items-center relative bg-[url(/test-images/test-2.jpg)] bg-no-repeat bg-cover bg-center'>
-        <div className='p-20 flex flex-col gap-8  h-full bg-linear-to-l from-black/30 to-black/90 w-full'>
-          <div className='flex items-start gap-6'>
+    <section className='bg-white border-6 border-amber-300 font-sans'>
+      <div className='w-full flex items-center relative bg-[url(/imgs/landing/limited-offer.jpg)] bg-no-repeat bg-cover bg-center'>
+        <div className='p-20 flex flex-col gap-6 h-full bg-linear-to-l from-black/30 to-black/90 w-full'>
+          <div className='flex items-center justify-between gap-10 '>
             <p className='text-5xl text-red-400 font-light font-[Elms_Sans]'>Limited Edition</p>
-            <p className='bg-indigo-200 py-1 px-4 pl-2 border border-white text-indigo-800 font-bold text-xl flex items-center gap-2'><LuClock12 className=''/>{displayClock(clock)}</p>
+            <div className='bg-red-500/50 py-6 px-8 pl-6 border border-white text-white font-extrabold font-[Elms_Sans] text-5xl flex items-center gap-4'>
+              <LuClock12 className=''/>
+              <p>{displayClock(clock)}</p>
+            </div>
           </div>
-          <p className='text-white text-9xl font-extrabold'>Buy 2 <span className='text-amber-300'>Get 1 Free</span></p>
-          <Link to={'/shop'} className='text-5xl flex gap-4 items-center bg-black text-white self-start px-10 pr-4 py-4 rounded-full font-[Elms_Sans] mt-8 hover:bg-white hover:text-black duration-200 border-white border cursor-pointer'>
+          <p className='text-white text-9xl font-extrabold leading-tight uppercase'>Buy 2 <span className='text-amber-300'>Get</span> <span className='text-red-500'>1 Free</span></p>
+          <Link to={'/shop'} className='text-5xl flex gap-4 items-center bg-black text-white self-start px-10 pr-4 py-4 rounded-full font-[Elms_Sans] hover:bg-white hover:text-black duration-200 border-white border cursor-pointer'>
             Discover Offers
             <FiArrowRight className='text-5xl'/>
           </Link>
@@ -52,4 +53,4 @@ const TestSection2 = () => {
   )
 }
 
-export default TestSection2
+export default LimitedOffer

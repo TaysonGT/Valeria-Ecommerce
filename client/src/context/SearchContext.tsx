@@ -9,7 +9,7 @@ interface SearchContextType {
     maxPages: number;
     resetParams: ()=> void;
     searchParams: URLSearchParams;
-    handleSort: (e:React.FormEvent<HTMLSelectElement>) => void;
+    handleSort: (e:React.ChangeEvent<HTMLSelectElement>) => void;
     changePage: (action: pageAction) => void;
     setSearchParams: SetURLSearchParams;
     isLoading: boolean;
@@ -52,11 +52,16 @@ export const SearchProvider:React.FC<React.PropsWithChildren<{}>> = ({children})
         setSearchParams(new URLSearchParams())
     }
 
-    const handleSort = (e:React.FormEvent<HTMLSelectElement>)=>{
+    const handleSort = (e:React.ChangeEvent<HTMLSelectElement>)=>{
         const params = new URLSearchParams(searchParams)
-        if(e.currentTarget.value!='none'){
-            params.set(e.currentTarget.name.toString().toLowerCase(), e.currentTarget.value)
-        }else params.delete(e.currentTarget.name.toString().toLowerCase());
+        if(e.target.value!='none'){
+            params.set(e.target.name.toString().toLowerCase(), e.target.value)
+        }else params.delete(e.target.name.toString().toLowerCase());
+
+        if(e.target.name==='sort'&&e.target.value==='none'){
+            params.delete('order');
+        }
+
         setSearchParams(params)
     }
 

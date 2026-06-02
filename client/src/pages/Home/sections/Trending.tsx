@@ -32,7 +32,7 @@ const categories = [
   }
 ]
 
-const TestSection = () => {
+const TrendingSection = () => {
   return (
     <section className='py-20 bg-white'>
       <div className='max-w-7xl mx-auto px-6'>
@@ -41,8 +41,8 @@ const TestSection = () => {
           <p className='text-xl text-gray-600 max-w-2xl mx-auto'>Discover our curated collections designed to match your unique style and preferences.</p>
         </div>
 
-        <div className='w-full'>
-            <img src="/test-images/banner-1.webp" alt="" className='w-full cover' />
+        <div className='w-full h-150'>
+            <img src="/imgs/landing/summer-shirts.webp" alt="" className='w-full object-cover h-full' />
         </div>
 
         <div className='text-center mt-12'>
@@ -50,7 +50,7 @@ const TestSection = () => {
             to='/search'
             className='inline-block bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300'
           >
-            View All Categories
+            Start Shopping
           </Link>
         </div>
       </div>
@@ -58,4 +58,4 @@ const TestSection = () => {
   )
 }
 
-export default TestSection
+export default TrendingSection

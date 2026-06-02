@@ -1,4 +1,4 @@
-import { formatCurrency } from '../../utils/helpers'
+import { formatNumber } from '../../utils/helpers'
 import { LuPackageOpen } from 'react-icons/lu'
 import { IOrder } from '../../types'
 import { useNavigate } from 'react-router'
@@ -8,15 +8,15 @@ const OrderListItem = ({order}:{order:IOrder}) => {
     const navigate = useNavigate()
   return (
     <div
-    key={order._id} className='bg-white rounded-sm border border-gray-200 p-6 shadow-sm flex justify-between'>
+    key={order._id} className='bg-white rounded-sm border border-[#d3d3d3] p-6 flex justify-between'>
         <div className='text-gray-900'>
             <div className='flex gap-4'>
-                <div className='text-4xl p-3 h-full aspect-square rounded-md border text-[#63a8b9] border-gray-100 shadow-sm'>
-                <LuPackageOpen/>
+                <div className='text-4xl p-3 h-full aspect-square rounded-md border text-[#63a8b9] border-[#d3d3d3] shadow-sm'>
+                    <LuPackageOpen/>
                 </div>
                 <div className='text-black text-lg font-[::Elms_Sans] leading-snug'>
                 <p className=''>Order no #{order._id.slice(0,4)}</p>
-                <p className='text-base'>{formatCurrency(order.grandTotal)}</p>
+                <p className='text-base'>{formatNumber(order.grandTotal)}</p>
                 <p className='text-base'>{order.items.length} items</p>
                 </div>
             </div>

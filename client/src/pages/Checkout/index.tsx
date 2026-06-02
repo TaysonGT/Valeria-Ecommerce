@@ -6,7 +6,7 @@ import Loader from '../../components/Loader'
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { useCart } from '../../context/CartContext'
 import { useAuth } from '../../context/AuthContext'
-import { formatCurrency } from '../../utils/helpers'
+import { formatNumber } from '../../utils/helpers'
 import { IoClose } from 'react-icons/io5'
 
 const CheckoutPage = () => {
@@ -122,16 +122,16 @@ const CheckoutPage = () => {
                           <button onClick={()=>editItemQuantity(item.product._id, 'decrement')} className='p-1 rounded-sm aspect-square flex items-center justify-center bg-red-500 text-white cursor-pointer'><FaMinus/></button>
                           <button onClick={()=>editItemQuantity(item.product._id, 'increment')} className='p-1 rounded-sm aspect-square flex items-center justify-center bg-green-500 text-white cursor-pointer'><FaPlus/></button>
                         </div>
-                        <div className=''>{formatCurrency((item.product.discountPrice || item.product.basePrice) * item.quantity)}</div>
+                        <div className=''>{formatNumber((item.product.discountPrice || item.product.basePrice) * item.quantity)}</div>
                       </div>
                     </div>
                   </div>
                 ))}
                 <div className='rounded-md border border-gray-200 bg-white p-4'>
-                  <div className='flex justify-between py-2'><span>Subtotal</span><span>{formatCurrency(total)}</span></div>
-                  <div className='flex justify-between py-2'><span>Tax</span><span>{formatCurrency(total * 0.14)}</span></div>
-                  <div className='flex justify-between py-2'><span>Shipping</span><span>{formatCurrency(60)}</span></div>
-                  <div className='flex justify-between border-t border-gray-200 pt-4 text-lg font-semibold'><span>Total</span><span>{formatCurrency(total + total * 0.14 + 60)}</span></div>
+                  <div className='flex justify-between py-2'><span>Subtotal</span><span>{formatNumber(total)}</span></div>
+                  <div className='flex justify-between py-2'><span>Tax</span><span>{formatNumber(total * 0.14)}</span></div>
+                  <div className='flex justify-between py-2'><span>Shipping</span><span>{formatNumber(60)}</span></div>
+                  <div className='flex justify-between border-t border-gray-200 pt-4 text-lg font-semibold'><span>Total</span><span>{formatNumber(total + total * 0.14 + 60)}</span></div>
                 </div>
               </div>
             ) : (

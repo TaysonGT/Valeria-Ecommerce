@@ -25,10 +25,10 @@
       "forceConsistentCasingInFileNames": true,
       "strict": true,
       "skipLibCheck": true,
-      "esModuleInterop": true,
-      "typeRoots": [
-        "./types",
-    ]
+      "esModuleInterop": true
+      // "typeRoots": [
+      //   "./types",
+      // ]
   },
   "include": [
     "sample",

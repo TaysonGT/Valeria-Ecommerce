@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { RiAccountCircleLine, RiLogoutCircleRLine, RiMenuFill } from "react-icons/ri";
 import { TfiHeadphoneAlt } from "react-icons/tfi";
 import { PiPackage } from "react-icons/pi";
-import { MdOutlineShoppingBag, MdOutlineFavoriteBorder, MdOutlineSearch, MdSettings, MdSupport, MdArrowDropDown, MdArrowRight } from "react-icons/md";
-import { FaArrowRight, FaRegUserCircle } from 'react-icons/fa';
+import { MdOutlineShoppingBag, MdOutlineFavoriteBorder, MdOutlineSearch, MdArrowRight } from "react-icons/md";
+import { FaRegUserCircle } from 'react-icons/fa';
 import SearchBar from '../SearchBar';
 import LightBackground from '../LightBackground';
 import DarkBackground from '../DarkBackground';
@@ -134,13 +134,13 @@ const Navbar: React.FC = () => {
   ]
 
   return ( 
-    <div className='bg-black fixed text-white w-full z-105 font-[Arabic]'>
+    <div className='bg-black fixed text-white w-full z-105 font-[Comfortaa]'>
       {/* SEARCH BAR COMPONENT */}
       <LightBackground {...{setShow: (v)=> setShowSearchbar(v), show: showSearchbar}} />
       <SearchBar {...{showSearchbar, setShowSearchbar: (v)=> setShowSearchbar(v)}} />
 
       {/* CART COMPONENT */}
-      <DarkBackground {... {setShow: (v)=> setShowCart(v), show: showCart}} />
+      <DarkBackground {... {hide: ()=> setShowCart(false), show: showCart}} />
       <Cart {...{setShow: (v:boolean)=> setShowCart(v), show: showCart}}/>
 
       <div className='flex justify-between items-center gap-16 xl:gap-0 w-full xl:m-auto sm:px-20 px-10 xl:px-30 py-6'>

@@ -108,7 +108,7 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
   return (
     <div 
       ref={sidebarRef}
-      className={`flex flex-col sticky ${withNav? 'top-24 ':' top-0'} left-0 pb-6 bg-[#f3f3f3] text-primary-text h-full z-99 border-r border-gray-200 shadow-sm hover:shadow-md transition-all`}
+      className={`flex flex-col sticky ${withNav? 'h-[calc(100vh-98px)] top-24':' top-0 h-screen'} left-0 pb-6 bg-[#f3f3f3] text-primary-text z-99 border-r border-gray-200 shadow-sm hover:shadow-md transition-all`}
     >
       {/* Navigation Links */}
       <ul className='flex flex-col text-md justify-center p-3 mt-4 gap-1'>

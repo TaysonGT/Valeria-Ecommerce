@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { useAuth } from '../../context/AuthContext'
 import Loader from '../../components/Loader'
-import { formatCurrency, formatDateDisplay, paymentMethodDisplay, shippingAddressDisplay } from '../../utils/helpers'
+import { formatNumber, formatDateDisplay, paymentMethodDisplay, shippingAddressDisplay } from '../../utils/helpers'
 import { IOrder } from '../../types'
 import { FaAngleRight, FaCaretRight, FaUser } from 'react-icons/fa'
 import { MdChevronRight, MdCreditCard, MdEmail, MdLocationPin, MdPerson, MdReceipt } from 'react-icons/md'
@@ -117,9 +117,9 @@ const OrderPage = () => {
                             </div>
                             {item.productSnapshot?.title}
                           </td>
-                          <td className='py-2 px-4 text-center font-light'>{item.variantSnapshot?.sizeCode}</td>
-                          <td className='py-2 px-4 text-center font-light'>{item.quantity}</td>
-                          <td className='py-2 px-4 text-center'>{formatCurrency(item.totalPrice)}</td>
+                            <td className='py-2 px-4 text-center '>{item.variantSnapshot?.sizeCode}</td>
+                            <td className='py-2 px-4 text-center '>{item.quantity}</td>
+                            <td className='py-2 px-4 text-center'>{formatNumber(item.totalPrice)}</td>
                         </tr>
                       ))}
                     </tbody>

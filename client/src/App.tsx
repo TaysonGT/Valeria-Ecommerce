@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css'
 import PrivateRoutes from './routes/PrivateRoutes';
 import LoginRoute from './routes/LoginRoute';
-import HomePage from './pages/Home/Home';
+import HomePage from './pages/Home';
 import ShoppingPage from './pages/Shopping';
 import { SearchProvider } from './context/SearchContext';
 import { ToastContainer } from 'react-toastify';

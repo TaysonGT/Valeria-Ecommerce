@@ -36,6 +36,9 @@
   }
 }
 
+body{
+  font-family: sans-serif; 
+}
 
 @font-face {
   font-family: Arabic;
@@ -55,10 +58,6 @@
 @font-face {
   font-family: Imperial;
   src: url('/fonts/ImperialScript-Regular.ttf');
-}
-
-body{
-  font-family: Arabic;
 }
 
 .dark-background{

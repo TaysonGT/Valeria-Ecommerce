@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-import { FaHeart, FaRegHeart, FaRegStar, FaShoppingCart, FaStar, FaStarHalfAlt } from 'react-icons/fa'
+import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa'
 import { Link } from 'react-router'
-import { productType, variantType } from '../types'
-import { useCart } from '../context/CartContext'
-import { MdRemoveShoppingCart } from 'react-icons/md'
+import { productType, } from '../types'
 
 interface Props {
     product: productType
@@ -12,14 +10,12 @@ interface Props {
 
 const ProductCard:React.FC<Props> = ({product, autoWidth=false})=>{
     const [favourite, setFavourite] = useState(false);
-    const [selectedVariant, setSelectedVariant] = useState<variantType>();
-    // const {addToCart, removeFromCart, isInCart} = useCart()
 
     return (
-        <div className={`${!autoWidth?'w-70 h-auto':'h-full w-full'} bg-white group shadow-md flex flex-col overflow-hidden hover:shadow-hover duration-200`}>
+        <div className={`${!autoWidth?'w-80 h-auto':'h-full w-full'} bg-white group  shadow-black/20 flex flex-col overflow-hidden hover:shadow-hover duration-200 border-[#c4c4c4] border font-[Comfortaa]`}>
             <Link to={`/products/${product._id}`} className='flex flex-col h-full'>
-                <div className="relative select-none h-80 overflow-hidden">
-                    <img loading='lazy' className='object-cover object-center h-full w-full group-hover:scale-105 duration-300' src={product.imgs[0].url} alt="1" />
+                <div className="relative select-none h-80 border-b border-[#dadada] overflow-hidden">
+                    <img loading='lazy' className='object-cover object-top h-full w-full group-hover:scale-105 duration-300' src={product.imgs[0].url} alt="1" />
                     {
                         product.discountPrice&&
                         <span className='absolute top-0.75 right-0.75 p-1 bg-red-500 text-white rounded-sm text-xs font-bold'>

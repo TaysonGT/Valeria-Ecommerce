@@ -15,7 +15,7 @@ const FeaturedSection = () => {
     })
   },[])
   return (
-    <section className='py-20 bg-[#f8f8f8] flex justify-center'>
+    <section className='py-20 bg-[#f8f8f8] flex justify-center font-[Comfortaa]'>
         <div className='md:px-20 px-6 w-full flex flex-col items-center'>
             <div className='w-full flex justify-between items-center'>
                 <div className='flex gap-1.5 items-start'>

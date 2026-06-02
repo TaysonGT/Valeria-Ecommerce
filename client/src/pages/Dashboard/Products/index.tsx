@@ -5,7 +5,7 @@ import { IoFilter, IoPeople, IoSearch } from 'react-icons/io5'
 import { LuDollarSign, LuPackage, LuShoppingCart } from 'react-icons/lu'
 import { MdAdd, MdDoubleArrow } from 'react-icons/md'
 import { productType } from '../../../types'
-import { formatCurrency, formatDateDisplay } from '../../../utils/helpers'
+import { formatDateDisplay, formatNumber } from '../../../utils/helpers'
 import axios from 'axios'
 import NavigationController from '../../../components/ui/NavigationController'
 import { useSearch } from '../../../context/SearchContext'
@@ -208,9 +208,9 @@ const ProductsPage = () => {
                   <td className='py-2 px-4 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7] font-light'>
                     {formatDateDisplay(product.createdAt)}
                   </td>
-                  <td className='py-2 px-4 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7] text-center'>{product.variants.length}</td>
-                  <td className='py-2 px-4 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatCurrency(product.basePrice)}</td>
-                  <td className='py-2 px-4 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7] text-center'>
+                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{product.variants.length}</td>
+                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatNumber(product.basePrice)}</td>
+                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>
                     <span className={`capitalize p-2 border ${product.publicationStatus==='active'?'border-green-600 bg-green-100 text-green-600':'border-red-600 bg-red-100 text-red-600'} rounded-lg`}>{product.publicationStatus}</span>
                   </td>
                   <td className='py-2 px-4 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7]'>

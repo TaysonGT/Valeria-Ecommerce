@@ -9,13 +9,17 @@ export const generateNextId = <T extends { id: string }>(items: T[]): number => 
 }
 
 /**
- * Format currency for display
+ * Format Numbers for display
  */
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount)
+export const formatNumber = (amount: number, type='currency' as 'currency'|'number'): string => {
+  if(type === 'currency'){
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount)
+  }else{
+    return amount.toLocaleString('en-US')
+  }
 }
 
 /**
@@ -39,13 +43,24 @@ export const formatDateInput = (date: string|number|Date): string => {
 }
 
 export const formatDateDisplay = (date?: string|number|Date): string => {
-  return date? 
-    new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }) 
+  const dateObject = new Date(date||new Date())
+  return date?
+    new Intl.DateTimeFormat("en-EG", {
+      timeZone: "Africa/Cairo",
+      timeStyle: "medium", // Shows hours, minutes, seconds
+      dateStyle: "medium", // Shows day, month, year
+      hour12: true        // 12-hour format with AM/PM
+    }).format(dateObject)
     : '-'
+}
+
+export const formatBytes = (bytes:number, decimals = 2)=>{
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
 export const paymentMethodDisplay = (paymentMethod: string): string =>{
@@ -56,4 +71,3 @@ export const paymentMethodDisplay = (paymentMethod: string): string =>{
 export const shippingAddressDisplay = (shippingAddress: IShippingAddress): string =>{
   return `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.country}`
 }
-

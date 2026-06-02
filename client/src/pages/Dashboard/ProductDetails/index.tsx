@@ -10,7 +10,7 @@ import { IoCrop } from 'react-icons/io5'
 import { MdClose } from 'react-icons/md'
 import { HiPlus } from 'react-icons/hi'
 import { FaPlus } from 'react-icons/fa'
-import { formatCurrency } from '../../../utils/helpers'
+import { formatNumber } from '../../../utils/helpers'
 
 const ProductDetails = () => {
     const [product, setProduct] = useState<productType>()
@@ -125,7 +125,7 @@ const ProductDetails = () => {
                             <div className='grid grid-cols-[1fr_1fr] gap-3'>
                                 <span className='font-light'>Adjustment:</span> 
                                 <span className='text-center'>
-                                    {variant.priceAdjustment?formatCurrency(variant.priceAdjustment):'-'}
+                                    {variant.priceAdjustment?formatNumber(variant.priceAdjustment):'-'}
                                 </span>
                             </div>
                             <div className='grid grid-cols-[1fr_1fr] gap-3'>
