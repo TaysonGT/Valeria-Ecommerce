@@ -1,47 +1,101 @@
-import { Order, OrderFulfillmentStatus } from "../schemas/order.schema";
+import { Order, IOrder, OrderFulfillmentStatus } from "../schemas/order.schema";
 
-// order.service.ts
-export class OrderTrackingService {
-  
-  // Status transition rules
-  private allowedTransitions: Record<string, string[]> = {
-    'pending': ['confirmed', 'cancelled'],
-    'confirmed': ['processing', 'cancelled'],
-    'processing': ['shipped', 'cancelled'],
-    'shipped': ['out_for_delivery', 'delivered'],
-    'out_for_delivery': ['delivered'],
-    'delivered': ['refunded'],
-    'cancelled': [],
-    'refunded': []
+export interface StatusUpdatePayload {
+  newStatus: OrderFulfillmentStatus;
+  actor: 'customer' | 'admin' | 'system' | 'warehouse' | 'carrier';
+  actorId?: string;
+  location?: string;
+  notes?: string;
+  metadata?: {
+    trackingNumber?: string;
+    carrier?: string;
+    estimatedDelivery?: Date;
+    [key: string]: any;
   };
+}
 
-  // Update order status with validation
-  async updateOrderStatus(orderId: string, payload: {newStatus: OrderFulfillmentStatus, userId: string, location?:string, notes?: string}) {
-    const order = await Order.findById(orderId);
+export interface ValidationResult {
+  valid: boolean;
+  error?: string;
+}
+
+export class OrderService {
+
+  /**
+   * Update order status with full validation and audit trail
+   */
+  async getAllOrders(
+    status: string,
+    page: number,
+  ): Promise<{ totalPages: number; counts: any; orders: IOrder[], totalFilteredCount: number; limit: number }> {
+    // Validate status
+    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    // const filterStatus = validStatuses.includes(status) ? status : 'pending';
     
-    if (!order) throw new Error('Order not found');
+    let statusArray: string[];
     
-    // Check if transition is allowed
-    if (!this.allowedTransitions[order.fulfillmentStatus]?.includes(payload.newStatus)) {
-      throw new Error(`Cannot transition from ${order.fulfillmentStatus} to ${payload.newStatus}`);
+    statusArray = validStatuses.filter(s=>s!=='delivered'&&s!=='cancelled');
+    
+    if(validStatuses.includes(status)){
+    statusArray = [status]
     }
     
-    // Update status and timestamps
-    order.fulfillmentStatus = payload.newStatus;
+    // Pagination settings
+    const limit = 10;
+    const skip = (page - 1) * limit;
     
-    // Add audit log
-    order.trackingInfo?.trackingHistory.push({
-        status: payload.newStatus,
-        location: payload.location,
-        timestamp: new Date(),
-        description: payload.notes || `Order status updated to ${payload.newStatus} by ${payload.userId}`
+    // Base query - only get orders for this user
+    const baseQuery = {};
+    
+    // Get paginated orders with status filter
+    const orders = await Order.find({ 
+    ...baseQuery, 
+    fulfillmentStatus: { $in: statusArray }
+    })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec();
+    
+    // Get total counts for each status type
+    const statusCounts = await Order.aggregate([
+    // { $match: {userId: new ObjectId(req.user.id)} },
+    {
+        $group: {
+        _id: "$fulfillmentStatus",
+        count: { $sum: 1 }
+        }
+    }
+    ]);
+    
+    // Format status counts with default 0 for missing statuses
+    const counts = {
+        pending: 0,
+        processing: 0,
+        shipped: 0,
+        delivered: 0,
+        cancelled: 0
+    };
+    
+    statusCounts.forEach(item => {
+    if (counts.hasOwnProperty(item._id)) {
+        counts[item._id as keyof typeof counts] = item.count;
+    }
     });
     
-    await order.save();
+    // Get total count for current filtered status (for pagination)
+    const totalFilteredCount = await Order.countDocuments({
+    ...baseQuery,
+    fulfillmentStatus: { $in: statusArray }
+    });
     
-    // Trigger notifications
-    // await this.sendStatusUpdateNotification(order, payload.newStatus);
+    const totalPages = Math.ceil(totalFilteredCount / limit)
     
-    return order;
+    return {totalPages, counts, orders, totalFilteredCount, limit};  
   }
+
+  // ==================== PRIVATE HELPER METHODS ====================
 }
+
+// Export a singleton instance
+export const orderService = new OrderService();

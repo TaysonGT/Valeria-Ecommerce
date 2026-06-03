@@ -1,20 +1,22 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
-export type OrderFulfillmentStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'refunded';
+export type OrderFulfillmentStatus = 'pending' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'refunded';
+export type CarrierType = 'usps' | 'fedex' | 'ups' | 'dhl' | 'other';
 
 export type OrderTrackingInfo = {
-    carrier: 'usps' | 'fedex' | 'ups' | 'dhl' | 'other';
-    carrierName: string;
-    trackingNumber: string;
-    trackingUrl?: string;
-    trackingHistory: Array<{
-      status: string;
-      location?: string;
-      timestamp: Date;
-      description: string;
-    }>;
-    estimatedDelivery?: Date;
-  }
+  carrier: CarrierType;
+  carrierName: string;
+  trackingNumber: string;
+  trackingUrl?: string;
+  trackingHistory: Array<{
+    event: string;
+    location?: string;
+    timestamp: Date;
+    description: string;
+    isCarrierEvent: boolean;
+  }>;
+  estimatedDelivery?: Date;
+}
 
 export interface IOrderItem {
   productId: Types.ObjectId;
@@ -62,6 +64,7 @@ export interface IOrder extends Document {
     zipCode: string;
     country: string;
   };
+
   billingAddress: {
     street: string;
     city: string;
@@ -85,6 +88,16 @@ export interface IOrder extends Document {
   fulfillmentStatus: OrderFulfillmentStatus;
   shippingMethod: 'standard' | 'expedited' | 'overnight' | 'pickup';
   trackingInfo?: OrderTrackingInfo;
+
+  statusTimestamps: {
+    pending?: Date;
+    processing?: Date;
+    shipped?: Date;
+    out_for_delivery?: Date;
+    delivered?: Date;
+    cancelled?: Date;
+    refunded?: Date;
+  };
   
   // Metadata
   notes?: string;
@@ -163,14 +176,16 @@ const OrderSchema = new Schema<IOrder>({
   
   fulfillmentStatus: {
     type: String,
-    enum: ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'refunded'],
+    enum: ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'refunded'],
     default: 'pending'
   },
+
   shippingMethod: {
     type: String,
     enum: ['standard', 'expedited', 'overnight', 'pickup'],
     default: 'standard'
   },
+
   trackingInfo: {
     carrier: {
       type: String,
@@ -180,14 +195,25 @@ const OrderSchema = new Schema<IOrder>({
     trackingNumber: String,
     trackingUrl: String,
     trackingHistory: [{
-      status: String,
+      event: String,
       location: String,
       timestamp: Date,
-      description: String
+      description: String,
+      isCarrierEvent: Boolean
     }],
     estimatedDelivery: Date
   },
   
+  statusTimestamps: {
+    pending: Date,
+    processing: Date,
+    shipped: Date,
+    out_for_delivery: Date,
+    delivered: Date,
+    cancelled: Date,
+    refunded: Date
+  },
+
   notes: String,
   cancelledAt: Date
   

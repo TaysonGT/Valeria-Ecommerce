@@ -5,6 +5,9 @@ import { IProduct, IVariant, Product } from '../schemas/product.schema'
 import { AuthenticatedRequest } from '../middlewares/auth.middleware'
 import { processPayment } from '../services/payment.service'
 import { Response } from 'express';
+import { OrderService } from '../services/order.service'
+
+const orderService = new OrderService()
 
 interface OrderQuery {
   page?: string;
@@ -220,7 +223,7 @@ export class OrderController {
     }
   }
 
-  async getOrders (req: AuthenticatedRequest, res: Response) {
+  async getMyOrders (req: AuthenticatedRequest, res: Response) {
     try {
       const { page = '1', status = 'upcoming' }: OrderQuery = req.query;
       
@@ -290,18 +293,49 @@ export class OrderController {
       return res.status(200).json({
         success: true,
         message: `Orders fetched successfully for status: ${status}`,
-        data: {
-          orders,
-          currentStatus: status,
-          statusCounts: counts,
-          pagination: {
-            currentPage: parseInt(page),
-            totalPages,
-            totalItems: totalFilteredCount,
-            itemsPerPage: limit,
-            hasNextPage: parseInt(page) < totalPages,
+        orders,
+        currentStatus: status,
+        statusCounts: counts,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalItems: totalFilteredCount,
+          itemsPerPage: limit,
+          hasNextPage: parseInt(page) < totalPages,
             hasPrevPage: parseInt(page) > 1
           }
+      });
+      
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to fetch orders',
+        error: error.message
+      });
+    }
+  };
+
+
+  async getAllOrders (req: AuthenticatedRequest, res: Response) {
+    try {
+      const { page = '1', status = 'upcoming' }: OrderQuery = req.query;
+
+      const {totalPages, counts, orders, totalFilteredCount, limit} = await orderService.getAllOrders(status, parseInt(page));
+      
+      return res.status(200).json({
+        success: true,
+        message: `Orders fetched successfully for status: ${status}`,
+        orders,
+        currentStatus: status,
+        statusCounts: counts,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalItems: totalFilteredCount,
+          itemsPerPage: limit,
+          hasNextPage: parseInt(page) < totalPages,
+          hasPrevPage: parseInt(page) > 1
         }
       });
       
@@ -418,22 +452,20 @@ export class OrderController {
       return res.status(200).json({
         success: true,
         message: `Orders fetched successfully for status: ${status}`,
-        data: {
-          orders,
-          summary: {
-            currentStatus: status,
-            fulfillmentStatusCounts: fulfillmentCounts,
-            paymentStatusCounts: paymentCounts,
-            totalSpent: stats[0]?.totalSpent[0]?.total || 0
-          },
-          pagination: {
-            currentPage: parseInt(page),
-            totalPages,
-            totalItems: totalFilteredCount,
-            itemsPerPage: limit,
-            hasNextPage: parseInt(page) < totalPages,
-            hasPrevPage: parseInt(page) > 1
-          }
+        orders,
+        summary: {
+          currentStatus: status,
+          fulfillmentStatusCounts: fulfillmentCounts,
+          paymentStatusCounts: paymentCounts,
+          totalSpent: stats[0]?.totalSpent[0]?.total || 0
+        },
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalItems: totalFilteredCount,
+          itemsPerPage: limit,
+          hasNextPage: parseInt(page) < totalPages,
+          hasPrevPage: parseInt(page) > 1
         }
       });
       

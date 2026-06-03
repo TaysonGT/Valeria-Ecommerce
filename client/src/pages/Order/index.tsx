@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { useAuth } from '../../context/AuthContext'
 import Loader from '../../components/Loader'
 import { formatNumber, formatDateDisplay, paymentMethodDisplay, shippingAddressDisplay } from '../../utils/helpers'
 import { IOrder } from '../../types'
-import { FaAngleRight, FaCaretRight, FaUser } from 'react-icons/fa'
-import { MdChevronRight, MdCreditCard, MdEmail, MdLocationPin, MdPerson, MdReceipt } from 'react-icons/md'
+import { MdCreditCard, MdEmail, MdLocationPin, MdPerson, MdReceipt } from 'react-icons/md'
+import { Button } from '../../components/ui/Button'
+import ShippingStatusBig from '../../components/ui/ShippingStatusBig'
 
 const OrderPage = () => {
   const { orderId } = useParams()
@@ -43,139 +44,148 @@ const OrderPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, loading, orderId])
 
-  const orderDate = order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : ''
-
   return (
-    <div className='min-h-screen bg-[#f7f7f7]'>
+    <div className='min-h-screen font-sans bg-[#fafafa]'>
       <div className='mx-auto space-y-6'>
         {isLoading ? (
           <div className='flex justify-center py-20'>
             <Loader size={36} thickness={7} />
           </div>
         ) : order ? (
-          <div className='min-h-screen p-6 py-8'>
-            <div className='flex items-center gap-1'>
-              <Link to={'/my-orders'}>My Orders</Link>
-              <MdChevronRight className='text-xl'/>
-              <span className='py-2 px-2 rounded bg-gray-200'>{order?._id}</span>
+          <div className='p-10'>
+            <div className='flex justify-between items-center border-b pb-4 border-[#d9d9d9]'>
+              <h1 className='text-3xl font-[Comfortaa]'>Order Details</h1>
+              <span className=''>Order ID: {order?._id}</span>
             </div>
-            <div className='flex justify-between items-center mt-8'>
-              <h1 className='text-3xl'>Order Details</h1>
-              <button className='py-3 px-6 rounded-lg cursor-pointer border-red-500 border text-red-500 hover:bg-red-50'>Cancel Order</button>
-            </div>
-            <div className='bg-white mt-4 shadow-sm'>
-              <div className='border-b border-gray-200 p-4 text-lg'>
-                Basic Details
-              </div>
-              <div className='p-4 text-lg flex gap-16'>
-                <div className='flex-1'>
-                  <label className='text-gray-500 text-base font-light'>Order ID</label>
-                  <p>{order?._id}</p>
-                </div>
-                <div className='flex-1'>
-                  <label className='text-gray-500 text-base font-light'>Order Date</label>
-                  <p>{formatDateDisplay(order?.createdAt)}</p>
-                </div>
-                <div className='flex-1'>
-                  <label className='text-gray-500 text-base font-light'>Payment Method</label>
-                  <p>{paymentMethodDisplay(order?.paymentMethod)}</p>
-                </div>
-                <div className='flex-1'>
-                  <label className='text-gray-500 text-base font-light'>Estimated Delivery</label>
-                  <p>{formatDateDisplay(order?.trackingInfo?.estimatedDelivery)}</p>
-                </div>
-                <div className='flex-1'>
-                  <label className='text-gray-500 text-base font-light'>Carrier</label>
-                  <p>{order?.trackingInfo?.carrier||'-'}</p>
-                </div>
+            <div className='flex justify-center'>
+              <div className='p-6'>
+                <ShippingStatusBig status={order.fulfillmentStatus} />
               </div>
             </div>
-            <div className='grid grid-cols-[2fr_1fr] gap-4 py-4 items-start'>
+            <div className='grid grid-cols-[2fr_1fr] gap-6 py-4 items-start mt-4'>
               {/* LEFT SECTION */}
               <div className='space-y-4'>
-                <div className='bg-white shadow-sm rounded-sm'>
-                  <div className='border-b border-gray-200 p-4 text-lg'>
-                    Order Items
+                <div className='space-y-2'>
+                  <div className='text-xl'>
+                    Items
                   </div>
-                  <table className='text-base w-full float-left text-left'>
-                    <thead className='bg-gray-50'>
-                      <tr className='border-b border-gray-300'>
-                        <th className='font-light py-2 px-4'>ID</th>
-                        <th className='font-light py-2 px-4'>Product</th>
-                        <th className='font-light py-2 px-4 text-center'>Size</th>
-                        <th className='font-light py-2 px-4 text-center'>Quantity</th>
-                        <th className='font-light py-2 px-4 text-center'>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody className='bg-white text-base'>
-                      {order?.items.map((item, idx) => (                  
-                        <tr key={idx}>
-                          <td className='py-2 px-4 font-light'>{item.productId}</td>
-                          <td className='py-2 px-4 flex gap-4 items-center'>
-                            <div className='relative w-12 rounded-xl overflow-hidden shrink-0'>
-                              <img className='w-full object-cover' src={item.productSnapshot?.imgs[0]?.url||'/logo.png'} alt="" />
-                            </div>
-                            {item.productSnapshot?.title}
-                          </td>
+                  <div className='bg-white shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
+                    <table className='text-base w-full float-left text-left'>
+                      <thead className='bg-[#f7f7f7] text-[#393939]'>
+                        <tr className='border-b border-[#d3d3d3]'>
+                          <th className='py-2 px-4'>ID</th>
+                          <th className='py-2 px-4'>Product</th>
+                          <th className='py-2 px-4 text-center'>Size</th>
+                          <th className='py-2 px-4 text-center'>Quantity</th>
+                          <th className='py-2 px-4 text-center'>Total</th>
+                        </tr>
+                      </thead>
+                      <tbody className='bg-white text-base'>
+                        {order?.items.map((item, idx) => (                  
+                          <tr key={idx} className='odd:bg-[#fcfcfc]'>
+                            <td className='py-2 px-4 '>{item.productId.slice(-7)}</td>
+                            <td className='py-2 px-4 flex gap-4 items-center'>
+                              <div className='relative h-12 aspect-square rounded-xl overflow-hidden shrink-0'>
+                                <img className='h-full w-full object-cover object-top' src={item.productSnapshot?.imgs[0]?.url||'/logo.png'} alt="" />
+                              </div>
+                              {item.productSnapshot?.title}
+                            </td>
                             <td className='py-2 px-4 text-center '>{item.variantSnapshot?.sizeCode}</td>
                             <td className='py-2 px-4 text-center '>{item.quantity}</td>
                             <td className='py-2 px-4 text-center'>{formatNumber(item.totalPrice)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div className='shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3] bg-white p-4'>
+                  <div className='flex justify-between py-2'><span>Subtotal</span><span>{formatNumber(order.subtotal)}</span></div>
+                  <div className='flex justify-between py-2'><span className='flex gap-1 items-start'>Tax <span className='text-sm font-bold'>(%{Math.round(order.taxTotal/order.subtotal*100)})</span></span><span>{formatNumber(order.taxTotal)}</span></div>
+                  <div className='flex justify-between py-2'><span>Shipping</span><span>{formatNumber(order.shippingCost)}</span></div>
+                  <div className='flex justify-between border-t border-gray-200 pt-4 text-lg font-semibold'><span>Total</span><span>{formatNumber(order.grandTotal)}</span></div>
+                </div>
+                <div className='flex justify-start'>
+                  <Button variant='danger' size='lg' className='justify-center font-bold cursor-pointer text-white' disabled={order.fulfillmentStatus==='cancelled'}>
+                    Cancel Order
+                  </Button>
                 </div>
               </div>
               {/* RIGHT SECTION */}
-              <div className='space-y-4'>
-                <div className='bg-white shadow-sm rounded-sm'>
-                  <div className='border-b border-gray-200 p-4 text-lg'>
+              <div className='space-y-6'>
+                <div className='space-y-2'>
+                  <div className='text-xl'>
+                    Basic Details
+                  </div>
+                  <div className='bg-white border-[#d9d9d9] border p-6 text-base space-y-4'>
+                    <div className=''>
+                      <label className='text-[#787878] text-sm'>Order ID</label>
+                      <p>{order?._id}</p>
+                    </div>
+                    <div className=''>
+                      <label className='text-[#787878] text-sm'>Order Date</label>
+                      <p>{formatDateDisplay(order?.createdAt)}</p>
+                    </div>
+                    <div className=''>
+                      <label className='text-[#787878] text-sm'>Estimated Delivery</label>
+                      <p>{formatDateDisplay(order?.trackingInfo?.estimatedDelivery)}</p>
+                    </div>
+                    <div className=''>
+                      <label className='text-[#787878] text-sm'>Carrier</label>
+                      <p>{order?.trackingInfo?.carrier||'-'}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className='space-y-2'>
+                  <div className='text-xl'>
                     Customer Information
                   </div>
-                  <div className='p-4 space-y-4'>
-                    <div className='flex gap-4'>
-                      <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
-                        <MdPerson/>
+                  <div className='bg-white shadow-sm rounded-sm border border-[#d3d3d3]'>
+                    <div className='p-6 space-y-5'>
+                      <div className='flex gap-4 items-center'>
+                        <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
+                          <MdPerson/>
+                        </div>
+                        <div className='leading-relaxed'>
+                          <p className='text-sm text-[#656565]'>Name</p>
+                          <p>{order.customerInfo?.firstName} {order.customerInfo?.lastName}</p>
+                        </div>
                       </div>
-                      <div className='leading-relaxed'>
-                        <p className='text-sm font-light text-gray-500'>Name</p>
-                        <p>{order.customerInfo?.firstName} {order.customerInfo?.lastName}</p>
+                      <div className='flex gap-4 items-center'>
+                        <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
+                          <MdEmail/>
+                        </div>
+                        <div className='leading-relaxed'>
+                          <p className='text-sm text-[#656565]'>Email address</p>
+                          <p>{order.customerInfo?.email}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className='flex gap-4'>
-                      <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
-                        <MdEmail/>
+                      <div className='flex gap-4 items-center'>
+                        <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
+                          <MdLocationPin/>
+                        </div>
+                        <div className='leading-relaxed'>
+                          <p className='text-sm text-[#656565]'>Shipping address</p>
+                          <p>{shippingAddressDisplay(order.shippingAddress)}</p>
+                        </div>
                       </div>
-                      <div className='leading-relaxed'>
-                        <p className='text-sm font-light text-gray-500'>Email address</p>
-                        <p>{order.customerInfo?.email}</p>
+                      <div className='flex gap-4 items-center'>
+                        <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
+                          <MdReceipt/>
+                        </div>
+                        <div className='leading-relaxed'>
+                          <p className='text-sm text-[#656565]'>Billing address</p>
+                          <p>{shippingAddressDisplay(order.billingAddress)}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className='flex gap-4'>
-                      <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
-                        <MdLocationPin/>
-                      </div>
-                      <div className='leading-relaxed'>
-                        <p className='text-sm font-light text-gray-500'>Shipping address</p>
-                        <p>{shippingAddressDisplay(order.shippingAddress)}</p>
-                      </div>
-                    </div>
-                    <div className='flex gap-4'>
-                      <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
-                        <MdReceipt/>
-                      </div>
-                      <div className='leading-relaxed'>
-                        <p className='text-sm font-light text-gray-500'>Billing address</p>
-                        <p>{shippingAddressDisplay(order.billingAddress)}</p>
-                      </div>
-                    </div>
-                    <div className='flex gap-4'>
-                      <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
-                        <MdCreditCard/>
-                      </div>
-                      <div className='leading-relaxed'>
-                        <p className='text-sm font-light text-gray-500'>Payment method</p>
-                        <p>{paymentMethodDisplay(order.paymentMethod)}</p>
+                      <div className='flex gap-4 items-center'>
+                        <div className='p-2 bg-gray-100 text-gray-600 border border-gray-200 rounded-md text-3xl'>
+                          <MdCreditCard/>
+                        </div>
+                        <div className='leading-relaxed'>
+                          <p className='text-sm text-[#656565]'>Payment method</p>
+                          <p>{paymentMethodDisplay(order.paymentMethod)}</p>
+                        </div>
                       </div>
                     </div>
                   </div>

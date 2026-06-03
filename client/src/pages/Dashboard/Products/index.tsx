@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { FiGrid, FiList } from 'react-icons/fi'
-import { HiArrowDown, HiArrowUp, HiOutlineDotsVertical } from 'react-icons/hi'
 import { IoFilter, IoPeople, IoSearch } from 'react-icons/io5'
 import { LuDollarSign, LuPackage, LuShoppingCart } from 'react-icons/lu'
-import { MdAdd, MdDoubleArrow } from 'react-icons/md'
+import { MdAdd, MdKeyboardDoubleArrowRight } from 'react-icons/md'
 import { productType } from '../../../types'
 import { formatDateDisplay, formatNumber } from '../../../utils/helpers'
 import axios from 'axios'
@@ -23,15 +22,49 @@ const ProductsPage = () => {
   const searchSubmitHandler = (e:React.SubmitEvent<HTMLFormElement>)=> {
     e.preventDefault(); 
     const newParams = new URLSearchParams()
-    
-    if(searchString){
-      newParams.set('q', encodeURIComponent(searchString))
+    const trimmed = searchString.trim()
+
+    if(trimmed){
+      newParams.set('q', encodeURIComponent(trimmed))
+    }else{
+      newParams.delete('q')
     }
 
     setSearchParams(newParams)
   }
   
   const lastQ = useRef<string>(searchParams.get('q'))
+
+  const analytics = [
+    {
+      title: 'Total Products',
+      type: 'number',
+      amount: 1248,
+      growthLoss: 4.2,
+      icon: <LuPackage/>
+    },
+    {
+      title: 'Total Revenue',
+      type: 'currency',
+      amount: 84320,
+      growthLoss: 12.5,
+      icon: <LuDollarSign/>
+    },
+    {
+      title: 'Total Orders',
+      type: 'number',
+      amount: 142,
+      growthLoss: -1.4,
+      icon: <LuShoppingCart/>
+    },
+    {
+      title: 'Customers',
+      type: 'number',
+      amount: 3240,
+      growthLoss: 2.1,
+      icon: <IoPeople/>
+    }
+  ]
 
   useEffect(()=>{
     setProducts([])
@@ -50,98 +83,45 @@ const ProductsPage = () => {
 
   }, [searchParams])
     
-    
   return (
-    <div className='p-10'>
+    <div className='p-10 font-sans'>
       <div className='flex justify-between items-center'>
         <div className=''>
           <h1 className='text-4xl font-[Elms_Sans]'>Products</h1>
           <p className='mt-2 font-light text-gray-600'>Manage inventory, pricing and availability across your store</p>
         </div>
         <div className='flex gap-2'>
-          <button className='flex items-center gap-2 p-3 pr-4 bg-linear-to-b from-purple-700 to-purple-800 text-white rounded-md cursor-pointer hover:opacity-85 duration-150'>
+          <button className='flex items-center gap-2 p-3 pr-4 bg-blue-500 text-white rounded-md cursor-pointer hover:opacity-85 duration-150'>
             <MdAdd className='text-xl'/>Add Product
           </button>
         </div>
       </div>
-      <div className='grid grid-cols-4 gap-4 mt-4'>
-        <div className='p-2 border border-gray-200 rounded-xl'>
-          <div className='flex justify-between items-center px-2'>
-            <div className='flex items-center gap-2'>
-              <span className='p-2 rounded-full bg-gray-100 text-gray-600'>
-                <LuPackage/>
-              </span>
-              <p className='uppercase'>Total Products</p>
+      {/* <div className='grid grid-cols-4 gap-4 mt-4'>
+        {analytics.map((box, i)=>
+          <div key={i} className='p-2 border border-gray-200 rounded-xl'>
+            <div className='flex justify-between items-center px-2'>
+              <div className='flex items-center gap-3'>
+                <span className='p-2 rounded-full bg-gray-100 text-[#3d3d3d] border border-[#d9d9d9]'>
+                  {box.icon}
+                </span>
+                <p className='font-semibold text-[#4d4d4d]'>{box.title}</p>
+              </div>
+              <HiOutlineDotsVertical className='cursor-pointer'/>
             </div>
-            <HiOutlineDotsVertical className='cursor-pointer'/>
-          </div>
-          <div className='rounded-lg bg-gray-50 mt-2 p-3'>
-            <p className='text-3xl'>1,248</p>
-            <div className='flex justify-between items-end mt-2 text-sm'>
-              <p className='text-green-500 flex items-center gap-1'><HiArrowUp/>4.2%</p>
-              <p className='text-gray-600 font-light'>Last 7 days</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className='p-2 border border-gray-200 rounded-xl'>
-          <div className='flex justify-between items-center px-2'>
-            <div className='flex items-center gap-2'>
-              <span className='p-2 rounded-full bg-gray-100 text-gray-600'>
-                <LuDollarSign/>
-              </span>
-              <p className='uppercase'>Total Revenue</p>
-            </div>
-            <HiOutlineDotsVertical className='cursor-pointer'/>
-          </div>
-          <div className='rounded-lg bg-gray-50 mt-2 p-3'>
-            <p className='text-3xl'>$84,320</p>
-            <div className='flex justify-between items-end mt-2 text-sm'>
-              <p className='text-green-500 flex items-center gap-1'><HiArrowUp/>12.5%</p>
-              <p className='text-gray-600 font-light'>Last 7 days</p>
+            <div className='rounded-lg bg-gray-50 mt-2 p-4 px-3 border border-[#e7e7e7]'>
+              <p className='text-3xl'>{formatNumber(box.amount, box.type as 'currency'|'number')}</p>
+              <div className='flex justify-between w-full items-end mt-2 text-sm'>
+                {box.growthLoss&&
+                  <p className={`${box.growthLoss>0? 'text-green-500': 'text-red-500'} flex items-center gap-1`}>
+                    {box.growthLoss>0?<HiArrowUp/>:<HiArrowDown/>}{Math.abs(box.growthLoss)}%
+                  </p>
+                }
+                <p className='text-gray-600 font-light ml-auto'>Last 7 days</p>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <div className='p-2 border border-gray-200 rounded-xl'>
-          <div className='flex justify-between items-center px-2'>
-            <div className='flex items-center gap-2'>
-              <span className='p-2 rounded-full bg-gray-100 text-gray-600'>
-                <LuShoppingCart/>
-              </span>
-              <p className='uppercase'>Total Orders</p>
-            </div>
-            <HiOutlineDotsVertical className='cursor-pointer'/>
-          </div>
-          <div className='rounded-lg bg-gray-50 mt-2 p-3'>
-            <p className='text-3xl'>142</p>
-            <div className='flex justify-between items-end mt-2 text-sm'>
-              <p className='text-red-500 flex items-center gap-1'><HiArrowDown/>1.4%</p>
-              <p className='text-gray-600 font-light'>Last 7 days</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className='p-2 border border-gray-200 rounded-xl'>
-          <div className='flex justify-between items-center px-2'>
-            <div className='flex items-center gap-2'>
-              <span className='p-2 rounded-full bg-gray-100 text-gray-600'>
-                <IoPeople/>
-              </span>
-              <p className='uppercase'>Customers</p>
-            </div>
-            <HiOutlineDotsVertical className='cursor-pointer'/>
-          </div>
-          <div className='rounded-lg bg-gray-50 mt-2 p-3'>
-            <p className='text-3xl'>3,240</p>
-            <div className='flex justify-between items-end mt-2 text-sm'>
-              <p className='text-green-500 flex items-center gap-1'><HiArrowUp/>2.1%</p>
-              <p className='text-gray-600 font-light'>Last 7 days</p>
-            </div>
-          </div>
-        </div>
-        
-      </div>
+        )}
+      </div> */}
       <div className='mt-4'>
         <div className='flex justify-between'>
           <div className='flex gap-2 font-light'>
@@ -177,35 +157,35 @@ const ProductsPage = () => {
         <div className='rounded-xl overflow-hidden border border-[#e7e7e7] my-4 '>
           <table className='text-sm border-collapse w-full text-left'>
             <thead className=''>
-              <tr className=''>
-                <th className='py-3 px-4 border-b border-r border-[#e7e7e7] text-[#7c7c7c] w-8'>
+              <tr className='text-[#797979]'>
+                <th className='py-3 px-4 border-b border-r border-[#e7e7e7] w-8'>
                   <input type='checkbox' className='scale-115'/>
                 </th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-[#7c7c7c]'>Product</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-[#7c7c7c]'>ID</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-[#7c7c7c]'>Creation Date</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-[#7c7c7c] text-center'>Variants</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-[#7c7c7c] text-center'>Base Price</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-[#7c7c7c] text-center'>Status</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-[#7c7c7c] text-center'></th>
+                <th className='py-3 px-4 border-b border-[#e7e7e7]'>Product</th>
+                <th className='py-3 px-4 border-b border-[#e7e7e7]'>ID</th>
+                <th className='py-3 px-4 border-b border-[#e7e7e7]'>Creation Date</th>
+                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Variants</th>
+                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Base Price</th>
+                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Status</th>
+                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'></th>
               </tr>
             </thead>
             <tbody className='bg-white text-sm'>
               {products?.map((product, idx) => (                  
-                <tr key={idx} className='group text-[#1f1f1f]'>
-                  <td className='py-2 px-4 group-odd:bg-gray-50 border-b border-r group-last:border-b-0 border-[#e7e7e7] w-8'>
+                <tr key={idx} className='group odd:bg-[#fcfcfc] text-[#1f1f1f]'>
+                  <td className='py-2 px-4  border-b border-r group-last:border-b-0 border-[#e7e7e7] w-8'>
                     <input type='checkbox' className='scale-115'/>
                   </td>
-                  <td className='py-2 px-4 pr-20 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7] w-[0.1%]'>
+                  <td className='py-2 px-4 pr-20  border-b group-last:border-0 border-[#e7e7e7] w-[0.1%]'>
                     <div className=' flex gap-4 items-center text-base text-nowrap text-ellipsis'>
                       <img className=' w-12 h-12 rounded-xl overflow-hidden shrink-0 object-cover object-center' src={product.imgs[0]?.url||'/logo.png'} alt="" />
                       {product.title}
                     </div>
                   </td>
-                  <td className='py-2 px-4 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7] font-light'>
+                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>
                     <p className='font-normal'>{product._id.slice(-7)}</p>
                   </td>
-                  <td className='py-2 px-4 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7] font-light'>
+                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>
                     {formatDateDisplay(product.createdAt)}
                   </td>
                   <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{product.variants.length}</td>
@@ -213,11 +193,12 @@ const ProductsPage = () => {
                   <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>
                     <span className={`capitalize p-2 border ${product.publicationStatus==='active'?'border-green-600 bg-green-100 text-green-600':'border-red-600 bg-red-100 text-red-600'} rounded-lg`}>{product.publicationStatus}</span>
                   </td>
-                  <td className='py-2 px-4 group-odd:bg-gray-50 border-b group-last:border-0 border-[#e7e7e7]'>
+                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7]'>
                     <div className='flex justify-center'>
-                      <Link to={`/dashboard/products/${product._id}`} className='p-1 pl-3.5 inline-flex items-center hover:bg-[#3b3b3b] text-white bg-[#1e1e1e] duration-300 justify-center gap-1.5 border border-[#1e1e1e] rounded-full'>
+                      <Link to={`/dashboard/products/${product._id}`} className='p-2 pl-3.5 inline-flex items-center hover:bg-[#3b3b3b] text-white bg-[#1e1e1e] duration-300 justify-center gap-1.5 border border-[#1e1e1e] rounded-full'>
                         Details
-                        <span className='p-1.25 border-2 duration-300 border-white rounded-full text-base'><MdDoubleArrow/></span>
+                        {/* <span className='p-1.25 border-2 duration-300 border-white rounded-full text-base'><MdDoubleArrow/></span> */}
+                        <span className='duration-300 border-white rounded-full text-base'><MdKeyboardDoubleArrowRight/></span>
                       </Link>
                     </div>
                   </td>

@@ -17,7 +17,7 @@ export class ShipmentController {
       }
       
       // Verify order is in correct state
-      if (!['confirmed', 'processing'].includes(order.fulfillmentStatus)) {
+      if (!['cancelled', 'processing'].includes(order.fulfillmentStatus)) {
         return res.status(400).json({ 
           message: `Cannot ship order with status: ${order.fulfillmentStatus}` 
         });
@@ -33,10 +33,11 @@ export class ShipmentController {
         trackingNumber,
         trackingUrl,
         trackingHistory: [{
-          status: 'shipped',
+          event: 'shipped',
           timestamp: new Date(),
           location: '',
-          description: `Shipment created with ${carrier}, tracking #${trackingNumber}`
+          description: `Shipment created with ${carrier}, tracking #${trackingNumber}`,
+          isCarrierEvent: false
         }],
         estimatedDelivery: this.calculateEstimatedDelivery(shippingMethod)
       };
@@ -94,10 +95,11 @@ export class ShipmentController {
       
       // Add to tracking history
       updatedTrackingInfo.trackingHistory.push({
-        status: status || order.fulfillmentStatus,
+        event: status || order.fulfillmentStatus,
         location,
         timestamp: new Date(),
-        description
+        description,
+        isCarrierEvent: true
       });
 
       order.trackingInfo = updatedTrackingInfo

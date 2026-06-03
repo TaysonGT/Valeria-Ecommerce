@@ -41,7 +41,7 @@ const OrdersPage = () => {
   const loadOrders = async () => {
     setIsLoading(true)
     try {
-      const {data:{success,message, data:{orders, statusCounts: {pending,processing,shipped,delivered,cancelled}}}} = await axios.get('/orders/my-orders', searchParams.toString() ? { params: searchParams } : undefined)
+      const {data:{success,message, orders, statusCounts: {pending,processing,shipped,delivered,cancelled}}} = await axios.get('/orders/my-orders', searchParams.toString() ? { params: searchParams } : undefined)
       if(success) {
         setOrderList(orders || [])
         setOrdersTotals({
@@ -76,14 +76,14 @@ const OrdersPage = () => {
   },[selectedTab])
 
   return (
-    <div className='min-h-screen bg-[#f3f3f3] p-2'>
-      <div className='bg-white rounded-sm p-8 shadow-sm'>
+    <div className='min-h-screen bg-[#fcfcfc] p-2'>
+      <div className='rounded-sm p-8 shadow-sm'>
         <div>
           <h1 className='text-4xl font-light font-[Elms_Sans]'>My Orders</h1>
           {error && <p className='mt-4 text-red-600'>{error}</p>}
         </div>
         
-        <div className='flex w-full gap-6 mt-8 border-b border-gray-200'>
+        <div className='flex w-full gap-6 mt-8 border-b border-gray-200 font-sans font-bold'>
           {tabs.map((tab) => (
             <button
               key={tab.value}
@@ -93,7 +93,7 @@ const OrdersPage = () => {
               }}
             >
               {tab.label} 
-              <span className={`${searchParams.get('status') === tab.value ? 'text-blue-600 bg-blue-50' : 'text-gray-600 bg-gray-100'} py-1 px-2 rounded-full text-xs`}>{ordersTotals[tab.value as 'upcoming'|'delivered'|'cancelled']}</span>
+              <span className={`${searchParams.get('status') === tab.value ? 'text-blue-600 bg-blue-50' : 'text-gray-600 bg-gray-100'} py-1 px-2 rounded-full text-xs font-light border border-[#d9d9d9]`}>{ordersTotals[tab.value as 'upcoming'|'delivered'|'cancelled']}</span>
             </button>
           ))}
         </div>
