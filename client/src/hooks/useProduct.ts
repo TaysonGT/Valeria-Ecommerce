@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { productService } from "../services/product.service";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { productType } from "../types";
 
 export const useProductDetails = () => {

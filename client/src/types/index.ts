@@ -152,7 +152,6 @@ export interface IOrder {
   billingAddress: Address;
   paymentMethod: PaymentMethodType;
   paymentStatus: PaymentStatus;
-  paymentDetails?: any;
   fulfillmentStatus: FulfillmentStatus;
   shippingMethod: string;
   trackingInfo?: TrackingInfo;
@@ -160,6 +159,25 @@ export interface IOrder {
   cancelledAt?: string;
   createdAt: string;
   updatedAt: string;
+  
+  paymentDetails?: {
+    transactionId?: string;
+    paymentGateway?: string;
+    paidAt?: Date;
+    refundId?: string;
+    refundedAt?: Date;
+  }
+
+  statusTimestamps: {
+    ordered: Date;
+    pending?: Date;
+    processing?: Date;
+    shipped?: Date;
+    out_for_delivery?: Date;
+    delivered?: Date;
+    cancelled?: Date;
+    refunded?: Date;
+  }
 }
 
 interface Address {

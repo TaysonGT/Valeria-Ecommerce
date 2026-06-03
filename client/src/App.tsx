@@ -19,7 +19,7 @@ import TestPage from './pages/TestPage';
 import ProductsPage from './pages/Dashboard/Products';
 import ProductDetails from './pages/Dashboard/ProductDetails';
 import DashboardOrdersPage from './pages/Dashboard/Orders';
-import DashboardOrderPage from './pages/Dashboard/Order';
+import DashboardOrderDetailsPage from './pages/Dashboard/Order';
 
 function App() {
 
@@ -49,7 +49,7 @@ function App() {
               </Route>
               <Route path='dashboard' element={<PrivateRoutes withNav withSidebar />}>
                 <Route path='orders' element={<DashboardOrdersPage />} />
-                <Route path='orders/:orderId' element={<DashboardOrderPage />} />
+                <Route path='orders/:orderId' element={<DashboardOrderDetailsPage />} />
                 <Route path='products' element={<ProductsPage />} />
                 <Route path='products/:productId' element={<ProductDetails />} />
               </Route>

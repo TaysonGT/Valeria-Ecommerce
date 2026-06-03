@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { productType, variantType } from '../types';
+import { CartItem, productType, variantType } from '../types';
 
 interface ICartContext{
     cartItems: CartItem[];

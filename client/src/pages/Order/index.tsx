@@ -7,27 +7,24 @@ import { formatNumber, formatDateDisplay, paymentMethodDisplay, shippingAddressD
 import { IOrder } from '../../types'
 import { MdCreditCard, MdEmail, MdLocationPin, MdPerson, MdReceipt } from 'react-icons/md'
 import { Button } from '../../components/ui/Button'
-import ShippingStatusBig from '../../components/ui/ShippingStatusBig'
+import ShippingStatusBig, { fulfillmentStatuses } from '../../components/ui/ShippingStatusBig'
+import { toast } from 'react-toastify'
 
 const OrderPage = () => {
   const { orderId } = useParams()
   const navigate = useNavigate()
   const { token, loading } = useAuth()
   const [order, setOrder] = useState<IOrder>()
-  // const [orderList, setOrderList] = useState<[]>([])
-  // const [searchId, setSearchId] = useState(orderId || '')
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
 
   const loadOrder = async (id: string) => {
-    setError('')
     setIsLoading(true)
     try {
       const response = await axios.get(`/orders/${id}`)
       setOrder(response.data.order)
     } catch (err: any) {
       setOrder(undefined)
-      setError(err.response?.data?.message || 'Unable to retrieve this order')
+      toast.error(err.response?.data?.message || 'Unable to retrieve this order')
     } finally {
       setIsLoading(false)
     }
@@ -57,10 +54,11 @@ const OrderPage = () => {
               <h1 className='text-3xl font-[Comfortaa]'>Order Details</h1>
               <span className=''>Order ID: {order?._id}</span>
             </div>
-            <div className='flex justify-center'>
-              <div className='p-6'>
-                <ShippingStatusBig status={order.fulfillmentStatus} />
+            <div className='flex flex-col items-center gap-2 p-6 bg-[#fefefe] border border-[#d9d9d9] border-t-0'>
+              <div className=''>
+                <ShippingStatusBig status={order.fulfillmentStatus} timestamps={order.statusTimestamps} />
               </div>
+              {order.fulfillmentStatus!=='cancelled' &&<p className=' font-bold text-gray-600'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message}</p>}
             </div>
             <div className='grid grid-cols-[2fr_1fr] gap-6 py-4 items-start mt-4'>
               {/* LEFT SECTION */}

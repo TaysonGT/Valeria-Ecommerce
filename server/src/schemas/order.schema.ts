@@ -90,6 +90,7 @@ export interface IOrder extends Document {
   trackingInfo?: OrderTrackingInfo;
 
   statusTimestamps: {
+    orderd: Date;
     pending?: Date;
     processing?: Date;
     shipped?: Date;
@@ -205,6 +206,7 @@ const OrderSchema = new Schema<IOrder>({
   },
   
   statusTimestamps: {
+    ordered: Date,
     pending: Date,
     processing: Date,
     shipped: Date,

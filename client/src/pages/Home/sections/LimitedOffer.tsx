@@ -5,10 +5,10 @@ import { LuClock12 } from 'react-icons/lu'
 
 const LimitedOffer = () => {
   const [clock, setClock] = useState(0)
-  const [endDate, setEndDate] = useState(new Date().setHours(new Date().getHours()+2))
+  const [endDate] = useState(new Date().setHours(new Date().getHours()+2))
 
   const displayClock = (time:number)=>{
-    const d = Math.floor(time/60/60/24)
+    // const d = Math.floor(time/60/60/24)
     const h = Math.floor(time/60/60)%60
     const m = Math.floor(time/60)%60
     const s = time%60

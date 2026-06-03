@@ -1,6 +1,5 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import ProductCard from '../../components/ProductCard';
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router';
 import { FaRegHeart, FaStar } from 'react-icons/fa';
 

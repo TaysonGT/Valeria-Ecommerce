@@ -1,7 +1,6 @@
 // AddImage.tsx
 import React, { useState, useCallback, useEffect } from 'react';
 import { Modal } from '../../../../components/ui/Modal';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Button } from '../../../../components/ui/Button';
 import { IoClose } from 'react-icons/io5';

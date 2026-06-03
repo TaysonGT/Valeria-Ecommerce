@@ -1,114 +1,142 @@
 import { FulfillmentStatus } from '../../types'
-import { LuPackageCheck, LuPackageOpen } from 'react-icons/lu'
+import { LuPackage, LuPackageCheck, LuPackageOpen } from 'react-icons/lu'
 import { MdReceipt } from 'react-icons/md'
-import { PiClockFill } from 'react-icons/pi'
 import { TbCancel, TbTruckDelivery } from 'react-icons/tb'
+import { formatDateDisplay } from '../../utils/helpers'
 
 export const fulfillmentStatuses = [
     {
-        value: "ordered",
-        label: "Ordered",
+        value: "pending" as const,
+        label: "Order Placed",
         icon: <MdReceipt/>,
-        type: 'linear'
+        type: 'linear',
+        message: 'Waiting for payment confirmation'
     },
     {
-        value: "pending",
-        label: "Pending",
-        icon: <PiClockFill/>,
-        type: 'linear'
-    },
-    {
-        value: "processing",
+        value: "processing" as const,
         label: "Processing",
         icon: <LuPackageOpen/>,
-        type: 'linear'
+        type: 'linear',
+        message: 'Order is being prepared'
     },
     {
-        value: "shipped",
+        value: "shipped" as const,
         label: "Shipped",
-        icon: <TbTruckDelivery/>,
-        type: 'terminal'
+        icon: <LuPackage/>,
+        type: 'terminal',
+        message: 'Order is waiting to be picked up by the delivery service'
+
     },
     {
-        value: "delivered",
+        value: "out_for_delivery" as const,
+        label: "Out for Delivery",
+        icon: <TbTruckDelivery/>,
+        type: 'terminal',
+        message: 'Order is out for delivery'
+    },
+    {
+        value: "delivered" as const,
         label: "Delivered",
         icon: <LuPackageCheck/>,
-        type: 'terminal'
+        type: 'terminal',
+        message: 'Order has been delivered'
+    },
+    {
+    value: "cancelled" as const,
+    label: "Cancelled",
+    icon: <TbCancel/>,
+    type: 'terminal',
+    message: 'Order has been cancelled'
     }
-]
+] 
 
 export const cancelledStatus = {
-    value: "cancelled",
+    value: "cancelled" as const,
     label: "Cancelled",
-    icon: <TbCancel/>
+    icon: <TbCancel/>,
+    type: 'terminal',
+    message: 'Order has been cancelled'
 }
 
-const ShippingStatusBig = ({ status }: { status: FulfillmentStatus }) => {
-  const currentIndex = fulfillmentStatuses.findIndex((s)=>s.value==='processing')
-const isTerminal = fulfillmentStatuses[currentIndex].type === 'terminal'
+export type OrderStatusTimestamps = {
+    // ordered: Date;
+    pending?: Date;
+    processing?: Date;
+    shipped?: Date;
+    out_for_delivery?: Date;
+    delivered?: Date;
+    cancelled?: Date;
+    refunded?: Date;
+}
+
+const ShippingStatusBig = ({ status, timestamps }: { status: FulfillmentStatus, timestamps?: OrderStatusTimestamps }) => {
+  const currentIndex = fulfillmentStatuses.findIndex((s)=>s.value===status)
+  const isTerminal = fulfillmentStatuses[currentIndex].type === 'terminal'
       
     return (
       <div className='flex items-center'>
           {status==='cancelled'?
-          <div className='relative text-lg flex items-end gap-2 font-bold'>
-              <div className={`text-3xl text-red-600`}>
-                  {cancelledStatus.icon}
+          <div className='relative text-lg flex items-center flex-col gap-3 font-bold py-2'>
+              <div className={`text-4xl text-red-600`}>
+                {cancelledStatus.icon}
               </div>
               <p className={`text-red-600`}>
-                  This Order has been Cancelled
+                This Order has been Cancelled
               </p>
           </div>
-          :fulfillmentStatuses.map((status,i)=>
-          <>
-          <div key={i} className='relative text-lg'>
-              <p className={`absolute bottom-0 left-1/2 -translate-1/2 translate-y-8
-                  ${isTerminal? 
-                  currentIndex+1===i? 
-                  'text-blue-600'
-                  :currentIndex+1>i?
-                  'text-black'
-                  :'text-[#787878]'
-  
-                  :currentIndex===i? 
-                  'text-blue-600'
-                  :currentIndex>i?
-                  'text-black'
-                  :'text-[#787878]'}
-                  `}>
-                  {status.label}
-              </p>
-              <div className='p-1'>
-                <div className={`text-3xl text-white ${
-                isTerminal? 
-                currentIndex+1===i? 
-                'bg-blue-600'
-                :currentIndex+1>i?
-                'bg-black '
-                :'bg-[#c7c7c7]'
+          :fulfillmentStatuses.slice(0,-1).map((status,i)=>
+          <div key={i} className='flex items-center pb-12 pt-0'>
+            <div className='relative text-lg'>
+                <div className={`absolute  left-1/2 -translate-x-1/2 translate-y-16 
+                    text-nowrap text-sm text-center
+                    ${isTerminal? 
+                    currentIndex+1===i? 
+                    'text-blue-600'
+                    :currentIndex+1>i?
+                    'text-black'
+                    :'text-[#787878]'
     
-                :currentIndex===i? 
-                'bg-blue-600 '
-                :currentIndex>i?
-                'bg-black '
-                :'bg-[#c7c7c7]'
-                
-                } p-2 rounded-full`}>
-                    {status.icon}
+                    :currentIndex===i? 
+                    'text-blue-600'
+                    :currentIndex>i?
+                    'text-black'
+                    :'text-[#787878]'}
+                    `}>
+                        <p>{status.label}</p>
+                        <p>{formatDateDisplay(timestamps?.[status.value])}</p>
                 </div>
-              </div>
+                <div className='p-1'>
+                    <div className={`text-3xl text-white ${
+                    isTerminal? 
+                    currentIndex+1===i? 
+                    'bg-blue-600'
+                    :currentIndex+1>i?
+                    'bg-black '
+                    :'bg-[#c7c7c7]'
+        
+                    :currentIndex===i? 
+                    'bg-blue-600 '
+                    :currentIndex>i?
+                    'bg-black '
+                    :'bg-[#c7c7c7]'
+                    
+                    } p-2 rounded-full`}>
+                        {status.icon}
+                    </div>
+                </div>
+            </div>
+            {i<fulfillmentStatuses.length-2&&<div className={`h-1 w-30 
+                ${isTerminal? 
+                    currentIndex>=i? 
+                    'bg-black'
+                    :'bg-[#d9d9d9]'
+                    
+                    :currentIndex>i?
+                    'bg-black'
+                    :'bg-[#d9d9d9]'
+                }`}
+            />}
           </div>
-          {i<fulfillmentStatuses.length-1&&<div className={`h-1 w-30 
-              ${isTerminal? 
-                  currentIndex>=i? 
-                  'bg-black'
-                  :'bg-[#d9d9d9]'
-                  
-                  :currentIndex>i?
-                  'bg-black'
-                  :'bg-[#d9d9d9]'
-              }`}
-          />}
-          </>
           )}
       </div>
     )
