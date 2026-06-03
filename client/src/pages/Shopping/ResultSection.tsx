@@ -7,7 +7,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import Loader from '../../components/Loader';
 import LightBackground from '../../components/LightBackground';
 import { filterType } from '.';
-import { IoSearch } from 'react-icons/io5';
+import { IoClose, IoSearch } from 'react-icons/io5';
 
 interface Props {
     results: productType[];
@@ -23,28 +23,34 @@ const ResultSection: React.FC<Props> = ({results, isLoading, filters})=>{
     const searchSubmitHandler = (e:React.SubmitEvent<HTMLFormElement>)=> {
         e.preventDefault(); 
         const newParams = new URLSearchParams()
-        newParams.set('q', encodeURIComponent(searchString))
+        if(!searchString) {
+            newParams.delete('q')
+        }else{
+            newParams.set('q', encodeURIComponent(searchString))
+        }
         setSearchParams(newParams)
     }
 
     return (
-        <div className='w-4/5 flex flex-col border-l border-gray-300'>
+        <div className='flex-6 flex flex-col border-l font-[Poppins] border-gray-300'>
             <div className='py-4 px-10 flex justify-between items-end border-b border-gray-300'>
-                <div className="relative">
+                <form onSubmit={searchSubmitHandler} className="relative flex gap-1">
                     <div className="relative">
                         <div className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
                             <IoSearch className='text-indigo-400'/>
                         </div>
-                        <form onSubmit={searchSubmitHandler}>
-                            <input type="search" onChange={(e)=>setSearchString(e.target.value)} id="search" className="block w-140 p-3 ps-9 border border-[#b7b7b7]  rounded-sm focus:ring-indigo-500 focus:border-indigo-500 shadow-xs placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
-                        </form>
+                        <input type="search" onChange={(e)=>setSearchString(e.target.value)} value={searchString} id="search" className="z-2 block w-140 p-3 ps-9 border border-[#b7b7b7]  rounded-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
+                        <div onClick={()=>setSearchString('')} className="z-3 absolute cursor-pointer inset-y-0 inset-e-0 flex items-center pe-3">
+                            <IoClose className='text-indigo-400'/>
+                        </div>
                     </div>
-                </div>
+                    <button type='submit' className='px-4 py-2 bg-black cursor-pointer text-white rounded-sm font-bold font-[Elms_Sans]'>Search</button>
+                </form>
                 {/* {searchParams.get('q')&& <div className='text-2xl'>Results for: "{searchParams.get('q')}"</div>} */}
                 <div className='flex gap-10'>
                     <div>
                         <label className='block'>Sort By:</label>
-                        <select onInput={handleSort} name='sort' defaultValue={searchParams.get('sort')||'none'} className='p-2 border border-black rounded-sm'>
+                        <select onChange={handleSort} name='sort' defaultValue={searchParams.get('sort')||'none'} className='p-2 border border-black rounded-sm'>
                             <option value="none">None</option>
                             <option value="name">Name</option>
                             <option value="price">Price</option>
@@ -52,14 +58,14 @@ const ResultSection: React.FC<Props> = ({results, isLoading, filters})=>{
                     </div>
                     <div>
                         <label className='block'>Sort Order:</label>
-                        <select onInput={handleSort} name='order' disabled={!searchParams.get('sort')} className={`p-2 border border-black rounded-sm ${!searchParams.get('sort')&& 'border-gray-400 text-gray-500 cursor-not-allowed'}`}>
+                        <select onChange={handleSort} name='order' disabled={!searchParams.get('sort')} className={`p-2 border border-black rounded-sm ${!searchParams.get('sort')&& 'border-gray-400 text-gray-500 cursor-not-allowed'}`}>
                             <option value="asc">Ascending</option>
                             <option value="desc">Descending</option>
                         </select>
                     </div>
                     <div>
                         <label className='block'>Per Page:</label>
-                        <select onInput={handleSort} name='pagination' className='p-2 border border-black rounded-sm'>
+                        <select onChange={handleSort} name='pagination' className='p-2 border border-black rounded-sm'>
                             <option value="10">10 Items</option>
                             <option value="20">20 Items</option>
                         </select>
@@ -75,7 +81,7 @@ const ResultSection: React.FC<Props> = ({results, isLoading, filters})=>{
                 :
                 results.length?
                 <div className='h-full flex flex-col gap-10'>
-                    <div className='flex flex-wrap gap-8 '>
+                    <div className='flex flex-wrap gap-4'>
                     {results.map((product)=>
                         <ProductCard key={product._id} {... {product}} />
                     )}

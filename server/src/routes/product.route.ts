@@ -11,9 +11,19 @@ productRouter.get('/categories', productController.allCategories)
 productRouter.get('/featured', productController.featuredProducts)
 productRouter.get('/related/:id', productController.relatedProducts)
 productRouter.get('/:id', productController.singleProduct)
+
 productRouter.post('/', auth, isPermitted('admin'), productController.createProduct)
+productRouter.post('/:productId/variants', productController.createVariant)
+
+productRouter.patch('/:productId', productController.updateProduct)
+productRouter.put('/:productId/images/:imageId/set-primary', productController.setProductImagePrimary)
+
+productRouter.delete('/:productId/variants/:variantId', productController.removeVariant)
+productRouter.delete('/:productId/categories/:categoryId', productController.removeCategoryFromProduct)
+
 productRouter.post('/fittings', auth, isPermitted('admin'), productController.createFitting)
 productRouter.post('/genders', auth, isPermitted('admin'), productController.createGender)
+
 
 // productRouter.post('/categories', productController.createCategory)
 

@@ -6,7 +6,7 @@ export interface Image {
 }
 
 export interface ICategory extends Document {
-  _id: string;
+  _id: Types.ObjectId;
   name: string;
   parentId?: Types.ObjectId;
   path: string;

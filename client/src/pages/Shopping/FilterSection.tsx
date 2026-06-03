@@ -9,10 +9,10 @@ interface Props {
 
 const FilterSection: React.FC<Props> = ({filters})=>{
     return (
-        <div className='px-6 py-10 w-1/5 sticky left-0 top-24'>
+        <div className='px-6 py-10 flex-1 sticky top-24'>
             {filters.length>0?
             <>
-            <div>
+            <div className='w-full'>
                 {filters.map((filter, i)=>
                     filter.opts.length>1&& <FilterGroup key={`${filter.title}-${i}`} {... {filter}}/>
                 )}

@@ -19,7 +19,7 @@ export interface IProduct extends Document {
 }
 
 export interface IVariant {
-  _id: Schema.Types.ObjectId;
+  _id?: Schema.Types.ObjectId;
   sizeCode: string;
   inventory: {
     stock: number;
@@ -31,6 +31,7 @@ export interface IVariant {
 }
 
 export interface imageType {
+  _id?: Schema.Types.ObjectId;
   url: string;
   altText: string;
   isPrimary?: boolean;
@@ -69,8 +70,9 @@ export const ProductSchema = new Schema<IProduct>({
     title: { type: String, required: true }
   }],
   imgs: [{
+    _id: { type: Schema.Types.ObjectId, auto: true },
     url: {type: String, required: true},
-    altText: {type: String, require: true},
+    altText: {type: String, required: true},
     isPrimary: { type: Boolean, default: false }
   }]
 }, { 
@@ -80,6 +82,6 @@ export const ProductSchema = new Schema<IProduct>({
 // Indexes
 ProductSchema.index({ title: 'text', description: 'text' });
 ProductSchema.index({ 'variants.sizeCode': 1 });
-ProductSchema.index({ 'categories.categoryId': 1 });
+ProductSchema.index({ 'categories.id': 1 });
 
 export const Product = model('products', ProductSchema);

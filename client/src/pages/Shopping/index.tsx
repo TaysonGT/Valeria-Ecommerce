@@ -39,7 +39,7 @@ const ShoppingPage:React.FC = () => {
     }, [searchParams])
 
     return (
-        <div className='flex relative items-start'>
+        <div className='flex w-full relative items-start'>
             <FilterSection {...{filters}}/>
             <ResultSection {... {results, isLoading, filters}}/>
         </div>

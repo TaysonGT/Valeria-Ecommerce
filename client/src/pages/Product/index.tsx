@@ -83,7 +83,7 @@ const ProductPage = () => {
                         <div className='flex'>
                             <div className='p-4'>
                                 <div className='h-100 w-full border border-gray-200 bg-[#F7f7F7]'>
-                                    <img className='h-full w-full object-contain' src={product?.imgs[selectedImage].url.replace('src/assets', '/test-images').replace('.jpg','.webp')} alt={product?.imgs[selectedImage].altText} />
+                                    <img className='h-full w-full object-contain' src={product?.imgs[selectedImage].url} alt={product?.imgs[selectedImage].altText} />
                                 </div>
                                 <div className='w-100 h-24 mt-1 overflow-hidden'>
                                     <Swiper 
@@ -95,7 +95,7 @@ const ProductPage = () => {
                                         {product?.imgs.map((img, i)=>
                                             <SwiperSlide>
                                                 <div className={`h-full w-24 border cursor-pointer bg-[#F2F6F7] ${i===selectedImage? 'border-[#FFB400]': 'border-transparent'}`}>
-                                                    <img key={i} onClick={()=>setSelectedImage(i)} className={`h-full w-full object-contain`} src={img.url.replace('src/assets', '/test-images').replace('.jpg','.webp')} alt={img.altText} />
+                                                    <img key={i} onClick={()=>setSelectedImage(i)} className={`h-full w-full object-contain`} src={img.url} alt={img.altText} />
                                                 </div>
                                             </SwiperSlide>
                                         )}
@@ -191,7 +191,7 @@ const ProductPage = () => {
                                     <Link to={`/products/${rProduct._id}`} key={i} className="flex gap-6 items-center py-3 not-last:border-b border-gray-200">
                                         <div className='h-25 aspect-square bg-[#f3f3f3]'>
                                             <Link to={`/products/${rProduct._id}`}>
-                                                <img src={rProduct.imgs[0].url.replace('src/assets','/test-images')} className='h-full w-full object-contain' alt={rProduct.imgs[0].altText}/>
+                                                <img src={rProduct.imgs[0].url} className='h-full w-full object-contain' alt={rProduct.imgs[0].altText}/>
                                             </Link>
                                         </div>
                                         <div className='grow flex flex-col gap-2'>
@@ -211,11 +211,6 @@ const ProductPage = () => {
                                     </Link>
                                 )}
                             </div>
-                        </div>
-                        <div className="w-full overflow-hidden shadow-lg">
-                            <Link to='#'>
-                                <img className="h-full" src="/src/assets/imgs/promo/13.jpg" alt="" />
-                            </Link>
                         </div>
                     </div>
                 </div>
