@@ -1,10 +1,10 @@
 // order.service.ts
 import { Order, IOrder, OrderFulfillmentStatus, CarrierType } from "../schemas/order.schema";
 import mongoose from 'mongoose';
+import { User } from "../schemas/user.schema";
 
 export interface StatusUpdatePayload {
   newStatus: OrderFulfillmentStatus;
-  actor: 'customer' | 'admin' | 'system' | 'warehouse' | 'carrier';
   actorId?: string;
   location?: string;
   notes?: string;
@@ -12,6 +12,11 @@ export interface StatusUpdatePayload {
     trackingNumber?: string;
     carrier?: string;
     estimatedDelivery?: Date;
+    deliveryAgentName?: string, 
+    deliveryAgentPhone?: string, 
+    deliveryNotes?: string,
+    deliveryAssignedAt?: string,
+    deliveryType?: 'carrier' | 'in_house'
     [key: string]: any;
   };
 }
@@ -64,18 +69,20 @@ export class OrderTrackingService {
       if (!order) {
         throw new Error('Order not found');
       }
+      
+      const user = await User.findById(payload.actorId).session(session);
+      if (!user) {
+        throw new Error('User not found');
+      }
 
       // Validate the transition
-      const validation = await this.validateTransition(order, payload);
+      const validation = await this.validateTransition(order, payload, user.role);
       if (!validation.valid) {
         throw new Error(validation.error);
       }
 
       const oldStatus = order.fulfillmentStatus;
       const newStatus = payload.newStatus;
-
-      // Store the old status for potential rollback
-      // const previousStatus = order.fulfillmentStatus;
 
       // Update order status
       order.fulfillmentStatus = newStatus;
@@ -96,13 +103,25 @@ export class OrderTrackingService {
         };
       }
 
-      order.trackingInfo.trackingHistory.push({
-        event: newStatus,
-        location: payload.location,
-        timestamp: new Date(),
-        description: payload.notes || `Order status changed from ${oldStatus} to ${newStatus} by ${payload.actor}`,
-        isCarrierEvent: false
-      });
+      const shippingStatuses = ['shipped', 'out_for_delivery', 'delivered'];
+      if (shippingStatuses.includes(newStatus)) {
+        if (!order.trackingInfo) {
+          order.trackingInfo = {
+            carrier: 'other',
+            carrierName: '',
+            trackingNumber: '',
+            trackingHistory: []
+          };
+        }
+        
+        order.trackingInfo.trackingHistory.push({
+          event: newStatus,
+          location: payload.location,
+          timestamp: new Date(),
+          description: this.getShippingEventDescription(newStatus, payload),
+          isCarrierEvent: false
+        });
+      }
 
       // Handle side effects based on status change
       await this.handleStatusSideEffects(order, oldStatus, newStatus, payload, session);
@@ -128,20 +147,78 @@ export class OrderTrackingService {
   }
 
   /**
+   * Add carrier/operational event WITHOUT changing order status
+   * This is for detailed tracking like "Arrived at facility"
+   */
+  async addTrackingEvent(
+    orderId: string,
+    payload: {
+      event: string;
+      location?: string;
+      description: string;
+      timestamp?: Date;
+      actor: 'carrier' | 'admin' | 'system';
+      actorId?: string;
+      metadata?: Record<string, any>;
+    }
+  ): Promise<IOrder> {
+    const order = await Order.findById(orderId);
+    if (!order) throw new Error('Order not found');
+    if (!payload.actorId&&payload.actor==='admin') throw new Error('Actor ID should be provided');
+
+    if (!order.trackingInfo) {
+      order.trackingInfo = {
+        carrier: 'other',
+        carrierName: '',
+        trackingNumber: '',
+        trackingHistory: []
+      };
+    }
+
+    order.trackingInfo.trackingHistory.push({
+      event: payload.event,
+      location: payload.location,
+      timestamp: payload.timestamp || new Date(),
+      description: payload.description,
+      isCarrierEvent: payload.actor === 'carrier'
+    });
+
+    await order.save();
+    return order;
+  }
+
+  private getShippingEventDescription(status: OrderFulfillmentStatus, payload: StatusUpdatePayload): string {
+    switch (status) {
+      case 'shipped':
+        if (payload.metadata?.trackingNumber) {
+          return `Shipped via ${payload.metadata.carrier || 'carrier'}. Tracking: ${payload.metadata.trackingNumber}`;
+        }
+        return `Order has been shipped`;
+      case 'out_for_delivery':
+        return `Out for delivery today`;
+      case 'delivered':
+        return `Order delivered successfully`;
+      default:
+        return payload.notes || `Status changed to ${status}`;
+    }
+  }
+
+  /**
    * Validate if a status transition is allowed
    */
   private async validateTransition(
     order: IOrder,
-    payload: StatusUpdatePayload
+    payload: StatusUpdatePayload,
+    role: 'customer' | 'admin' | 'warehouse' | 'carrier'
   ): Promise<ValidationResult> {
-    const { newStatus, actor, metadata } = payload;
+    const { newStatus, metadata } = payload;
     const currentStatus = order.fulfillmentStatus;
 
     // Check if actor is allowed to perform this transition
-    if (!this.rolePermissions[actor]?.includes(newStatus)) {
+    if (!this.rolePermissions[role]?.includes(newStatus)) {
       return {
         valid: false,
-        error: `${actor} cannot change status to ${newStatus}`
+        error: `You are not allowed to change status to "${newStatus}"`
       };
     }
 
@@ -155,18 +232,36 @@ export class OrderTrackingService {
 
     // Business rule: Require tracking number when shipping
     if (newStatus === 'shipped') {
-      if (!metadata?.trackingNumber) {
+      if (payload.metadata?.deliveryType === 'carrier') {
+        if (!metadata?.trackingNumber) {
+          return {
+            valid: false,
+            error: 'Tracking number required for carrier delivery'
+          }
+        }
+        
+        // Validate tracking number format based on carrier
+        if (metadata.carrier && !this.isValidTrackingNumber(metadata.trackingNumber, metadata.carrier)) {
+          return {
+            valid: false,
+            error: `Invalid tracking number format for ${metadata.carrier}`
+          };
+        }
+
+      } else if (payload.metadata?.deliveryType === 'in_house') {
+        // In-house delivery - no tracking number required
+        // But might need delivery agent info
+        if (!metadata?.deliveryAgentName || !metadata?.deliveryAgentPhone) {
+          console.warn(`Missing agent info for order ${order.orderNumber}`);
+          return {
+            valid: false,
+            error: 'Delivery agent name and phone are required for in-house delivery'
+          };
+        }
+      } else {
         return {
           valid: false,
-          error: 'Tracking number is required when marking order as shipped'
-        };
-      }
-      
-      // Validate tracking number format based on carrier
-      if (metadata.carrier && !this.isValidTrackingNumber(metadata.trackingNumber, metadata.carrier)) {
-        return {
-          valid: false,
-          error: `Invalid tracking number format for ${metadata.carrier}`
+          error: 'deliveryType must be specified when marking order as shipped (carrier or in_house)'
         };
       }
     }
@@ -196,6 +291,14 @@ export class OrderTrackingService {
         error: 'Cannot mark order as delivered when payment is not completed'
       };
     }
+    
+    // Payment validation for delivery
+    if (newStatus === 'processing' && order.paymentStatus !== 'paid' && order.paymentMethod ==='cod') {
+      return {
+        valid: false,
+        error: `Cannot mark order as processing when payment is not completed for method: ${order.paymentMethod}`
+      };
+    }
 
     return { valid: true };
   }
@@ -212,23 +315,38 @@ export class OrderTrackingService {
   ): Promise<void> {
     switch (newStatus) {
       case 'shipped':
-        // Update tracking information
-        if (payload.metadata?.trackingNumber) {
-          order.trackingInfo = {
-            ...order.trackingInfo,
-            carrier: payload.metadata.carrier as CarrierType || 'other',
-            carrierName: this.getCarrierDisplayName(payload.metadata.carrier || 'other'),
-            trackingNumber: payload.metadata.trackingNumber,
-            trackingUrl: this.generateTrackingUrl(
-              payload.metadata.carrier || 'other',
-              payload.metadata.trackingNumber
-            ),
-            trackingHistory: [
-              ...order.trackingInfo?.trackingHistory||[]
-            ],
-            estimatedDelivery: payload.metadata.estimatedDelivery
+         if (payload.metadata?.deliveryType === 'in_house') {
+          // In-house delivery - store agent info
+          order.deliveryType = 'in_house';
+          order.deliveryAgent = {
+            name: payload.metadata?.deliveryAgentName || 'Unknown',
+            phone: payload.metadata?.deliveryAgentPhone || 'Unknown',
+            assignedAt: payload.metadata?.deliveryAssignedAt? 
+              new Date(payload.metadata.deliveryAssignedAt) 
+              : new Date(),
+            notes: payload.metadata?.deliveryNotes || ''
           };
+        }else if (payload.metadata?.deliveryType === 'carrier') {
+          // Carrier delivery - store tracking info
+          order.deliveryType = 'carrier'
+          if (payload.metadata?.trackingNumber) {
+            order.trackingInfo = {
+              ...order.trackingInfo,
+              carrier: payload.metadata.carrier as CarrierType || 'other',
+              carrierName: this.getCarrierDisplayName(payload.metadata.carrier || 'other'),
+              trackingNumber: payload.metadata.trackingNumber,
+              trackingUrl: this.generateTrackingUrl(
+                payload.metadata.carrier || 'other',
+                payload.metadata.trackingNumber
+              ),
+              trackingHistory: [
+                ...order.trackingInfo?.trackingHistory||[]
+              ],
+              estimatedDelivery: payload.metadata.estimatedDelivery
+            };
+          }
         }
+
         break;
 
       case 'cancelled':
@@ -361,7 +479,6 @@ export class OrderTrackingService {
       try {
         await this.updateOrderStatus(orderId, {
           newStatus,
-          actor: actor as any,
           actorId,
           notes: `Bulk update by ${actor}`
         });

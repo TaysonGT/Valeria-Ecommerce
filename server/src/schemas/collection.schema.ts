@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, model, Document } from 'mongoose';
 
 interface DateRange {
   startDate: Date;
@@ -11,7 +11,7 @@ interface Image {
 }
 
 export interface ICollection extends Document {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   title: string;
   handle: string;
   activeDates: DateRange;

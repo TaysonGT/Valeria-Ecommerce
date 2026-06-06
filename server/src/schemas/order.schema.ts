@@ -2,6 +2,7 @@ import { Schema, model, Document, Types } from 'mongoose';
 
 export type OrderFulfillmentStatus = 'pending' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'refunded';
 export type CarrierType = 'usps' | 'fedex' | 'ups' | 'dhl' | 'other';
+export type DeliveryType = 'carrier' | 'in_house';
 
 export type OrderTrackingInfo = {
   carrier: CarrierType;
@@ -87,6 +88,16 @@ export interface IOrder extends Document {
   // Fulfillment (simplified)
   fulfillmentStatus: OrderFulfillmentStatus;
   shippingMethod: 'standard' | 'expedited' | 'overnight' | 'pickup';
+  
+  deliveryType: DeliveryType
+  // For in-house delivery
+  deliveryAgent?: {
+    name: string;
+    phone: string;
+    assignedAt?: Date;
+    notes?: string;
+  };
+
   trackingInfo?: OrderTrackingInfo;
 
   statusTimestamps: {
@@ -185,6 +196,18 @@ const OrderSchema = new Schema<IOrder>({
     type: String,
     enum: ['standard', 'expedited', 'overnight', 'pickup'],
     default: 'standard'
+  },
+
+  deliveryType: {
+    type: String,
+    enum: ['carrier' , 'in_house']
+  },
+  
+  deliveryAgent: {
+    name: String,
+    phone: String,
+    assignedAt: Date,
+    notes: String
   },
 
   trackingInfo: {

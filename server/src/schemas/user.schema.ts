@@ -6,7 +6,7 @@ export interface IUser extends Document {
   lastname: string;
   email: string;
   gender: string;
-  role: string;
+  role: 'customer' | 'admin' | 'warehouse' | 'carrier';
   passwordHash: string;
   passwordSalt: string;
   paymentDetails?: {
@@ -32,7 +32,11 @@ const UserSchema = new Schema<IUser>(
     lastname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     gender: { type: String, required: true },
-    role: { type: String, default: 'user' },
+    role: { 
+      type: String, 
+      enum: ['customer', 'admin', 'warehouse', 'carrier'], 
+      default: 'customer' 
+    },
     passwordHash: { type: String, required: true },
     passwordSalt: { type: String, required: true },
     paymentDetails: {

@@ -1,16 +1,17 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { UserService } from '../services/user.service';
 
 interface AuthToken extends JwtPayload {
   user_id: string;
-  role: string;
+  role: 'customer' | 'admin' | 'warehouse' | 'carrier';
   username: string;
 }
 
 export interface AuthenticatedRequest extends Request {
     user: {
         id: string;
-        role: string;
+        role: 'customer' | 'admin' | 'warehouse' | 'carrier';
         username: string;
     };
 }
@@ -36,12 +37,14 @@ export const auth = async(req: AuthenticatedRequest, res: Response, next: NextFu
         }
     }
 
-export const isPermitted = (...allowedRoles: string[]) => 
+export const isPermitted = (...allowedRoles: ('customer' | 'admin' | 'warehouse' | 'carrier')[]) => 
     async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-        const user = req.user
+        const userService = new UserService()
+
+        const user = await userService.findUserById(req.user.id)
 
         if (!user) {
-            res.status(401).json({ message: 'Please sign in.', success: false })
+            res.status(401).json({ message: "You're not signed in", success: false })
             return
         }
 

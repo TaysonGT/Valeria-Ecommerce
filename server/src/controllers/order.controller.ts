@@ -69,7 +69,7 @@ export class OrderController {
       
     } catch (error) {
       console.error('Error fetching orders:', error);
-      return res.status(500).json({
+      return res.status(400).json({
         success: false,
         message: 'Failed to fetch orders',
         error: error.message
@@ -101,7 +101,7 @@ export class OrderController {
       
     } catch (error) {
       console.error('Error fetching orders:', error);
-      return res.status(500).json({
+      return res.status(400).json({
         success: false,
         message: 'Failed to fetch orders',
         error: error.message
@@ -113,23 +113,151 @@ export class OrderController {
     try {
       const { orderId } = req.params
       const order = await orderService.getOrderById(orderId as string, req.user.id)
-      
+      // 
       return res.json({ success: true, order })
     } catch (error: any) {
-      return res.status(500).json({ success: false, message: error.message })
+      return res.status(400).json({ success: false, message: error.message })
     }
   }
 
   async updateOrderStatus(req: AuthenticatedRequest, res: Response) {
     try {
       const { orderId } = req.params
-      const { newStatus } = req.body
+      const { newStatus, location, notes, metadata } = req.body
 
-      const updatedOrder = await orderTrackingService.updateOrderStatus(orderId as string, newStatus)
+      const updatedOrder = await orderTrackingService.updateOrderStatus(orderId as string, { newStatus, location, notes, metadata, actorId: req.user.id })
 
       return res.json({ success: true, order: updatedOrder })
     } catch (error: any) {
-      return res.status(500).json({ success: false, message: error.message })
+      return res.status(400).json({ success: false, message: error.message })
+    }
+  }
+
+  async setOrderProcessing(req: AuthenticatedRequest, res: Response) {
+    try {
+      const { orderId } = req.params
+      const { location, notes } = req.body
+      
+      // Admin marks as processing
+      const updatedOrder = await orderTrackingService.updateOrderStatus(orderId as string, {
+        newStatus: 'processing',
+        actorId: req.user.id,
+        location,
+        notes: notes || 'Payment verified, preparing for shipment'
+      });
+
+      return res.json({ success: true, order: updatedOrder })
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message })
+    }
+  }
+
+  async cancelOrder(req: AuthenticatedRequest, res: Response) {
+    const {orderId} = req.params;
+    try{
+
+      const updatedOrder = await orderTrackingService.updateOrderStatus(orderId as string, {
+        newStatus: 'cancelled',
+        actorId: req.user.id,
+        notes: 'Customer requested cancellation'
+      });
+    
+      return res.json({ success: true, order: updatedOrder })
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message })
+    }
+  }
+  
+  async setAsShipped(req: AuthenticatedRequest, res: Response) {
+    const {orderId} = req.params;
+    const { 
+      deliveryAssignedAt, 
+      deliveryType, 
+      deliveryAgentName, 
+      deliveryAgentPhone, 
+      deliveryNotes, 
+      estimatedDelivery, 
+      trackingNumber, 
+      carrier,
+      location
+    } = req.body;
+
+    try{
+      const updatedOrder = await orderTrackingService.updateOrderStatus(orderId as string, {
+        newStatus: 'shipped',
+        actorId: req.user.id,
+        metadata: {
+          location,
+          // For in-house delivery (ignored if deliveryType is 'carrier')
+          deliveryAgentName, 
+          deliveryAgentPhone,
+          deliveryNotes,
+          deliveryAssignedAt,
+          deliveryType,
+          // For carrier delivery
+          trackingNumber,
+          carrier,
+          estimatedDelivery,
+        }
+      });
+    
+      return res.json({ success: true, order: updatedOrder })
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message })
+    }
+  }
+
+  async setAsOutForDelivery(req: AuthenticatedRequest, res: Response) {
+    const {orderId} = req.params;
+    const {notes} = req.body;
+
+    try{
+      const updatedOrder = await orderTrackingService.updateOrderStatus(orderId as string, {
+        newStatus: 'out_for_delivery',
+        actorId: req.user.id,
+        notes: notes || 'Delivery agent en route to customer'
+      });
+    
+      return res.json({ success: true, order: updatedOrder })
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message })
+    }
+  }
+
+  async setAsDelivered(req: AuthenticatedRequest, res: Response) {
+    const {orderId} = req.params;
+    const {notes, location} = req.body;
+
+    try{
+      const updatedOrder = await orderTrackingService.updateOrderStatus(orderId as string, {
+        newStatus: 'delivered',
+        actorId: req.user.id,  // or adminId
+        notes: notes || 'Customer received order, signature collected',
+        location
+      });
+    
+      return res.json({ success: true, order: updatedOrder })
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message })
+    }
+  }
+
+  async addTrackingEvent(req: AuthenticatedRequest, res: Response) {
+    const {orderId} = req.params;
+    const {location, event, description} = req.body;
+
+    try{
+      const updatedOrder = await orderTrackingService.addTrackingEvent(orderId as string, {
+        event,
+        location,
+        description,
+        actor: 'admin',
+        actorId: req.user.id
+      });
+    
+      return res.json({ success: true, order: updatedOrder })
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message })
     }
   }
   
@@ -141,7 +269,7 @@ export class OrderController {
 
       return res.json({ success: true, results })
     } catch (error: any) {
-      return res.status(500).json({ success: false, message: error.message })
+      return res.status(400).json({ success: false, message: error.message })
     }
   }
 }
