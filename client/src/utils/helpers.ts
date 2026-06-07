@@ -1,5 +1,12 @@
 import { IShippingAddress, PaymentMethodType } from "../types"
 
+export const paymentMethodDisplayMap: Record<PaymentMethodType, string> = {
+  credit_card: 'Credit Card',
+  paypal: 'Paypal',
+  stripe: 'Stripe',
+  cod: 'COD'
+};
+
 /**
  * Generate next available ID for an array of items
  */
@@ -64,8 +71,10 @@ export const formatBytes = (bytes:number, decimals = 2)=>{
 }
 
 export const paymentMethodDisplay = (paymentMethod: string): string =>{
-  const exists = paymentMethod in PaymentMethodType
-  return exists? PaymentMethodType[paymentMethod as keyof typeof PaymentMethodType]:'-'
+   if (paymentMethod in paymentMethodDisplayMap) {
+    return paymentMethodDisplayMap[paymentMethod as PaymentMethodType];
+  }
+  return '-';
 }
 
 export const shippingAddressDisplay = (shippingAddress: IShippingAddress): string =>{

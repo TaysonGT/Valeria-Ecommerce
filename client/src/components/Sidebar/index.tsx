@@ -120,7 +120,7 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
               pr-16
               rounded-lg
               group/secondary 
-              ${link.keywords?.some(keyword => location.pathname.includes(keyword)) || location.pathname === link.path ? 'bg-white text-indigo-500' : 'hover:bg-gray-50'}
+              ${link.keywords?.some(keyword => location.pathname.includes(keyword)) || location.pathname === link.path ? 'bg-white text-primary-600' : 'hover:bg-gray-50'}
             `}
           >
             <Link 

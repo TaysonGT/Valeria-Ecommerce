@@ -46,7 +46,7 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <div className='z-110'>
           <DarkBackground {...{show: isOpen, hide: onClose}}/>
           
           <motion.div
@@ -54,7 +54,7 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2 }}
-            className={`fixed top-1/2 left-1/2 -translate-1/2 max-h-[90vh] min-h-0 flex flex-col overflow-hidden ${sizeClasses[size]} w-full p-4 z-200`}
+            className={`fixed top-1/2 left-1/2 -translate-1/2 max-h-[90vh] min-h-0 flex flex-col overflow-hidden ${sizeClasses[size]} w-full p-4 z-110`}
           >
             <div className="bg-white rounded-lg shadow-xl flex flex-col h-full min-h-0">
               <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
@@ -74,7 +74,7 @@ export const Modal: React.FC<ModalProps> = ({
               </div>
             </div>
           </motion.div>
-        </>
+        </div>
       )}
     </AnimatePresence>
   );

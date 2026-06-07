@@ -22,7 +22,7 @@ export const useOrders = () => {
         if (currentQ !== lastQ.current) {
           lastQ.current = currentQ;
         }
-        axios.get('/admin/orders', {params: searchParams})
+        axios.get('/orders/admin', {params: searchParams})
         .then(({data})=>{
             if(data.success){
                 setOrders(data.orders)

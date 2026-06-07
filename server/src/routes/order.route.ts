@@ -6,6 +6,90 @@ const orderRouter = express.Router()
 const orderController = new OrderController()
 
 
+// ==================== ADMIN ROUTES ====================
+// All admin routes require admin role
+
+// Admin: Get all orders
+orderRouter.get('/admin',
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.getAllOrders(req as any, res).catch(next)
+  }
+)
+
+// Admin: Bulk update order status
+orderRouter.post('/admin/bulk-update-status', 
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.bulkUpdateOrderStatus(req as any, res).catch(next)
+  }
+)
+
+// Admin: Update any order status (general)
+orderRouter.put('/admin/:orderId/status', 
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.updateOrderStatus(req as any, res).catch(next)
+  }
+)
+
+// Admin: Set order to processing
+orderRouter.put('/admin/:orderId/processing', 
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.setOrderProcessing(req as any, res).catch(next)
+  }
+)
+
+// Admin: Mark order as shipped (with carrier or in-house delivery)
+orderRouter.put('/admin/:orderId/ship', 
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.setAsShipped(req as any, res).catch(next)
+  }
+)
+
+// Admin: Mark order as out for delivery
+orderRouter.put('/admin/:orderId/out-for-delivery', 
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.setAsOutForDelivery(req as any, res).catch(next)
+  }
+)
+
+// Admin: Mark order as delivered
+orderRouter.put('/admin/:orderId/deliver', 
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.setAsDelivered(req as any, res).catch(next)
+  }
+)
+
+// Admin: Add tracking event (carrier update, admin note, etc.)
+orderRouter.post('/admin/:orderId/tracking-event', 
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.addTrackingEvent(req as any, res).catch(next)
+  }
+)
+
+// Admin: Get single order (full details)
+orderRouter.get('/admin/:orderId', 
+  auth, 
+  isPermitted('admin'), 
+  (req, res, next) => {
+    void orderController.getOrder(req as any, res).catch(next)
+  }
+)
+
 // ==================== CUSTOMER ROUTES ====================
 // All customer routes require authentication
 orderRouter.use(auth)
@@ -29,90 +113,6 @@ orderRouter.put('/:orderId/cancel', (req, res, next) => {
 orderRouter.get('/:orderId', (req, res, next) => {
   void orderController.getOrder(req as any, res).catch(next)
 })
-
-// ==================== ADMIN ROUTES ====================
-// All admin routes require admin role
-
-// Admin: Get all orders
-orderRouter.get('/admin/orders', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.getAllOrders(req as any, res).catch(next)
-  }
-)
-
-// Admin: Bulk update order status
-orderRouter.post('/admin/orders/bulk-update-status', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.bulkUpdateOrderStatus(req as any, res).catch(next)
-  }
-)
-
-// Admin: Update any order status (general)
-orderRouter.put('/admin/orders/:orderId/status', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.updateOrderStatus(req as any, res).catch(next)
-  }
-)
-
-// Admin: Set order to processing
-orderRouter.put('/admin/orders/:orderId/processing', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.setOrderProcessing(req as any, res).catch(next)
-  }
-)
-
-// Admin: Mark order as shipped (with carrier or in-house delivery)
-orderRouter.put('/admin/orders/:orderId/ship', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.setAsShipped(req as any, res).catch(next)
-  }
-)
-
-// Admin: Mark order as out for delivery
-orderRouter.put('/admin/orders/:orderId/out-for-delivery', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.setAsOutForDelivery(req as any, res).catch(next)
-  }
-)
-
-// Admin: Mark order as delivered
-orderRouter.put('/admin/orders/:orderId/deliver', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.setAsDelivered(req as any, res).catch(next)
-  }
-)
-
-// Admin: Add tracking event (carrier update, admin note, etc.)
-orderRouter.post('/admin/orders/:orderId/tracking-event', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.addTrackingEvent(req as any, res).catch(next)
-  }
-)
-
-// Admin: Get single order (full details)
-orderRouter.get('/admin/orders/:orderId', 
-  auth, 
-  isPermitted('admin'), 
-  (req, res, next) => {
-    void orderController.getOrder(req as any, res).catch(next)
-  }
-)
 
 
 export default orderRouter

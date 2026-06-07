@@ -4,12 +4,18 @@ import axios from 'axios'
 import { useAuth } from '../../../context/AuthContext'
 import Loader from '../../../components/Loader'
 import { formatNumber, formatDateDisplay, paymentMethodDisplay, shippingAddressDisplay } from '../../../utils/helpers'
-import { IOrder } from '../../../types'
-import { MdCreditCard, MdEmail, MdLocationPin, MdPerson, MdReceipt } from 'react-icons/md'
+import { IOrder, PaymentMethodType } from '../../../types'
+import { MdClose, MdCreditCard, MdEmail, MdLocationPin, MdPerson, MdReceipt } from 'react-icons/md'
 import { Button } from '../../../components/ui/Button'
-import ShippingStatusBig, { fulfillmentStatuses } from '../../../components/ui/ShippingStatusBig'
+import { fulfillmentStatuses } from '../../../components/ui/ShippingStatusBig'
 import { PiClockFill } from 'react-icons/pi'
-import { TbCancel } from 'react-icons/tb'
+import { TbBrandStripe } from 'react-icons/tb'
+import UpdateOrderStatus from './dialogs/UpdateStatusModal'
+import { toast } from 'react-toastify'
+import { FaCheck, FaHandHoldingUsd } from 'react-icons/fa'
+import { RiPaypalFill, RiRefund2Fill } from 'react-icons/ri'
+import ShippingTimeline from '../../../components/ui/ShippingTimeline'
+import { HiCheck } from 'react-icons/hi'
 
 
 export const paymentStatuses = [
@@ -17,25 +23,52 @@ export const paymentStatuses = [
     value: 'pending',
     label: 'Pending',
     icon: <PiClockFill/>,
-    color: 'text-yellow-600 bg-yellow-100'
+    color: '#ff9800'
   },
   {
     value: 'paid',
     label: 'Paid',
-    icon: <MdCreditCard/>,
-    color: 'text-white bg-green-500'
+    icon: <HiCheck/>,
+    color: '#28a745'
   },
   {
     value: 'failed',
     label: 'Failed',
-    icon: <TbCancel/>,
-    color: 'text-white bg-red-500'
+    icon: <MdClose/>,
+    color: '#ef4444'
   },
   {
     value: 'refunded',
     label: 'Refunded',
-    icon: <MdReceipt/>,
-    color: 'text-white bg-blue-500'
+    icon: <RiRefund2Fill/>,
+    color: '#3b82f6'
+  }
+]
+
+export const paymentMethods = [
+  {
+    value: 'cod' as PaymentMethodType,
+    label: 'Cash on hand',
+    icon: <FaHandHoldingUsd/>,
+    color: '#d1d5db'
+  },
+  {
+    value: 'credit_card' as PaymentMethodType,
+    label: 'Paid',
+    icon: <MdCreditCard/>,
+    color: '#28a745'
+  },
+  {
+    value: 'paypal' as PaymentMethodType,
+    label: 'Failed',
+    icon: <RiPaypalFill/>,
+    color: '#ef4444'
+  },
+  {
+    value: 'stripe' as PaymentMethodType,
+    label: 'Refunded',
+    icon: <TbBrandStripe/>,
+    color: '#3b82f6'
   }
 ]
 
@@ -44,20 +77,18 @@ const DashboardOrderDetailsPage = () => {
   const navigate = useNavigate()
   const { token, loading } = useAuth()
   const [order, setOrder] = useState<IOrder>()
-  // const [orderList, setOrderList] = useState<[]>([])
-  // const [searchId, setSearchId] = useState(orderId || '')
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [showUpdateStatus, setShowUpdateStatus] = useState(false)
 
-  const loadOrder = async (id: string) => {
-    setError('')
+  const loadOrder = async () => {
+    if(!orderId) return;
     setIsLoading(true)
     try {
-      const response = await axios.get(`/orders/${id}`)
+      const response = await axios.get(`/orders/${orderId}`)
       setOrder(response.data.order)
     } catch (err: any) {
       setOrder(undefined)
-      setError(err.response?.data?.message || 'Unable to retrieve this order')
+      toast.error(err.response?.data?.message || 'Unable to retrieve this order')
     } finally {
       setIsLoading(false)
     }
@@ -69,7 +100,7 @@ const DashboardOrderDetailsPage = () => {
       return
     }
     if (token&&orderId) {
-      loadOrder(orderId)
+      loadOrder()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, loading, orderId])
@@ -83,52 +114,35 @@ const DashboardOrderDetailsPage = () => {
           </div>
         ) : order ? (
           <div className='p-10'>
+            <UpdateOrderStatus {...{show: showUpdateStatus, hide: () => setShowUpdateStatus(false), order, onSave: ()=>{
+              loadOrder()
+              setShowUpdateStatus(false)
+            }}} />
             <div className='flex justify-between items-center border-b pb-4 border-[#d9d9d9]'>
               <h1 className='text-3xl font-[Comfortaa]'>Order Details</h1>
               <span className=''>Order ID: {order?._id}</span>
             </div>
-            {/* <div className='flex flex-col items-center gap-6 p-6 bg-[#fefefe] border border-[#d9d9d9] border-t-0'>
-              <div className='pb-12'>
-                <ShippingStatusBig status={order.fulfillmentStatus} timestamps={order.statusTimestamps} />
-              </div>
-              <p className=' font-bold text-gray-600'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message}</p>
-            </div> */}
             <div className='grid grid-cols-[2fr_1fr] gap-6 py-4 items-start mt-4'>
               {/* LEFT SECTION */}
               <div className='space-y-4'>
                 <div className='space-y-2'>
-                  {/* <div className='text-xl'>
-                    Basic Details
-                  </div> */}
                   <div className='bg-white border-[#d9d9d9] border p-6 text-base gap-14 flex flex-wrap'>
-                    {/* <div className='flex-1'>
-                      <label className='text-[#787878] text-sm'>Order ID</label>
-                      <p>{order?._id}</p>
-                    </div>
-                    <div className='flex-1'>
-                      <label className='text-[#787878] text-sm'>Ordered At</label>
-                      <p>{formatDateDisplay(order?.createdAt)}</p>
-                    </div>
-                    <div className='flex-1'>
-                      <label className='text-[#787878] text-sm'>Estimated Delivery</label>
-                      <p>{formatDateDisplay(order?.trackingInfo?.estimatedDelivery)}</p>
-                    </div>
-                    <div className='flex-1'>
-                      <label className='text-[#787878] text-sm'>Carrier</label>
-                      <p>{order?.trackingInfo?.carrier||'-'}</p>
-                    </div> */}
                     <div className='flex-1 flex flex-col items-center'>
                       <label className='text-[#787878] text-sm font-bold'>Delivery Status</label>
-                      <div className='text-3xl p-2 mt-2 bg-blue-600 text-white rounded-full'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.icon}</div>
-                      <p className='text-blue-600 mt-2.5'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.label||'-'}</p>
-                      <p className='text-sm text-[#787878]'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message||'-'}</p>
+                      <div className='text-3xl p-2 mt-2 bg-[#0d6efd] text-white rounded-full'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.icon}</div>
+                      <p className='text-[#0d6efd] mt-2.5'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.label||'-'}</p>
+                      <p className='text-sm text-[#787878]'>{formatDateDisplay(order.statusTimestamps?.[order.fulfillmentStatus])}</p>
+                      {order.paymentStatus === 'pending' && (
+                        <p className='text-base text-[#0d6efd] mt-2'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message||'-'}</p>
+                      )}
                     </div>
                     <div className='flex-1 flex flex-col items-center'>
                       <label className='text-[#787878] text-sm font-bold'>Payment Status</label>
-                      <div className={`text-3xl p-2 mt-2 rounded-full ${paymentStatuses.find(s => s.value === order?.paymentStatus)?.color||'bg-gray-300 text-gray-600'}`}>
-                        {paymentStatuses.find(s => s.value === order?.paymentStatus)?.icon}
+                      <div className={`text-3xl relative p-2 mt-2 rounded-full ${`${paymentStatuses.find(s => s.value === order?.paymentStatus)?.color} text-white`||'bg-gray-300 text-gray-600'}`} style={{backgroundColor: '#000'}}>
+                        {paymentMethods.find(m => m.value === order?.paymentMethod)?.icon}
+                        <span className='rounded-full p-1 text-base text-white absolute -top-2 -left-2' style={{backgroundColor: paymentStatuses.find(s => s.value === order?.paymentStatus)?.color}}>{paymentStatuses.find(s => s.value === order?.paymentStatus)?.icon}</span>
                       </div>
-                      <p className={'text-gray-600 mt-2.5'}>
+                      <p className={'mt-2.5'} style={{color: '#000'}}>
                         {paymentStatuses.find(s => s.value === order?.paymentStatus)?.label || '-'}
                       </p>
                       <p className='text-sm text-[#787878]'>{formatDateDisplay(order.paymentDetails?.paidAt)}</p>
@@ -138,7 +152,7 @@ const DashboardOrderDetailsPage = () => {
                 <div className='space-y-2'>
                   <div className='bg-[#fdfdfd] shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
                   <div className='text-xl p-4 pb-2'>
-                    Items
+                    Ordered Items
                   </div>
                     <table className='text-base w-full float-left text-left border-t border-[#d3d3d3]'>
                       <thead className='bg-[#f7f7f7] text-[#393939]'>
@@ -175,27 +189,35 @@ const DashboardOrderDetailsPage = () => {
                   <div className='flex justify-between py-2'><span>Shipping</span><span>{formatNumber(order.shippingCost)}</span></div>
                   <div className='flex justify-between border-t border-gray-200 pt-4 text-lg font-semibold'><span>Total</span><span>{formatNumber(order.grandTotal)}</span></div>
                 </div>
-                <div className='flex justify-start'>
-                  <Button variant='danger' size='lg' className='justify-center font-bold cursor-pointer text-white' disabled={order.fulfillmentStatus==='cancelled'}>
-                    Cancel Order
-                  </Button>
-                </div>
               </div>
               {/* RIGHT SECTION */}
               <div className='space-y-6'>
-                <div className='p-6 bg-white shadow-sm rounded-sm border border-[#d3d3d3]'>
+                <div className='p-6 bg-white shadow-sm rounded-sm border border-[#d3d3d3] space-y-4'>
                   <div className='text-2xl'>
                     Actions
                   </div>
-                  <div className='mt-4 space-y-4'>
-                    <button className='w-full py-3 px-4 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors'>
+                  <div className='space-y-4'>
+                    <button onClick={()=>setShowUpdateStatus(true)} className='w-full cursor-pointer py-3 px-4 bg-[#0d6efd] text-white rounded-md font-medium hover:bg-[#0a5edb] transition-colors'>
                       Update Order Status
                     </button>
-                    <button className='w-full py-3 px-4 bg-gray-600 text-white rounded-md font-medium hover:bg-gray-700 transition-colors'>
+                    <button className='w-full cursor-pointer py-3 px-4 bg-gray-600 text-white rounded-md font-medium hover:bg-gray-700 transition-colors'>
                       Contact Customer
                     </button>
+                    <Button variant='danger' size='md' className='w-full justify-center font-bold cursor-pointer text-white py-3' disabled={order.fulfillmentStatus==='cancelled'}>
+                      Cancel Order
+                    </Button>
                   </div>
                 </div>
+                <div className='p-6 bg-white shadow-sm rounded-sm border border-[#d3d3d3] space-y-4 font-[Sans]'>
+                  <div className='text-2xl'>
+                    {/* Actions */}
+                    Shipping Timeline
+                  </div>
+                  <div className=''>
+                    <ShippingTimeline order={order}/>
+                  </div>
+                </div>
+                
                 <div className='bg-white shadow-sm rounded-sm border border-[#d3d3d3]'>
                   <div className='text-xl p-4 px-5 pb-2 border-b border-[#d3d3d3]'>
                     Customer Information

@@ -29,6 +29,11 @@ export const fulfillmentStatusDisplay = (status: FulfillmentStatus) =>{
       borderColor = '#c8e6c9'
       color = '#2e7d32'
       break
+    case 'out_for_delivery':
+      backgroundColor = '#e3f2fd'
+      borderColor = '#bbdefb'
+      color = '#1565c0'
+      break
     case 'shipped':
       backgroundColor = '#e3f2fd'
       borderColor = '#bbdefb'
@@ -51,7 +56,10 @@ export const fulfillmentStatusDisplay = (status: FulfillmentStatus) =>{
       break
   }
 
-  return <span className={`p-1 px-2 border capitalize rounded-2xl`} style={{backgroundColor, color, borderColor}}>{text}</span>
+  return <span className={`p-1 px-2 border capitalize rounded-2xl flex items-center gap-2`} style={{backgroundColor, color, borderColor}}>
+    <span className='text-lg'>{fulfillmentStatuses.find(s=>s.value===status)?.icon}</span>
+    {text}
+  </span>
 }
 
 export const paymentStatusDisplay = (status: PaymentStatus) =>{
@@ -170,8 +178,8 @@ const DashboardOrdersPage = () => {
                     {formatDateDisplay(order.createdAt)}
                   </td>
                   <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{order.items.length}</td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{paymentStatusDisplay(order.paymentStatus)}</td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{fulfillmentStatusDisplay('pending')}</td>
+                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'><div className='flex items-center justify-center w-full h-full font-[Comfortaa]'>{paymentStatusDisplay(order.paymentStatus)}</div></td>
+                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'><div className='flex items-center justify-center w-full h-full font-[Comfortaa]'>{fulfillmentStatusDisplay(order.fulfillmentStatus)}</div></td>
                   <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatNumber(order.grandTotal)}</td>
                   <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7]'>
                     <div className='flex justify-center'>

@@ -74,7 +74,7 @@ const ShippingStatusBig = ({ status, timestamps }: { status: FulfillmentStatus, 
   const isTerminal = fulfillmentStatuses[currentIndex].type === 'terminal'
       
     return (
-      <div className='flex items-center'>
+      <div className='flex items-center px-16'>
           {status==='cancelled'?
           <div className='relative text-lg flex items-center flex-col gap-3 font-bold py-2'>
               <div className={`text-4xl text-red-600`}>
@@ -91,13 +91,13 @@ const ShippingStatusBig = ({ status, timestamps }: { status: FulfillmentStatus, 
                     text-nowrap text-sm text-center
                     ${isTerminal? 
                     currentIndex+1===i? 
-                    'text-blue-600'
+                    'text-[#0a5edb]'
                     :currentIndex+1>i?
                     'text-black'
                     :'text-[#787878]'
     
                     :currentIndex===i? 
-                    'text-blue-600'
+                    'text-[#0a5edb]'
                     :currentIndex>i?
                     'text-black'
                     :'text-[#787878]'}
@@ -109,13 +109,13 @@ const ShippingStatusBig = ({ status, timestamps }: { status: FulfillmentStatus, 
                     <div className={`text-3xl text-white ${
                     isTerminal? 
                     currentIndex+1===i? 
-                    'bg-blue-600'
+                    'bg-[#0a5edb]'
                     :currentIndex+1>i?
                     'bg-black '
                     :'bg-[#c7c7c7]'
         
                     :currentIndex===i? 
-                    'bg-blue-600 '
+                    'bg-[#0a5edb] '
                     :currentIndex>i?
                     'bg-black '
                     :'bg-[#c7c7c7]'
@@ -125,7 +125,7 @@ const ShippingStatusBig = ({ status, timestamps }: { status: FulfillmentStatus, 
                     </div>
                 </div>
             </div>
-            {i<fulfillmentStatuses.length-2&&<div className={`h-1 w-30 
+            {i<fulfillmentStatuses.length-2&&<div className={`h-1 w-36 
                 ${isTerminal? 
                     currentIndex>=i? 
                     'bg-black'

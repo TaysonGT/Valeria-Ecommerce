@@ -35,9 +35,14 @@ export class OrderService {
    * Update order status with full validation and audit trail
    */
   async getAllOrders(
-    status: string,
-    page: number,
-  ): Promise<{ totalPages: number; counts: any; orders: IOrder[], totalFilteredCount: number; limit: number }> {
+    {status, page}:{status?: string, page: number,})
+  : Promise<{ 
+    totalPages: number; 
+    counts: any; 
+    orders: IOrder[], 
+    totalFilteredCount: number; 
+    limit: number 
+  }> {
     // Validate status
     const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
     // const filterStatus = validStatuses.includes(status) ? status : 'pending';
@@ -46,8 +51,8 @@ export class OrderService {
     
     statusArray = validStatuses.filter(s=>s!=='delivered'&&s!=='cancelled');
     
-    if(validStatuses.includes(status)){
-    statusArray = [status]
+    if(status&&validStatuses.includes(status)){
+      statusArray = [status]
     }
     
     // Pagination settings
@@ -59,8 +64,8 @@ export class OrderService {
     
     // Get paginated orders with status filter
     const orders = await Order.find({ 
-    ...baseQuery, 
-    fulfillmentStatus: { $in: statusArray }
+      ...baseQuery,
+      ...status&&{fulfillmentStatus: { $in: statusArray }}
     })
     .sort({ createdAt: -1 })
     .skip(skip)

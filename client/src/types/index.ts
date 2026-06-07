@@ -4,7 +4,17 @@ export type CartItem = {
   variant: variantType
 }
 
-export enum PaymentMethodType { credit_card = 'Credit Card', paypal = 'Paypal', stripe = 'Stripe', cod = 'COD'}
+export type PaymentMethodType = 'credit_card' | 'paypal' | 'stripe' | 'cod'
+export type CarrierType = 'usps' | 'fedex' | 'ups' | 'dhl' | 'other';
+
+export const AvailableCarriers = [
+  {label: 'Other', value: 'other'},
+  {label: 'USPS', value: 'usps'}, 
+  {label: 'FedEx', value: 'fedex'}, 
+  {label: 'UPS', value: 'ups'}, 
+  {label: 'DHL', value: 'dhl'},
+];
+
 export interface IShippingAddress {
   street: string;
   city: string;
@@ -154,7 +164,7 @@ export interface IOrder {
   paymentStatus: PaymentStatus;
   fulfillmentStatus: FulfillmentStatus;
   shippingMethod: string;
-  trackingInfo?: TrackingInfo;
+  trackingInfo?: OrderTrackingInfo;
   notes?: string;
   cancelledAt?: string;
   createdAt: string;
@@ -184,11 +194,17 @@ interface Address {
   street: string; city: string; state: string; zipCode: string; country: string;
 }
 
-interface TrackingInfo {
-  carrier: string;
+interface OrderTrackingInfo {
+  carrier: CarrierType;
   carrierName: string;
   trackingNumber: string;
   trackingUrl?: string;
-  trackingHistory: Array<{ status: string; location?: string; timestamp: string; description: string }>;
-  estimatedDelivery?: string;
+  trackingHistory: Array<{
+    event: string;
+    location?: string;
+    timestamp: Date;
+    description: string;
+    isCarrierEvent: boolean;
+  }>;
+  estimatedDelivery?: Date;
 }

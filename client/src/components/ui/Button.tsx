@@ -17,7 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const variantClasses = {
-    primary: 'bg-blue-600 hover:bg-blue-700 disabled:bg-blue-200 text-white',
+    primary: 'bg-[#0d6efd] hover:bg-[#0a5edb] disabled:bg-blue-200 text-white',
     secondary: 'bg-gray-800 hover:bg-gray-900 disabled:bg-gray-400 text-white',
     outline: 'bg-transparent border border-gray-300 hover:bg-gray-50 text-gray-700',
     ghost: 'bg-transparent hover:bg-gray-100 text-gray-700',

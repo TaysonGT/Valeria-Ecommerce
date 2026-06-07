@@ -79,9 +79,9 @@ export class OrderController {
 
   async getAllOrders (req: AuthenticatedRequest, res: Response) {
     try {
-      const { page = '1', status = 'upcoming' }: OrderQuery = req.query;
+      const { page = '1', status }: OrderQuery = req.query;
 
-      const {totalPages, counts, orders, totalFilteredCount, limit} = await orderService.getAllOrders(status, parseInt(page));
+      const {totalPages, counts, orders, totalFilteredCount, limit} = await orderService.getAllOrders({status, page: parseInt(page)});
       
       return res.status(200).json({
         success: true,
