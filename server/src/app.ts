@@ -9,7 +9,7 @@ import mongoose from 'mongoose'
 import reportingRouter from './routes/reporting.route'
 require('dotenv').config(); // Loads variables into process.env
 
-const allowedOrigins = process.env.NODE_ENV == 'production' ? "https://playstation-frontend.vercel.app" : true
+const allowedOrigins = process.env.NODE_ENV == 'production' ? process.env.FRONTEND_URL : true
 
 mongoose.connect(process.env.MONGODB_URI||'mongodb://localhost:27017/valeria')
   .then(() => {
