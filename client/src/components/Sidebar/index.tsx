@@ -1,97 +1,109 @@
 import React, { useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
-  RiFeedbackFill, 
-  RiHome6Line, 
+  RiBankLine,
+  RiFeedbackFill,
+  RiSpeedUpLine, 
   RiToolsFill
 } from "react-icons/ri";
-import { CiDiscount1, CiEdit } from "react-icons/ci";
-import { MdOutlineAnalytics, MdPerson2 } from 'react-icons/md';
+import { MdPerson2 } from 'react-icons/md';
 import { useAuth } from '../../context/AuthContext';
-// import {Avatar} from '../ui/Avatar';
-import { FiInbox, FiPackage, FiUsers } from 'react-icons/fi';
+import { FiInbox, FiPackage, FiType, FiUsers } from 'react-icons/fi';
 import { UserType } from '../../types';
-import { IoPeopleOutline } from 'react-icons/io5';
-import { PiBankLight, PiMegaphoneLight } from 'react-icons/pi';
+import { IoAnalyticsOutline, IoMegaphoneOutline, IoPeopleOutline } from 'react-icons/io5';
 import { AiOutlineProduct } from 'react-icons/ai';
+import { TbDiscount } from 'react-icons/tb';
 
 const customerLinks = [
+{title: '',
+  links: [
     {
-        name: "Profile",
-        path: "/profile",
-        icon: <MdPerson2 />,
+      name: "Profile",
+      path: "/profile",
+      icon: <MdPerson2 />,
     },
     {
       name: "Orders",
       path: "/my-orders",
       keywords: ['orders', 'my-orders'],
-        icon: <FiInbox />,
+      icon: <FiInbox />,
     },
     {
-        name: "Shipping Addresses",
-        path: "/shipping-addresses",
-        icon: <FiUsers />,
+      name: "Shipping Addresses",
+      path: "/shipping-addresses",
+      icon: <FiUsers />,
     },
     {
-        name: "Payment Methods",
-        path: "/payment-methods",
-        icon: <RiToolsFill/>
+      name: "Payment Methods",
+      path: "/payment-methods",
+      icon: <RiToolsFill/>
     },
     {
-        name: "Support",
-        path: "/support",
-        icon: <RiFeedbackFill/>
+      name: "Support",
+      path: "/support",
+      icon: <RiFeedbackFill/>
     }
-]
+  ]
+}]
 
 const adminLinks = [
-    {
-        name: "Home",
-        path: "/dashboard/",
-        icon: <RiHome6Line />,
-    },
-    {
-      name: "Products",
-      path: "/dashboard/products",
-      keywords: ['products'],
-      icon: <AiOutlineProduct />,
-    },
-    {
-      name: "Orders",
-      path: "/dashboard/orders",
-      keywords: ['orders', 'my-orders'],
-      icon: <FiPackage />,
-    },
-    {
-      name: "Customers",
-      path: "/dashboard/shipping-addresses",
-      icon: <IoPeopleOutline />,
-    },
-    {
-      name: "Content",
-      path: "/dashboard/payment-methods",
-      icon: <CiEdit/>
-    },
-    {
-      name: "Finances",
-      path: "/dashboard/support",
-      icon: <PiBankLight/>
-    },
-    {
-      name: "Analytics",
-      path: "/dashboard/support",
-      icon: <MdOutlineAnalytics/>
-    },
-    {
-      name: "Marketing",
-      path: "/dashboard/support",
-      icon: <PiMegaphoneLight/>
-    },
-    {
-      name: "Discounts",
-      path: "/dashboard/support",
-      icon: <CiDiscount1/>
-    }
+  {
+    title: 'Control Panel',
+    links: [
+      {
+        name: "Overview",
+        path: "/dashboard",
+        icon: <RiSpeedUpLine />,
+      },
+      {
+        name: "Products",
+        path: "/dashboard/products",
+        keywords: ['/dashboard/product'],
+        icon: <AiOutlineProduct />,
+      },
+      {
+        name: "Orders",
+        path: "/dashboard/orders",
+        keywords: ['/dashboard/orders'],
+        icon: <FiPackage />,
+      },
+      {
+        name: "Finances",
+        path: "/dashboard/finances",
+        icon: <RiBankLine/>
+      },
+      {
+        name: "Customers",
+        path: "/dashboard/customers",
+        icon: <IoPeopleOutline />,
+      }
+    ]
+  },
+  {
+    title: 'Manage Content',
+    links: [
+      {
+        name: "Content",
+        path: "/dashboard/content",
+        icon: <FiType/>
+      },
+      {
+        name: "Analytics",
+        path: "/dashboard/analytics",
+        icon: <IoAnalyticsOutline/>
+      },
+      {
+        name: "Marketing",
+        path: "/dashboard/marketing",
+        icon: <IoMegaphoneOutline/>
+      },
+      {
+        name: "Discounts",
+        path: "/dashboard/discounts",
+        icon: <TbDiscount/>
+      }
+    ]
+  } 
 ]
 
 const getLinks = (user?:UserType|null)=>{
@@ -108,36 +120,61 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
   return (
     <div 
       ref={sidebarRef}
-      className={`flex flex-col sticky ${withNav? 'h-[calc(100vh-98px)] top-24':' top-0 h-screen'} left-0 pb-6 bg-[#f3f3f3] text-primary-text z-99 border-r border-gray-200 shadow-sm hover:shadow-md transition-all`}
+      className={`flex flex-col sticky ${withNav? 'h-[calc(100vh-98px)] top-24':' top-0 h-screen'} left-0 pb-6 bg-white text-primary-text z-99 border-r border-gray-200 shadow-sm hover:shadow-md transition-all`}
     >
+      <Link to='/' className='flex items-center gap-2 py-8 px-4 border-[#d9d9d9] border-b'>
+        <div className='w-10 aspect-square'>
+          <img src={'/logo.png'} alt='Valeria logo'/>
+
+        </div>
+        <p className='text-2xl font-[Elms_Sans]'>Valeria</p>
+      </Link>
       {/* Navigation Links */}
-      <ul className='flex flex-col text-md justify-center p-3 mt-4 gap-1'>
-        {getLinks(user).map((link, i) => (
-          <li
-            key={i}
-            className={`
-              relative select-none z-9 cursor-pointer py-2
-              pr-16
-              rounded-lg
-              group/secondary 
-              ${link.keywords?.some(keyword => location.pathname.includes(keyword)) || location.pathname === link.path ? 'bg-white text-primary-600' : 'hover:bg-gray-50'}
-            `}
-          >
-            <Link 
-              className='flex items-center gap-2.5 duration-150 text-sm overflow-hidden p-2' 
-              to={link.path}
-            >
-              <div className={`
-                flex items-center justify-center shrink-0
-                text-2xl duration-100 mx-1 rounded-lg
-              `}>
-                {link.icon}
-              </div>
-              <p className='text-gray-700 font-medium text-nowrap'>{link.name}</p>
-            </Link>
-          </li>
+      <div className='flex-col text-md justify-center pt-5 flow-root root gap-6 space-y-3 grow overflow-y-auto'>
+        {getLinks(user).map((set, x) => (
+        <div key={x} className='space-y-2.5 px-5'>
+          {set.title&&<h3 className='text-[#1f1f1f] text-sm font-bold px-2 font-[Sans]'>{set.title}</h3>}
+          <ul className='flex flex-col text-md justify-center gap-1'>
+            {set.links.map((link,i)=>
+              <Link 
+                to={link.path}
+                key={i}
+                className={`
+                  relative select-none z-9 cursor-pointer py-3.5
+                  pr-20
+                  pl-4
+                  rounded-lg
+                  flex items-center gap-3.5 duration-150 text-sm 
+                  ${
+                    ((link.path === (location.pathname.endsWith('/') ? 
+                      location.pathname.slice(0, -1) : 
+                      location.pathname))
+                      ||
+                      link.keywords?.find(k=>location.pathname.includes(k))
+                    )? 'bg-primary-50/70 text-primary-600' : 'hover:bg-gray-50'}
+                `}
+              >
+                  <div className={`
+                    flex items-center justify-center shrink-0
+                    text-2xl duration-100 rounded-lg
+                  `}>
+                    {link.icon}
+                  </div>
+                  <p className=' font-medium text-nowrap'>{link.name}</p>
+              </Link>
+            )}
+          </ul>
+        </div>
         ))}
-      </ul>
+        <div className='flex items-center gap-2 p-4 border-y border-[#d3d3d3]'>
+          <div className='w-10 rounded-full overflow-hidden border border-[#d3d3d3] aspect-square'>
+            <img src={user?.avatarUrl||'/'} onError={(e)=> {
+              e.currentTarget.onerror=null; e.currentTarget.src='/imgs/avatar.webp'
+            }} className='w-full h-full object-cover object-top' alt='User Avatar'/>
+          </div>
+          <p className='text-sm font-[Comfortaa]'>{user?.firstname} {user?.lastname}</p>
+        </div>
+      </div>
     </div>
   )
 }

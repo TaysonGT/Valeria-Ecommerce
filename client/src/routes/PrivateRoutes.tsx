@@ -19,8 +19,8 @@ const PrivateRoutes = ({withNav=false, withSidebar=false}) => {
     <div className={`relative max-w-screen w-full `}> 
       {withNav&& <Navbar /> }
       <div className={`relative flex items-start w-full h-full ${withNav&&'pt-24'}`}>
-        {withSidebar&&<Sidebar withNav/> }
-        <div className={`grow`}>
+        {withSidebar&&<Sidebar withNav={withNav}/> }
+        <div className={`grow bg-[#f3f3f3]`}>
           <Outlet /> 
         </div>
       </div>

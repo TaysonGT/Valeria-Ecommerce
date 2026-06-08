@@ -84,7 +84,7 @@ const ProductsPage = () => {
   }, [searchParams])
     
   return (
-    <div className='p-10 font-sans'>
+    <div className='p-10 font-sans min-h-screen'>
       <div className='flex justify-between items-center'>
         <div className=''>
           <h1 className='text-4xl font-[Elms_Sans]'>Products</h1>
@@ -124,28 +124,28 @@ const ProductsPage = () => {
       </div> */}
       <div className='mt-4'>
         <div className='flex justify-between'>
-          <div className='flex gap-2 font-light'>
+          <div className='flex items-stretch gap-2 font-light'>
             <form onSubmit={searchSubmitHandler} className="relative">
               <button type='submit' className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
                 <IoSearch className='text-[#b7b7b7]'/>
               </button>
-              <input type="search" onChange={(e)=>setSearchString(e.target.value)} id="search" className="block w-75 p-2 ps-9 border border-[#b7b7b7] text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-xs placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
+              <input type="search" onChange={(e)=>setSearchString(e.target.value)} id="search" className="h-full block w-75 p-2 ps-9 border border-[#b7b7b7] bg-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
             </form>
-            <div className='flex items-center gap-2 px-3 rounded-md text-sm border border-[#b7b7b7] text-[#b7b7b7]'>
+            <div className='flex items-center gap-2 px-3 rounded-md text-sm border border-[#b7b7b7] text-[#b7b7b7] bg-white'>
               <IoFilter/>
               Filter
             </div>
-            <div className='flex p-2 text-xl border border-[#b7b7b7] rounded-md'>
+            <div className='flex p-2 text-xl border border-[#b7b7b7] rounded-md bg-white'>
               <div className='pr-2 text-[#b7b7b7] border-r border-[#b7b7b7]'><FiGrid/></div>
               <div className='pl-2 text-black'><FiList/></div>
             </div>
           </div>
-          <div className='flex self-end gap-2 rounded-xl font-[Elms_Sans] p-1.5 px-2 bg-[#f3f3f3]'>
-            <button className='bg-white text-black px-2 p-1 text-sm rounded-lg cursor-pointer'>All</button>
-            <button className='text-gray-500 px-2 p-1 text-sm rounded-lg cursor-pointer'>Active</button>
-            <button className='text-gray-500 px-2 p-1 text-sm rounded-lg cursor-pointer'>Inactive</button>
-            <button className='text-gray-500 px-2 p-1 text-sm rounded-lg cursor-pointer'>Out</button>
-            <button className='text-gray-500 px-2 p-1 text-sm rounded-lg cursor-pointer'>Something</button>
+          <div className='flex self-end gap-2 rounded-xl font-[Elms_Sans] p-1.5 px-2 bg-[#787878] border border-[#d9d9d9]'>
+            <button className='bg-white shadow-sm text-black px-2 p-1 text-sm rounded-lg cursor-pointer'>All</button>
+            <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Active</button>
+            <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Inactive</button>
+            <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Out</button>
+            <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Something</button>
           </div>
         </div>
         {isLoading ? (
@@ -154,7 +154,7 @@ const ProductsPage = () => {
           </div>
         )
         :products.length>0?
-        <div className='rounded-xl overflow-hidden border border-[#e7e7e7] my-4 '>
+        <div className='rounded-xl shadow-sm shadow-black/20 overflow-hidden border bg-white border-[#e7e7e7] my-4 '>
           <table className='text-sm border-collapse w-full text-left'>
             <thead className=''>
               <tr className='text-[#797979]'>
@@ -172,7 +172,7 @@ const ProductsPage = () => {
             </thead>
             <tbody className='bg-white text-sm'>
               {products?.map((product, idx) => (                  
-                <tr key={idx} className='group odd:bg-[#fcfcfc] text-[#1f1f1f]'>
+                <tr key={idx} className='group odd:bg-[#fefefe] text-[#1f1f1f]'>
                   <td className='py-2 px-4  border-b border-r group-last:border-b-0 border-[#e7e7e7] w-8'>
                     <input type='checkbox' className='scale-115'/>
                   </td>

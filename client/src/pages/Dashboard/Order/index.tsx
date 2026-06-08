@@ -120,7 +120,7 @@ const DashboardOrderDetailsPage = () => {
             }}} />
             <div className='flex justify-between items-center border-b pb-4 border-[#d9d9d9]'>
               <h1 className='text-3xl font-[Comfortaa]'>Order Details</h1>
-              <span className=''>Order ID: {order?._id}</span>
+              <span className=''>Order ID: #{order.orderNumber||order?._id}</span>
             </div>
             <div className='grid grid-cols-[2fr_1fr] gap-6 py-4 items-start mt-4'>
               {/* LEFT SECTION */}
@@ -151,7 +151,7 @@ const DashboardOrderDetailsPage = () => {
                 </div>
                 <div className='space-y-2'>
                   <div className='bg-[#fdfdfd] shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
-                  <div className='text-xl p-4 pb-2'>
+                  <div className='font-bold font-[Comfortaa] p-4 pb-2'>
                     Ordered Items
                   </div>
                     <table className='text-base w-full float-left text-left border-t border-[#d3d3d3]'>
@@ -192,8 +192,8 @@ const DashboardOrderDetailsPage = () => {
               </div>
               {/* RIGHT SECTION */}
               <div className='space-y-6'>
-                <div className='p-6 bg-white shadow-sm rounded-sm border border-[#d3d3d3] space-y-4'>
-                  <div className='text-2xl'>
+                <div className='p-6 bg-white shadow-sm rounded-sm border border-[#d3d3d3] space-y-4 font-[Comfortaa]'>
+                  <div className='font-bold'>
                     Actions
                   </div>
                   <div className='space-y-4'>
@@ -208,18 +208,15 @@ const DashboardOrderDetailsPage = () => {
                     </Button>
                   </div>
                 </div>
-                <div className='p-6 bg-white shadow-sm rounded-sm border border-[#d3d3d3] space-y-4 font-[Sans]'>
-                  <div className='text-2xl'>
-                    {/* Actions */}
-                    Shipping Timeline
-                  </div>
-                  <div className=''>
+                <div className='bg-white shadow-sm rounded-sm border border-[#d3d3d3] font-[Sans]'>
+                  <div className='text-base font-bold font-[Comfortaa] p-4 pb-2 border-b border-[#d3d3d3]'>Shipping Timeline</div>
+                  <div className='p-4 pt-5 pb-6'>
                     <ShippingTimeline order={order}/>
                   </div>
                 </div>
                 
                 <div className='bg-white shadow-sm rounded-sm border border-[#d3d3d3]'>
-                  <div className='text-xl p-4 px-5 pb-2 border-b border-[#d3d3d3]'>
+                  <div className='font-bold font-[Comfortaa] p-4 pb-2 border-b border-[#d3d3d3]'>
                     Customer Information
                   </div>
                   <div className='p-6 px-4 space-y-5'>
@@ -271,7 +268,7 @@ const DashboardOrderDetailsPage = () => {
                   </div>
                 </div>
                 <div className='bg-white shadow-sm rounded-sm border border-[#d3d3d3]'>
-                  <div className='border-b border-gray-200 p-4 text-lg'>
+                  <div className='border-b border-gray-200 p-4 font-bold font-[Comfortaa]'>
                     Notes
                   </div>
                   <div className='p-4 space-y-4'>

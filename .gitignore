@@ -4,3 +4,4 @@
 */build
 
 *.patch
+.env

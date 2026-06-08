@@ -9,6 +9,7 @@ import { FiEdit } from 'react-icons/fi'
 import AddVariant from './dialogs/AddVariant'
 import { useProductDetails } from '../../../hooks/useProduct'
 import AddImage from './dialogs/AddImage'
+import { Button } from '../../../components/ui/Button'
 
 const ProductDetails = () => {
     const {
@@ -57,14 +58,14 @@ const ProductDetails = () => {
 
             <div className='px-4'>
                 <h1 className='text-4xl font-[Elms_Sans]'>Product Details</h1>
-                <p className='mt-2 font-light text-gray-600'>Preview, edit or delete product</p>
+                <p className='mt-2 font-light text-[#777]'>Preview, edit or delete product</p>
             </div>
             <div className='bg-white shadow-xs border border-gray-200 rounded-md p-6 space-y-4'>
                 <h1 className='text-2xl font-[Elms_Sans] mb-8'>Primary Details</h1>
                 <div className='flex gap-3 w-full overflow-y-auto bg-white rounded-md'>
                     <div className="flex items-center justify-center">
-                        <button onClick={()=>setShowAddImage(true)} className="flex flex-col items-center justify-center w-full h-full border border-gray-300 bg-gray-50 rounded-lg cursor-pointer px-10">
-                            <div className="flex flex-col items-center justify-center text-gray-600 pt-5 pb-6">
+                        <button onClick={()=>setShowAddImage(true)} className="flex flex-col items-center justify-center w-full h-full border border-[#d9d9d9] bg-[#fdfdfd] rounded-lg cursor-pointer px-10">
+                            <div className="flex flex-col items-center justify-center text-[#777] pt-5 pb-6">
                                 <LuImagePlus className='text-4xl'/>
                                 <p className="mb-2 text-sm mt-2">Add image or drag and drop</p>
                                 <p className="text-xs">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
@@ -73,9 +74,9 @@ const ProductDetails = () => {
                         </button>
                     </div> 
                     {product?.imgs.map((image, i)=>
-                    <div key={i} className='flex flex-col rounded-lg overflow-hidden border border-gray-300 bg-[#f3f3f3] w-80'>
+                    <div key={i} className='flex flex-col rounded-lg overflow-hidden border border-[#d9d9d9] bg-[#fdfdfd] w-80'>
                         <img className='object-cover w-full h-60 shrink-0' src={image.url} alt={image.altText}/>
-                        <div className='flex justify-between py-3 px-4 bg-[#f7f7f7] border-t border-gray-300'>
+                        <div className='flex justify-between py-3 px-4 bg-[#fdfdfd] border-t border-[#d9d9d9]'>
                             <div className='flex gap-2 items-center text-sm'>
                                 <input type="radio" onClick={()=>setPrimaryImage(image._id)} defaultChecked={image.isPrimary} className='w-5 h-5' name="main" id="" />
                                 Primary
@@ -103,7 +104,7 @@ const ProductDetails = () => {
                                     <IoClose onClick={cancelEdit} className='text-red-500 hover:text-red-400 cursor-pointer'/>
                                 </div>
                                 <Loader className={`absolute top-1/2 -translate-y-1/2 ${(editField==='title'&&saving)?'right-4 opacity-100':'right-0 opacity-0'}`}/>
-                                <input onChange={(e)=>setEditValue(e.target.value)} type='text' className={`border mb-3 bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md block w-full px-3 py-2.5 shadow-xs outline-0 ${editField==='title'&&'focus:ring-indigo-500 focus:border-indigo-500 ring ring-indigo-500'}`} readOnly={editField!=='title'} value={editField==='title'?editValue:product?.title}/>
+                                <input onChange={(e)=>setEditValue(e.target.value)} type='text' className={`border mb-3 bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md block w-full px-3 py-2.5  outline-0 ${editField==='title'&&'focus:ring-indigo-500 focus:border-indigo-500 ring ring-indigo-500'}`} readOnly={editField!=='title'} value={editField==='title'?editValue:product?.title}/>
                             </div>
                         </form>
                         <form onSubmit={saveEdit} className='flex-1'>
@@ -115,7 +116,7 @@ const ProductDetails = () => {
                                     <IoClose onClick={cancelEdit} className='text-red-500 hover:text-red-400 cursor-pointer'/>
                                 </div>
                                 <Loader className={`absolute top-1/2 -translate-y-1/2 ${(editField==='basePrice'&&saving)?'right-4 opacity-100':'right-0 opacity-0'}`}/>
-                                <input onChange={(e)=>setEditValue(e.target.value)} type='number' className={`border mb-3 bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md block w-full px-3 py-2.5 shadow-xs outline-0 ${editField==='basePrice'&&'focus:ring-indigo-500 focus:border-indigo-500 ring ring-indigo-500'}`} readOnly={editField!=='basePrice'} value={editField==='basePrice'?editValue:product?.basePrice}/>
+                                <input onChange={(e)=>setEditValue(e.target.value)} type='number' className={`border mb-3 bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md block w-full px-3 py-2.5  outline-0 ${editField==='basePrice'&&'focus:ring-indigo-500 focus:border-indigo-500 ring ring-indigo-500'}`} readOnly={editField!=='basePrice'} value={editField==='basePrice'?editValue:product?.basePrice}/>
                             </div>
                         </form>
                     </div>
@@ -127,13 +128,13 @@ const ProductDetails = () => {
                             <IoClose onClick={cancelEdit} className='text-red-500 hover:text-red-400 cursor-pointer'/>
                         </div>
                         <Loader className={`absolute top-4 ${(editField==='description'&&saving)?'right-4 opacity-100':'right-0 opacity-0'}`}/>
-                        <textarea onChange={(e)=>setEditValue(e.target.value)} className={`border bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md block w-full px-3 py-2.5 shadow-xs outline-0 ${editField==='description'&&'focus:ring-indigo-500 focus:border-indigo-500 ring ring-indigo-500'}`} readOnly={editField!=='description'} value={editField==='description'?editValue:product?.description}/>
+                        <textarea onChange={(e)=>setEditValue(e.target.value)} className={`border bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md block w-full px-3 py-2.5  outline-0 ${editField==='description'&&'focus:ring-indigo-500 focus:border-indigo-500 ring ring-indigo-500'}`} readOnly={editField!=='description'} value={editField==='description'?editValue:product?.description}/>
                     </form>
                     <div className='flex gap-3 items-center mt-4'>
                         <label className='block'>Categories</label>
                         <button className='px-1 pr-1.5 py-1 border bg-[#00a54a] hover:bg-[#00b150] text-white text-sm rounded-lg flex items-center gap-1 cursor-pointer'><HiPlus/> Add</button>
                     </div>
-                    <div className='px-3 py-2.5 border flex bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md focus:ring-indigo-500 outline-0 focus:border-indigo-500 w-full shadow-xs mb-3 gap-2 overflow-x-auto'>
+                    <div className='px-3 py-2.5 border flex bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md focus:ring-indigo-500 outline-0 focus:border-indigo-500 w-full  mb-3 gap-2 overflow-x-auto'>
                         {product?.categories.map(c=>
                             <span key={c._id} className='text-blue-700 flex items-center gap-1 bg-blue-50 rounded p-1 pl-2 border border-blue-700'>
                                 {c.name}
@@ -146,11 +147,11 @@ const ProductDetails = () => {
             <div className=' bg-white p-6 shadow-xs border border-gray-200 '>
                 <div className='flex justify-between'>
                     <h1 className='text-2xl'>Product Variants</h1>
-                    <button onClick={()=>setShowAddVariant(true)} className='px-4 py-2 border rounded cursor-pointer'>Add</button>
+                    <Button variant='primary' onClick={()=>setShowAddVariant(true)} className='px-4 py-2 border rounded cursor-pointer'>Add Variant</Button>
                 </div>
                 <div className='flex gap-4 mt-4'>
                     {product?.variants.map(variant=>(
-                        <div className='relative p-2 border group border-[#c1c1c1] rounded-sm shadow-lg flex flex-col' key={variant._id}>
+                        <div className='relative p-2 border group border-[#c1c1c1] rounded-sm shadow-sm flex flex-col' key={variant._id}>
                             <div onClick={()=>removeVariant(variant._id)} className='absolute p-1 px-1.5 pl-2 cursor-pointer flex gap-2 items-center text-sm rounded-md bg-red-500 text-white group-hover:top-2 right-2 top-0 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto pointer-events-none duration-150'>
                                 <IoTrash className=''/> Remove
                             </div>

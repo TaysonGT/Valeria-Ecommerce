@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { RiAccountCircleLine, RiLogoutCircleRLine, RiMenuFill } from "react-icons/ri";
+import { RiAccountCircleLine, RiDashboardFill, RiLogoutCircleRLine, RiMenuFill } from "react-icons/ri";
 import { TfiHeadphoneAlt } from "react-icons/tfi";
 import { PiPackage } from "react-icons/pi";
 import { MdOutlineShoppingBag, MdOutlineFavoriteBorder, MdOutlineSearch, MdArrowRight } from "react-icons/md";
@@ -103,29 +103,35 @@ const Navbar: React.FC = () => {
   const nav = useNavigate()
   
   const dropDownItems = [
+    // {
+    //   label: "Dashboard",
+    //   value: "dashboard",
+    //   icon: <RiDashboardLine className='text-xl'/>,
+    //   onClick: () => nav('/support')
+    // },
     {
       label: "Profile",
       value: "profile",
-      icon: <FaRegUserCircle className='text-lg'/>,
+      icon: <FaRegUserCircle className='text-xl'/>,
       onClick: () => nav(`/profile/${user?._id}`)
     },
     {
       label: "My Orders",
       value: "orders",
-      icon: <PiPackage className='text-lg'/>,
+      icon: <PiPackage className='text-xl'/>,
       onClick: () => nav(`/my-orders`)
     },
     {
       label: "Support",
       value: "support",
-      icon: <TfiHeadphoneAlt className='text-lg'/>,
+      icon: <TfiHeadphoneAlt className='text-xl'/>,
       onClick: () => nav('/support')
     },
     {
       label: "Logout",
       value: "logout",
       color: 'red-500',
-      icon: <RiLogoutCircleRLine className='text-lg'/>,
+      icon: <RiLogoutCircleRLine className='text-xl'/>,
       onClick: async () => {
         await logout();
         nav('/');
@@ -180,7 +186,8 @@ const Navbar: React.FC = () => {
           <Link to='/'>
             <MdOutlineFavoriteBorder className=' hover:scale-[1.15] duration-200'/>
           </Link>
-          {user&&<Dropdown trigger={
+          {user&&
+          <Dropdown trigger={
             <RiAccountCircleLine className='hover:scale-[1.15] duration-200'/>
             }
             items={dropDownItems}/>
@@ -194,6 +201,12 @@ const Navbar: React.FC = () => {
             <Link className='px-3 py-2 bg-white text-black border border-white hover:bg-white/95 duration-150 rounded-sm text-sm ml-2' to='/auth/login'>
               Login
             </Link>
+          }
+          {user?.role==='admin'&&
+           <Link className='flex items-center gap-2 text-sm bg-primary-700 text-white border hover:bg-primary-600 border-white duration-150 py-2 px-4 pl-3 ml-4' to='/dashboard'>
+            <RiDashboardFill className='text-2xl hover:scale-[1.15] duration-200'/>
+            <span className=''>Dashboard</span>
+          </Link>
           }
         </div>
       </div>

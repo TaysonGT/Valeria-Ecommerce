@@ -114,6 +114,7 @@ export interface IOrder extends Document {
   // Metadata
   notes?: string;
   cancelledAt?: Date;  // Only needed for cancelled/refunded orders
+  createdAt?: Date;
 }
 
 const OrderItemSchema = new Schema<IOrderItem>({

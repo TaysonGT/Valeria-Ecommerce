@@ -25,7 +25,7 @@ const ShippingTimeline = ({ order }: { order: IOrder }) => {
       
     return (
       <div className='relative'>
-        <div className='h-full absolute bg-[#676767] w-0.5 translate-x-4.5 z-1'/>
+        <div className='h-full absolute bg-primary-900 w-0.5 translate-x-4.5 z-1'/>
         <div className='space-y-4.5'>
           {finalTimeline.map((event,i)=>
           //   {order.trackingInfo?.trackingHistory?.sort((a,b)=>new Date(b.timestamp).getTime()-new Date(a.timestamp).getTime()).map((event,i)=>

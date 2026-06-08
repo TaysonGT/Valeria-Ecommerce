@@ -111,7 +111,7 @@ const DashboardOrdersPage = () => {
     }
       
   return (
-    <div className='p-10 py-8'>
+    <div className='p-10 py-8 min-h-screen'>
         <div className=''>
           <h1 className='text-4xl font-[Elms_Sans]'>Orders</h1>
           <p className='mt-2 font-light text-gray-600'>Manage orders, update and availability across your store</p>
@@ -122,23 +122,23 @@ const DashboardOrdersPage = () => {
                     <button type='submit' className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
                         <IoSearch className='text-[#b7b7b7]'/>
                     </button>
-                    <input type="search" onChange={(e)=>setSearchString(e.target.value)} id="search" className="block w-75 p-2 ps-9 border border-[#b7b7b7] text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-xs placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
+                    <input type="search" onChange={(e)=>setSearchString(e.target.value)} id="search" className="h-full block w-75 p-2 ps-9 border border-[#b7b7b7] bg-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
                 </form>
-                <div className='flex items-center gap-2 px-3 rounded-md text-sm border border-[#b7b7b7] text-[#b7b7b7]'>
+                <div className='flex items-center gap-2 px-3 rounded-md text-sm border border-[#b7b7b7] text-[#b7b7b7] bg-white'>
                     <IoFilter/>
                     Filter
                 </div>
-                <div className='flex p-2 text-xl border border-[#b7b7b7] rounded-md'>
+                <div className='flex p-2 text-xl border border-[#b7b7b7] rounded-md bg-white'>
                     <div className='pr-2 text-[#b7b7b7] border-r border-[#b7b7b7]'><FiGrid/></div>
                     <div className='pl-2 text-black'><FiList/></div>
                 </div>
             </div>
-            <div className='flex self-end gap-2 rounded-xl font-[Elms_Sans] p-1.5 px-2 bg-[#f3f3f3] border border-[#d9d9d9]'>
-                <button className='bg-white text-black px-2 p-1 text-sm rounded-lg cursor-pointer'>All</button>
-                <button className='text-gray-500 px-2 p-1 text-sm rounded-lg cursor-pointer'>Active</button>
-                <button className='text-gray-500 px-2 p-1 text-sm rounded-lg cursor-pointer'>Inactive</button>
-                <button className='text-gray-500 px-2 p-1 text-sm rounded-lg cursor-pointer'>Out</button>
-                <button className='text-gray-500 px-2 p-1 text-sm rounded-lg cursor-pointer'>Something</button>
+            <div className='flex self-end gap-2 rounded-xl font-[Elms_Sans] p-1.5 px-2 bg-[#787878] border border-[#d9d9d9]'>
+                <button className='bg-white shadow-sm text-black px-2 p-1 text-sm rounded-lg cursor-pointer'>All</button>
+                <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Active</button>
+                <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Inactive</button>
+                <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Out</button>
+                <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Something</button>
             </div>
         </div>
         {isLoading ? (
@@ -147,7 +147,7 @@ const DashboardOrdersPage = () => {
           </div>
         )
         :orders.length>0?
-        <div className='rounded-xl overflow-hidden border border-[#e7e7e7] my-4 '>
+        <div className='rounded-xl shadow-sm shadow-black/20 overflow-hidden border border-[#e7e7e7] bg-white my-4 '>
           <table className='text-sm border-collapse w-full text-left'>
             <thead className=''>
               <tr className='text-[#494949]'>
@@ -164,14 +164,14 @@ const DashboardOrdersPage = () => {
                 <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'></th>
               </tr>
             </thead>
-            <tbody className='bg-white text-sm'>
+            <tbody className='bg-[#fdfdfd] text-sm'>
               {orders?.map((order, idx) => (                  
                 <tr key={idx} className='group odd:bg-[#fcfcfc] text-[#1f1f1f]'>
                   <td className='py-2 px-4  border-b border-r group-last:border-b-0 border-[#e7e7e7] w-8'>
                     <input type='checkbox' className='scale-115'/>
                   </td>
                   <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>
-                    <p className='font-normal'>{order._id.slice(-7)}</p>
+                    <p className='font-normal'>#{order.orderNumber||order._id.slice(3)}</p>
                   </td>
                   <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>{order.customerInfo.firstName} {order.customerInfo.lastName}</td>
                   <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>

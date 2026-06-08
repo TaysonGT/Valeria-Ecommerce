@@ -77,7 +77,7 @@ export type UserType = {
   lastname: string;
   email: string;
   gender: string;
-  role: string;
+  role: 'admin'|'customer';
   avatarUrl?: string;
   paymentDetails?: {
     cardBrand: string;
