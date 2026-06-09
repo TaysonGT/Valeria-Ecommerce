@@ -246,7 +246,6 @@ const OrderSchema = new Schema<IOrder>({
 }, { timestamps: true });
 
 // Indexes
-OrderSchema.index({ orderNumber: 1 });
 OrderSchema.index({ userId: 1 });
 OrderSchema.index({ createdAt: -1 });
 OrderSchema.index({ fulfillmentStatus: 1 });

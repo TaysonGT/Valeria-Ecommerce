@@ -16,7 +16,7 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
     const {total, cartItems, removeFromCart, clearCart, editItemQuantity} = useCart()
 
     return (
-        <div className={`fixed flex flex-col ${!show&&'pointer-events-none'} top-0 h-screen bg-white text-black left-full duration-300 z-100 p-10 w-100 ${show&& '-translate-x-full'}`}>
+        <div className={`fixed flex flex-col ${!show&&'pointer-events-none'} top-0 h-screen bg-white text-black left-full duration-300 z-110 p-10 w-100 ${show&& '-translate-x-full'}`}>
             <div className='flex flex-col gap-1 border-b border-gray-400 pb-6 relative'>
                 <h1 className='text-lg font-bold font-[Playfair]'>Cart</h1>
                 <RiCloseFill onClick={()=>setShow(false)} className='text-red-700 hover:text-red-400 duration-150 cursor-pointer text-3xl absolute top-0 right-0'/>
@@ -52,15 +52,15 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
                 <p>Subtotal:</p>
                 <p className='text-[#FFB400]'>{formatNumber(total)}</p>
             </div>
-            <div className='flex text-nowrap mt-auto justify-between gap-4 text-base'>
+            <div className='flex text-nowrap mt-auto gap-4 text-base'>
                 <button onClick={()=>{
                     nav('/cart')
                     setShow(false)
-                    }} className='px-8 py-2 z-0 bg-[#a87600] hover:bg-transparent hover:text-[#071c1f] border border-[#FFB400] hover:border-[#071c1f] duration-400 text-white ltr btn cursor-pointer'>View Cart</button>
+                    }} className='flex-1 px-8 py-2.5 font-bold z-0 bg-[#043aff] hover:bg-transparent hover:text-[#071c1f] border border-[#043aff] hover:border-[#071c1f] duration-400 text-white ltr btn cursor-pointer'>View Cart</button>
                 <button onClick={()=>{
                     nav('/checkout')
                     setShow(false)
-                    }} className='px-8 py-2 z-0 hover:bg-transparent bg-[#071c1f] border border-[#071c1f] duration-400 text-white hover:text-[#071c1f] rtl before:bg-[#071c1f] btn cursor-pointer'>Checkout</button>
+                    }} className='flex-1 px-8 py-2.5 font-bold z-0 hover:bg-transparent bg-[#071c1f] border border-[#071c1f] duration-400 text-white hover:text-[#071c1f] rtl before:bg-[#071c1f] btn cursor-pointer'>Checkout</button>
             </div>
             <p className='mt-4 font-[Playfair]'>Free Shippping on All Orders Over $100!</p>
         </div>

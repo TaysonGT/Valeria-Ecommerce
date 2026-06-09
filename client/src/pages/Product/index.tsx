@@ -93,7 +93,7 @@ const ProductPage = () => {
                                     navigation={true}
                                     className='h-full w-full'>
                                         {product?.imgs.map((img, i)=>
-                                            <SwiperSlide>
+                                            <SwiperSlide key={i}>
                                                 <div className={`h-full w-24 border cursor-pointer bg-[#F2F6F7] ${i===selectedImage? 'border-[#FFB400]': 'border-transparent'}`}>
                                                     <img key={i} onClick={()=>setSelectedImage(i)} className={`h-full w-full object-contain`} src={img.url} alt={img.altText} />
                                                 </div>
@@ -121,10 +121,10 @@ const ProductPage = () => {
                                     <p className='text-gray-600'>Category:</p>
                                     <div className='w-full flex flex-wrap items-center gap-2 font-[Comfortaa] text-sm'>
                                         {product.collections.map((collection)=>
-                                            <p className='capitalize font-bold p-1 px-1.5 rounded-md bg-violet-900 text-white'>{collection.title}</p>
+                                            <p key={collection.collectionId} className='capitalize font-bold p-1 px-1.5 rounded-md bg-violet-900 text-white'>{collection.title}</p>
                                         )}
                                         {product.categories.map((category)=>
-                                            <p className='capitalize font-bold p-1 px-1.5 rounded-md bg-rose-800 text-white'>{category.name}</p>
+                                            <p key={category._id} className='capitalize font-bold p-1 px-1.5 rounded-md bg-rose-800 text-white'>{category.name}</p>
                                         )}
                                     </div>
                                 </div>
@@ -135,7 +135,7 @@ const ProductPage = () => {
                                         <div className='flex gap-2 items-center'>
                                             <p>Available:</p>
                                             {product.variants.map((variant)=>
-                                                <button onClick={()=>setSelectedVariant(variant)} className={`px-3 py-1 border rounded font-bold text-sm ${selectedVariant===variant&& 'bg-black text-white'} duration-75 cursor-pointer`}>{variant.sizeCode}</button>
+                                                <button key={variant._id} onClick={()=>setSelectedVariant(variant)} className={`px-3 py-1 border rounded font-bold text-sm ${selectedVariant===variant&& 'bg-black text-white'} duration-75 cursor-pointer`}>{variant.sizeCode}</button>
                                             )}
                                         </div>
                                         <div className='flex gap-4 mt-3'>
@@ -190,9 +190,7 @@ const ProductPage = () => {
                                 {relatedProducts?.map((rProduct, i)=>
                                     <Link to={`/products/${rProduct._id}`} key={i} className="flex gap-6 items-center py-3 not-last:border-b border-gray-200">
                                         <div className='h-25 aspect-square bg-[#f3f3f3]'>
-                                            <Link to={`/products/${rProduct._id}`}>
-                                                <img src={rProduct.imgs[0].url} className='h-full w-full object-contain' alt={rProduct.imgs[0].altText}/>
-                                            </Link>
+                                            <img src={rProduct.imgs[0].url} className='h-full w-full object-contain' alt={rProduct.imgs[0].altText}/>
                                         </div>
                                         <div className='grow flex flex-col gap-2'>
                                             <div className='flex gap-2 text-[#FFB400]'>
