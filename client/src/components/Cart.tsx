@@ -50,7 +50,7 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
             </div>
             <div className='flex font-bold text-lg py-4 mb-4 border-y border-gray-200 justify-between gap-4'>
                 <p>Subtotal:</p>
-                <p className='text-[#FFB400]'>{formatNumber(total)}</p>
+                <p className='text-[#1f1f1f]'>{formatNumber(total)}</p>
             </div>
             <div className='flex text-nowrap mt-auto gap-4 text-base'>
                 <button onClick={()=>{

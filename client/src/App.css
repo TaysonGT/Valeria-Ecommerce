@@ -39,7 +39,26 @@
 body{
   font-family: sans-serif; 
 }
+body{ overflow-x: hidden; }
 
+/* Global responsive helpers (layout only). Preserve all design tokens above. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { min-height: 100%; }
+
+/* Ensure containers don't overflow on small screens */
+.container, .page-container { width: 100%; max-width: 100%; padding-left: 1rem; padding-right: 1rem; }
+
+/* Side-drawer base rules used by Navbar/Sidebar/Filter toggles */
+.side-drawer-enter { transform: translateX(-100%); }
+.side-drawer-enter-active { transform: translateX(0); transition: transform 240ms ease-in-out; }
+.side-drawer-exit { transform: translateX(0); }
+.side-drawer-exit-active { transform: translateX(-100%); transition: transform 200ms ease-in-out; }
+
+/* Constrain modals/overlays on small screens: allow vertical scrolling inside modal while keeping header visible */
+.modal-inner { max-height: calc(100vh - 4rem); overflow-y: auto; }
+
+/* Utility to hide horizontal overflow when accidental wide children exist */
+.no-h-scroll { overflow-x: hidden; }
 @font-face {
   font-family: Arabic;
   src: url('/fonts/Alexandria-VariableFont_wght.ttf');

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { RiAccountCircleLine, RiDashboardFill, RiLogoutCircleRLine, RiMenuFill } from "react-icons/ri";
 import { TfiHeadphoneAlt } from "react-icons/tfi";
 import { PiPackage } from "react-icons/pi";
@@ -96,9 +96,11 @@ import { useAuth } from '../../context/AuthContext';
 const Navbar: React.FC = () => {
   const [showSearchbar, setShowSearchbar] = useState<boolean>(false)
   const [showCart, setShowCart] = useState<boolean>(false)
+  const [showMobileNav, setShowMobileNav] = useState<boolean>(false)
   
   const {cartItems} = useCart()
   const {user, logout} = useAuth()
+  const location = useLocation();
   
   const nav = useNavigate()
   
@@ -149,11 +151,11 @@ const Navbar: React.FC = () => {
       <DarkBackground {... {hide: ()=> setShowCart(false), show: showCart}} />
       <Cart {...{setShow: (v:boolean)=> setShowCart(v), show: showCart}}/>
 
-      <div className='flex justify-between items-center gap-16 xl:gap-0 w-full xl:m-auto sm:px-20 px-10 xl:px-30 py-6'>
+      <div className='flex justify-between items-center xl:gap-16 gap-10 w-full xl:m-auto sm:px-10 xl:px-20 px-6 2xl:px-30 py-6'>
         <div className='flex-1 flex justify-start items-stretch'>
           <Link to='/'><h1 className='text-4xl font-[Comfortaa] font-extrabold select-none hover:text-[#e0fbff] duration-300'>Valeria</h1></Link>
         </div>
-        <ul className='flex-1 lg:flex hidden gap-12 text-md justify-center items-center'>
+        <ul className='flex-1 lg:flex hidden xl:gap-12 gap-8 text-md justify-center items-center'>
           {links.map((link, i)=>
             <div key={i} className='group-hover:text-[#418791] duration-150 relative group/primary select-none z-9 cursor-pointer'>
               <Link className='inline-block py-3' to={link.path}>{link.name}</Link>
@@ -183,31 +185,76 @@ const Navbar: React.FC = () => {
         </ul>
         <div className='flex-1 flex items-center sm:gap-6 gap-4 text-[28px] justify-end'>
           <MdOutlineSearch onClick={()=>setShowSearchbar(true)} className='cursor-pointer hover:scale-[1.15] duration-200'/>
-          <Link to='/'>
-            <MdOutlineFavoriteBorder className=' hover:scale-[1.15] duration-200'/>
-          </Link>
-          {user&&
-          <Dropdown trigger={
-            <RiAccountCircleLine className='hover:scale-[1.15] duration-200'/>
-            }
-            items={dropDownItems}/>
-          }
-          <button onClick={()=> setShowCart(true)} className='cursor-pointer group relative'>
-            <MdOutlineShoppingBag className='group-hover:scale-[1.15] duration-200 '/>
-            <span className='absolute -top-1 -left-2 text-[12px] bg-[#ffd041] text-gray-700 font-bold rounded-full w-4.5 h-4.5 flex justify-center items-center'>{cartItems.length}</span>
-          </button>
-          <RiMenuFill className='cursor-pointer md:hidden hover:scale-[1.15] duration-75'/>
-          {!user&&
-            <Link className='px-3 py-2 bg-white text-black border border-white hover:bg-white/95 duration-150 rounded-sm text-sm ml-2' to='/auth/login'>
-              Login
+          <div className='gap-4 xl:gap-6 hidden sm:flex'>
+            <Link to='/'>
+              <MdOutlineFavoriteBorder className=' hover:scale-[1.15] duration-200'/>
             </Link>
-          }
-          {user?.role==='admin'&&
-           <Link className='flex items-center gap-2 text-sm bg-primary-700 text-white border hover:bg-primary-600 border-white duration-150 py-2 px-4 pl-3 ml-4' to='/dashboard'>
-            <RiDashboardFill className='text-2xl hover:scale-[1.15] duration-200'/>
-            <span className=''>Dashboard</span>
-          </Link>
-          }
+            {user&&
+            <Dropdown trigger={
+              <RiAccountCircleLine className='hover:scale-[1.15] duration-200'/>
+              }
+              items={dropDownItems}/>
+            }
+            <button onClick={()=> setShowCart(true)} className='cursor-pointer group hover:scale-[1.15] duration-200 relative'>
+              <MdOutlineShoppingBag className=' '/>
+              <span className='absolute -top-1 -left-2 text-[12px] bg-[#ffd041] text-gray-700 font-bold rounded-full w-4.5 h-4.5 flex justify-center items-center'>{cartItems.length}</span>
+            </button>
+          </div>
+          <div className='hidden lg:block ml-4'> 
+            {!user?
+              <Link className='px-3 py-2 bg-white text-black border border-white hover:bg-white/95 duration-150 rounded-sm text-sm' to='/auth/login'>
+                Login
+              </Link>
+            :user?.role==='admin'&&
+              <Link className='flex items-center gap-2 text-sm bg-primary-700 text-white border hover:bg-primary-600 border-white duration-150 py-2 px-4 pl-3' to='/dashboard'>
+                <RiDashboardFill className='text-2xl hover:scale-[1.15] duration-200'/>
+                <span className=''>Dashboard</span>
+              </Link>
+            }
+          </div>
+          <span className='cursor-pointer lg:hidden block hover:scale-[1.15] duration-75'>
+            <RiMenuFill
+              onClick={()=>{
+                if (location.pathname.startsWith('/dashboard')) {
+                  window.dispatchEvent(new Event('toggle-dashboard-sidebar'))
+                  return;
+                }
+                setShowMobileNav(v=>!v)
+              }}
+            />
+          </span>
+          {/* Mobile nav drawer */}
+          <DarkBackground show={showMobileNav} direction='left' hide={()=>setShowMobileNav(false)} />
+          <nav className={`fixed left-0 top-0 bottom-0 ${showMobileNav? 'translate-x-0':'-translate-x-full'} w-72 bg-black text-white z-150 p-8 overflow-y-auto duration-300`}>
+            <div className='flex items-center justify-between mb-6'>
+              <Link to='/' onClick={()=>setShowMobileNav(false)}><h1 className='text-3xl font-[Comfortaa] font-extrabold'>Valeria</h1></Link>
+              <button onClick={()=>setShowMobileNav(false)} className='text-white text-2xl'>×</button>
+            </div>
+            <ul className='flex flex-col gap-4'>
+              {links.map((link,i)=>(
+                <li key={i} onClick={()=>setShowMobileNav(false)}>
+                  <Link to={link.path} className='block py-3 text-lg'>{link.name}</Link>
+                  {link.children && (
+                    <div className='pl-4'>
+                      {link.children.map((c,ci)=>(<Link key={ci} to={c.path} className='block py-2 text-sm'>{c.text}</Link>))}
+                    </div>
+                  )}
+                </li>
+              ))}
+              <div className='mt-2'> 
+                {!user?
+                  <Link className='px-6 py-3 bg-white text-black border border-white hover:bg-white/95 duration-150 rounded-sm text-base' to='/auth/login'>
+                    Login
+                  </Link>
+                :user?.role==='admin'&&
+                  <Link className='flex items-center gap-2 text-sm bg-primary-700 text-white border hover:bg-primary-600 border-white duration-150 py-2 px-4 pl-3' to='/dashboard'>
+                    <RiDashboardFill className='text-2xl hover:scale-[1.15] duration-200'/>
+                    <span className=''>Dashboard</span>
+                  </Link>
+                }
+              </div>
+            </ul>
+          </nav>
         </div>
       </div>
     </div>

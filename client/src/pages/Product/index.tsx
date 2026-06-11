@@ -62,7 +62,7 @@ const ProductPage = () => {
             <Loader size={35} thickness={7}/>
         </div>
         :
-        <div className='flex flex-col h-full bg-[#f3f3f3] p-4'>
+        <div className='flex flex-col h-full bg-[#f3f3f3] font-[Comfortaa] pt-5 p-3'>
             {!product?
                 <div className='m-auto'>
                     <h1 className='text-5xl font-bold text-gray-600'>Product Not Found!</h1>
@@ -78,11 +78,11 @@ const ProductPage = () => {
 
                     </div>  
                 </div> */}
-                <div className='flex basis-0 gap-4 w-[80%] mx-auto'>
-                    <div className='w-2/3 bg-white'>
-                        <div className='flex'>
+                <div className='flex basis-0 w-full flex-col lg:flex-row gap-3'>
+                    <div className='grow bg-white border border-[#d9d9d9]'>
+                        <div className='flex flex-col lg:flex-row'>
                             <div className='p-4'>
-                                <div className='h-100 w-full border border-gray-200 bg-[#F7f7F7]'>
+                                <div className='h-100 w-full border border-[#d3d3d3] bg-[#F7f7F7]'>
                                     <img className='h-full w-full object-contain' src={product?.imgs[selectedImage].url} alt={product?.imgs[selectedImage].altText} />
                                 </div>
                                 <div className='w-100 h-24 mt-1 overflow-hidden'>
@@ -94,7 +94,7 @@ const ProductPage = () => {
                                     className='h-full w-full'>
                                         {product?.imgs.map((img, i)=>
                                             <SwiperSlide key={i}>
-                                                <div className={`h-full w-24 border cursor-pointer bg-[#F2F6F7] ${i===selectedImage? 'border-[#FFB400]': 'border-transparent'}`}>
+                                                <div className={`h-full w-24 border cursor-pointer bg-[#F2F6F7] ${i===selectedImage? 'border-[#FFB400]': 'border-[#d3d3d3]'}`}>
                                                     <img key={i} onClick={()=>setSelectedImage(i)} className={`h-full w-full object-contain`} src={img.url} alt={img.altText} />
                                                 </div>
                                             </SwiperSlide>
@@ -102,7 +102,7 @@ const ProductPage = () => {
                                     </Swiper>
                                 </div>
                             </div>
-                            <div className='grow pl-2 p-8 pb-0'>
+                            <div className='grow lg:pl-2 p-8 pb-0'>
                                 <div className='flex gap-2 text-lg text-[#FFB400]'>
                                     {[...Array(5)].map((_, i)=>
                                         <FaStar key={i}/>
@@ -140,9 +140,9 @@ const ProductPage = () => {
                                         </div>
                                         <div className='flex gap-4 mt-3'>
                                             <div className="flex items-stretch">
-                                                <button onClick={()=>setQuantity(prev=>Math.max(prev-1,1))} className="border border-gray-200 p-2 w-10 aspect-square">-</button>
+                                                <button onClick={()=>setQuantity(prev=>Math.max(prev-1,1))} className="border border-gray-200 cursor-pointer p-2 w-10 aspect-square">-</button>
                                                 <input onChange={(e)=>setQuantity(parseInt(e.target.value))} className="text-center flex items-center justify-center border border-gray-300 w-10 aspect-square" type="number" min={1} value={quantity} />
-                                                <button onClick={()=>setQuantity(prev=>prev+1)} className="border border-gray-200 p-2 w-10 aspect-square">+</button>
+                                                <button onClick={()=>setQuantity(prev=>prev+1)} className="border border-gray-200 cursor-pointer p-2 w-10 aspect-square">+</button>
                                             </div>
                                             <button onClick={()=>addToCart(product, quantity, selectedVariant)} className='text-white border-[#FFB400] hover:border-[#071c1f] bg-[#FFB400] z-2 px-4 py-2.5 hover:bg-transparent cursor-pointer hover:text-[#071c1f] border ltr duration-300 text-nowrap flex items-center gap-2 '><FaShoppingCart/> Add to Cart</button>
                                         </div>
@@ -183,13 +183,13 @@ const ProductPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-10 w-1/3 shrink-0">
-                        <div className="p-10 pb-4 bg-white">
-                            <h1 className="text-xl font-bold border-b border-gray-200 pb-4">Related Products</h1>
+                    <div className="flex flex-col gap-10 w-115 shrink-0">
+                        <div className="p-6 pb-4 border border-[#d9d9d9] shadow-md shadow-black/10 bg-white">
+                            <h1 className="text-xl font-bold border-b border-gray-200 pb-2 mb-2">Related Products</h1>
                             <div className="flex flex-col">
                                 {relatedProducts?.map((rProduct, i)=>
                                     <Link to={`/products/${rProduct._id}`} key={i} className="flex gap-6 items-center py-3 not-last:border-b border-gray-200">
-                                        <div className='h-25 aspect-square bg-[#f3f3f3]'>
+                                        <div className='h-25 aspect-square bg-[#f3f3f3] border border-[#d3d3d3]'>
                                             <img src={rProduct.imgs[0].url} className='h-full w-full object-contain' alt={rProduct.imgs[0].altText}/>
                                         </div>
                                         <div className='grow flex flex-col gap-2'>
@@ -199,8 +199,9 @@ const ProductPage = () => {
                                                 )}
                                             </div>
                                             <p className="capitalize font-bold">{rProduct.title}</p>
+                                            {/* <p className="capitalize font-bold">{rProduct.title}</p> */}
                                             <div className='text-[#FFB400] font-bold items-center gap-2 flex text-lg'>
-                                                <p >${rProduct.discountPrice||rProduct.basePrice}</p>
+                                                <p>${rProduct.discountPrice||rProduct.basePrice}</p>
                                                 {rProduct.discountPrice&&
                                                     <p className='line-through opacity-60 mr-2 text-sm'>${rProduct?.basePrice}</p>
                                                 }

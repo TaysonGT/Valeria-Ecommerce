@@ -59,13 +59,13 @@ const footerLinks = [
 
 const SubscriptionSection = () => {
   return (
-    <section className='bg-black text-white w-full'>
-        <div className='text-center py-16 px-10'>
+    <section className='bg-black text-white w-full overflow-x-hidden'>
+        <div className='text-center py-16 px-10 flex flex-col items-center w-full'>
           <h1 className='uppercase text-4xl mb-3 font-[Elms_Sans]'>Stay in Style</h1>
-          <p className='text-slate-100 mb-6 max-w-2xl mx-auto'>Be the first to know about exclusive drops, limited-time offers, styling tips, and behind-the-scenes content from Valeria.</p>
-          <form className='flex gap-2 md:w-150 w-full mx-auto'>
-            <input  className='bg-white grow px-4 py-3 text-black' placeholder='Enter your email address' type="email" />
-            <button className='bg-[#ffc720] hover:bg-[#ffd351] uppercase text-black py-3 px-8 duration-150 cursor-pointer font-semibold'>
+          <p className='text-slate-100 mb-6 max-w-2xl'>Be the first to know about exclusive drops, limited-time offers, styling tips, and behind-the-scenes content from Valeria.</p>
+          <form className='flex gap-2 font-[Comfortaa] w-full justify-center flex-col sm:flex-row   '>
+            <input  className='bg-white min-w-0 w-full grow md:w-100 sm:grow-0 px-4 py-3 text-black text-center sm:text-left' placeholder='Enter your email address' type="email" />
+            <button className='bg-[#ffc720] hover:bg-[#ffd351] uppercase text-black py-3 px-5 duration-150 cursor-pointer font-semibold'>
               Subscribe
             </button>
           </form>

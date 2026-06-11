@@ -34,18 +34,12 @@ const LimitedOffer = () => {
   return (
     <section className='bg-white border-6 border-amber-300 font-sans'>
       <div className='w-full flex items-center relative bg-[url(/imgs/landing/limited-offer.jpg)] bg-no-repeat bg-cover bg-center'>
-        <div className='p-20 flex flex-col gap-6 h-full bg-linear-to-l from-black/30 to-black/90 w-full'>
-          <div className='flex items-center justify-between gap-10 '>
-            <p className='text-5xl text-red-400 font-light font-[Elms_Sans]'>Limited Edition</p>
-            <div className='bg-red-500/50 py-6 px-8 pl-6 border border-white text-white font-extrabold font-[Elms_Sans] text-5xl flex items-center gap-4'>
-              <LuClock12 className=''/>
-              <p>{displayClock(clock)}</p>
-            </div>
-          </div>
-          <p className='text-white text-9xl font-extrabold leading-tight uppercase'>Buy 2 <span className='text-amber-300'>Get</span> <span className='text-red-500'>1 Free</span></p>
-          <Link to={'/shop'} className='text-5xl flex gap-4 items-center bg-black text-white self-start px-10 pr-4 py-4 rounded-full font-[Elms_Sans] hover:bg-white hover:text-black duration-200 border-white border cursor-pointer'>
+        <div className='p-16 py-14 flex flex-col sm:items-center gap-6 h-full bg-linear-to-l from-black/30 to-black/90 w-full text-center'>
+          <p className='text-5xl text-red-400 font-light font-[Elms_Sans]'>Limited Edition</p>
+          <p className='text-amber-300 text-7xl leading-tight uppercase font-[Titan_One]'>Buy 2 <span className='text-white'>Get</span> <span className='text-primary-200'>1 Free</span></p>
+          <Link to={'/shop'} className='text-4xl flex gap-4 items-center bg-black text-white px-8 pr-5 py-3 rounded-full font-[Elms_Sans] hover:bg-white hover:text-black duration-200 border-white border cursor-pointer '>
             Discover Offers
-            <FiArrowRight className='text-5xl'/>
+            <FiArrowRight className='text-4xl'/>
           </Link>
         </div>
       </div>

@@ -15,28 +15,27 @@ const FeaturedSection = () => {
     })
   },[])
   return (
-    <section className='py-20 bg-[#f8f8f8] flex justify-center font-[Comfortaa]'>
-        <div className='md:px-20 px-6 w-full flex flex-col items-center'>
-            <div className='w-full flex justify-between items-center'>
-                <div className='flex gap-1.5 items-start'>
-                    <h1 className='text-4xl font-bold'>Our Best Sellers</h1>
-                    <span className='rounded-md bg-red-500 text-white p-1 px-1.5 text-sm'>Up to 70%</span>
-                </div>
-                <Link to='/shop' className='self-end border border-[#071c1f] z-2 bg-[#071c1f] px-3 py-2 text-white hover:bg-transparent hover:text-[#071c1f] before:bg-[#071c1f] gap-1 rtl text-base inline-flex duration-300 rounded-md items-center group '>
-                    Start Shopping Now <RiArrowRightDoubleLine className='text-2xl duration-400 group-hover:translate-x-2'/>
-                </Link>
-                {/* <Link to='/products' className='self-end border-b gap-1 rtl text-lg font-bold inline-flex items-center py-1 group mt-10 text-blue-800 hover:text-blue-700 '>
-                    Start Shopping Now <RiArrowRightDoubleLine className='text-2xl duration-150 group-hover:translate-x-1'/>
-                </Link> */}
+    <section className='md:py-20 py-16 bg-[#f8f8f8] flex justify-center font-[Comfortaa]'>
+        <div className='md:px-10 max-w-350 sm:px-6 px-2 w-full flex flex-col items-center'>
+          <div className='w-full flex sm:justify-between justify-center items-center gap-6'>
+            <div className='flex gap-1.5 sm:items-start items-center sm:flex-row flex-col'>
+              <h1 className='text-4xl font-bold'>Our Best Sellers</h1>
             </div>
-            {/* <p className='text-xl mt-1'>A selection of our highest quality products based on customers opinions</p> */}
-            <div className='grid md:grid-cols-3 lg:grid-cols-4 grid-cols-2 md:gap-10 gap-4 mt-6 w-full'>
-              {featuredProducts?.map((product, i)=>
-              <div key={i} className='flex-1 h-full bg-red-200'>
-                <ProductCard product={product} autoWidth={true} />
-              </div>
-              )}
+            <Link to='/shop' className='self-end border hidden sm:inline-flex border-[#071c1f] z-2 bg-[#071c1f] px-3 py-2 text-white hover:bg-transparent hover:text-[#071c1f] before:bg-[#071c1f] gap-1 rtl text-base duration-300 rounded-md items-center group '>
+              Start Shopping Now <RiArrowRightDoubleLine className='text-2xl duration-400 group-hover:translate-x-2'/>
+            </Link>
+          </div>
+          {/* <p className='text-xl mt-1'>A selection of our highest quality products based on customers opinions</p> */}
+          <div className='grid lg:grid-cols-3 xl:grid-cols-4 grid-cols-1 min-[420px]:grid-cols-2 gap-2 sm:gap-4 mt-6 w-full'>
+            {featuredProducts?.map((product, i)=>
+            <div key={i} className='flex-1 h-full'>
+              <ProductCard product={product} autoWidth={true} />
             </div>
+            )}
+          </div>
+          <Link to='/shop' className='self-center border sm:hidden inline-flex border-[#071c1f] z-2 bg-[#071c1f] px-3 py-2 text-white hover:bg-transparent hover:text-[#071c1f] before:bg-[#071c1f] gap-1 rtl text-sm duration-300 rounded-md items-center group mt-10'>
+            Start Shopping Now <RiArrowRightDoubleLine className='text-xl duration-400 group-hover:translate-x-2'/>
+          </Link>
         </div>
     </section>
   )
