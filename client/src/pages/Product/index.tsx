@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { productType, variantType } from '../../types'
 import { Link, useParams } from 'react-router'
 import axios from 'axios'
@@ -6,7 +6,8 @@ import { toast } from 'react-toastify'
 import Loader from '../../components/Loader'
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaShoppingCart, FaStar, FaTwitter } from 'react-icons/fa'
 import {Swiper, SwiperSlide} from 'swiper/react'
-import {Navigation} from 'swiper/modules'
+import { Swiper as SwiperType } from 'swiper'
+import {Autoplay, Navigation, Pagination} from 'swiper/modules'
 import { MdNavigateNext, MdOutlineCompareArrows, MdRemoveShoppingCart } from 'react-icons/md'
 import { useCart } from '../../context/CartContext'
 import PaymentImg from '/payment-4.png'
@@ -24,6 +25,8 @@ const ProductPage = () => {
     const {productId} = useParams()
 
     const {isInCart, addToCart, removeFromCart} = useCart()
+
+    const swiperRef = useRef<SwiperType|null>(null);
 
     const fetchProduct = async()=>{
         setIsLoading(true)
@@ -78,23 +81,27 @@ const ProductPage = () => {
 
                     </div>  
                 </div> */}
-                <div className='flex basis-0 w-full flex-col lg:flex-row gap-3'>
+                <div className='flex basis-0 w-full flex-col xl:flex-row gap-3'>
                     <div className='grow bg-white border border-[#d9d9d9]'>
-                        <div className='flex flex-col lg:flex-row'>
-                            <div className='p-4'>
-                                <div className='h-100 w-full border border-[#d3d3d3] bg-[#F7f7F7]'>
-                                    <img className='h-full w-full object-contain' src={product?.imgs[selectedImage].url} alt={product?.imgs[selectedImage].altText} />
+                        <div className='flex flex-col md:flex-row'>
+                            <div className='p-4 w-full min-w-0'>
+                                <div className='h-100 aspect-square w-full border border-[#d3d3d3] bg-[#F7f7F7]'>
+                                    <img className='h-full w-full object-contain' src={product?.imgs[selectedImage]?.url} alt={product?.imgs[selectedImage]?.altText} />
                                 </div>
-                                <div className='w-100 h-24 mt-1 overflow-hidden'>
+                                <div className='sm:w-100 h-24 mt-1 overflow-hidden'>
                                     <Swiper 
                                     spaceBetween={4}
                                     slidesPerView={4}
-                                    modules={[Navigation]}
+                                    modules={[Navigation, Pagination, Autoplay]}
+                                    loop={true}
                                     navigation={true}
+                                    onSwiper={(swiper: SwiperType) => (swiperRef.current = swiper)}
+                                    onSlideChange={(swiper: SwiperType) => setSelectedImage(swiper.realIndex)}
+                                    autoplay={{ delay: 2500, disableOnInteraction: false }}
                                     className='h-full w-full'>
                                         {product?.imgs.map((img, i)=>
-                                            <SwiperSlide key={i}>
-                                                <div className={`h-full w-24 border cursor-pointer bg-[#F2F6F7] ${i===selectedImage? 'border-[#FFB400]': 'border-[#d3d3d3]'}`}>
+                                            <SwiperSlide className='w-24 ' key={i}>
+                                                <div className={`h-full border cursor-pointer bg-[#F2F6F7] ${i===selectedImage? 'border-[#FFB400]': 'border-[#d3d3d3]'}`}>
                                                     <img key={i} onClick={()=>setSelectedImage(i)} className={`h-full w-full object-contain`} src={img.url} alt={img.altText} />
                                                 </div>
                                             </SwiperSlide>
@@ -102,7 +109,7 @@ const ProductPage = () => {
                                     </Swiper>
                                 </div>
                             </div>
-                            <div className='grow lg:pl-2 p-8 pb-0'>
+                            <div className='grow lg:pl-2 lg:p-8 px-6 p-4 pb-0'>
                                 <div className='flex gap-2 text-lg text-[#FFB400]'>
                                     {[...Array(5)].map((_, i)=>
                                         <FaStar key={i}/>
@@ -117,7 +124,7 @@ const ProductPage = () => {
                                 </div>
 
                                 <p className='text-md text-gray-500 mt-4'>{product?.description}</p>
-                                <div className='mt-4 flex items-center gap-4 py-4 border-y border-gray-100'>
+                                <div className='mt-4 flex items-center flex-wrap gap-y-2 gap-4 py-4 border-y border-gray-100'>
                                     <p className='text-gray-600'>Category:</p>
                                     <div className='w-full flex flex-wrap items-center gap-2 font-[Comfortaa] text-sm'>
                                         {product.collections.map((collection)=>
@@ -132,13 +139,15 @@ const ProductPage = () => {
                                 <div className='mt-4'>
                                     {!isInCart(product._id) ?
                                     <>
-                                        <div className='flex gap-2 items-center'>
+                                        <div className='flex gap-2 items-center flex-wrap'>
                                             <p>Available:</p>
-                                            {product.variants.map((variant)=>
-                                                <button key={variant._id} onClick={()=>setSelectedVariant(variant)} className={`px-3 py-1 border rounded font-bold text-sm ${selectedVariant===variant&& 'bg-black text-white'} duration-75 cursor-pointer`}>{variant.sizeCode}</button>
-                                            )}
+                                            <div className='flex gap-2 items-center flex-wrap'>
+                                                {product.variants.map((variant)=>
+                                                    <button key={variant._id} onClick={()=>setSelectedVariant(variant)} className={`px-3 py-1 border rounded font-bold text-sm ${selectedVariant===variant&& 'bg-black text-white'} duration-75 cursor-pointer`}>{variant.sizeCode}</button>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className='flex gap-4 mt-3'>
+                                        <div className='flex flex-wrap gap-4 gap-y-2 my-6'>
                                             <div className="flex items-stretch">
                                                 <button onClick={()=>setQuantity(prev=>Math.max(prev-1,1))} className="border border-gray-200 cursor-pointer p-2 w-10 aspect-square">-</button>
                                                 <input onChange={(e)=>setQuantity(parseInt(e.target.value))} className="text-center flex items-center justify-center border border-gray-300 w-10 aspect-square" type="number" min={1} value={quantity} />
@@ -151,7 +160,7 @@ const ProductPage = () => {
                                         <button onClick={()=>removeFromCart(product._id)} className='px-4 py-2.5 text-white bg-red-600 border-red-600 hover:bg-transparent cursor-pointer hover:text-black border hover:border-black z-2 before:bg-red-600 rtl duration-300 text-nowrap flex items-center gap-2 '><MdRemoveShoppingCart/> Remove From Cart</button> 
                                     }
                                 </div>
-                                <div className='flex gap-6 mt-5 px-2 text-sm'>
+                                <div className='flex gap-6 mt-6 px-2 text-sm'>
                                     <button className='flex gap-2 items-center font-bold hover:text-[#FFB400] duration-200 cursor-pointer'><IoHeart className='text-xl'/>Add to Wishlist</button>
                                     <button className='flex gap-2 items-center font-bold hover:text-[#FFB400] duration-200 cursor-pointer'><MdOutlineCompareArrows className='text-xl'/>Compare</button>
                                 </div>
@@ -183,7 +192,7 @@ const ProductPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-10 w-115 shrink-0">
+                    <div className="flex flex-col gap-10 md:w-115 lg:grow shrink-0">
                         <div className="p-6 pb-4 border border-[#d9d9d9] shadow-md shadow-black/10 bg-white">
                             <h1 className="text-xl font-bold border-b border-gray-200 pb-2 mb-2">Related Products</h1>
                             <div className="flex flex-col">
@@ -193,14 +202,14 @@ const ProductPage = () => {
                                             <img src={rProduct.imgs[0].url} className='h-full w-full object-contain' alt={rProduct.imgs[0].altText}/>
                                         </div>
                                         <div className='grow flex flex-col gap-2'>
-                                            <div className='flex gap-2 text-[#FFB400]'>
+                                            <div className='flex gap-1 text-[#FFB400]'>
                                                 {[...Array(5)].map((_, i)=>
                                                     <FaStar key={i}/>
                                                 )}
                                             </div>
                                             <p className="capitalize font-bold">{rProduct.title}</p>
                                             {/* <p className="capitalize font-bold">{rProduct.title}</p> */}
-                                            <div className='text-[#FFB400] font-bold items-center gap-2 flex text-lg'>
+                                            <div className='text-[#1f1f1f] font-bold items-center gap-2 flex text-lg'>
                                                 <p>${rProduct.discountPrice||rProduct.basePrice}</p>
                                                 {rProduct.discountPrice&&
                                                     <p className='line-through opacity-60 mr-2 text-sm'>${rProduct?.basePrice}</p>

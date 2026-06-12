@@ -1,9 +1,8 @@
 import NavigationController from '../../../components/ui/NavigationController'
 import Loader from '../../../components/Loader'
-import { Link, useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { formatDateDisplay, formatNumber } from '../../../utils/helpers'
 import { useOrders } from '../../../hooks/useOrders'
-import { MdKeyboardDoubleArrowRight } from 'react-icons/md'
 import { IoFilter, IoSearch } from 'react-icons/io5'
 import { FiGrid, FiList } from 'react-icons/fi'
 import { useState } from 'react'
@@ -96,6 +95,8 @@ const DashboardOrdersPage = () => {
     const [searchString, setSearchString] = useState('')
     const [searchParams,setSearchParams] = useSearchParams()
 
+    const nav = useNavigate()
+
     const searchSubmitHandler = (e:React.SubmitEvent<HTMLFormElement>)=> {
         e.preventDefault();
         const newParams = new URLSearchParams(searchParams)
@@ -111,13 +112,13 @@ const DashboardOrdersPage = () => {
     }
       
   return (
-    <div className='p-10 py-8 min-h-screen'>
+    <div className='md:p-10 p-6 py-8 min-h-screen w-full overflow-hidden'>
         <div className=''>
           <h1 className='text-4xl font-[Elms_Sans]'>Orders</h1>
           <p className='mt-2 font-light text-gray-600'>Manage orders, update and availability across your store</p>
         </div>
-        <div className='flex justify-between mt-6'>
-            <div className='flex gap-2 font-light'>
+        <div className='flex justify-between gap-4 mt-6 flex-wrap '>
+            <div className='flex gap-2 font-light flex-wrap'>
                 <form onSubmit={searchSubmitHandler} className="relative">
                     <button type='submit' className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
                         <IoSearch className='text-[#b7b7b7]'/>
@@ -133,12 +134,12 @@ const DashboardOrdersPage = () => {
                     <div className='pl-2 text-black'><FiList/></div>
                 </div>
             </div>
-            <div className='flex self-end gap-2 rounded-xl font-[Elms_Sans] p-1.5 px-2 bg-[#787878] border border-[#d9d9d9]'>
-                <button className='bg-white shadow-sm text-black px-2 p-1 text-sm rounded-lg cursor-pointer'>All</button>
-                <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Active</button>
-                <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Inactive</button>
-                <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Out</button>
-                <button className='text-[#f9f9f9] px-2 p-1 text-sm rounded-lg cursor-pointer'>Something</button>
+            <div className='flex self-end gap-2 rounded-xl font-[Elms_Sans] text-sm p-1.5 px-2 bg-[#787878] border border-[#d9d9d9]'>
+                <button className='bg-white shadow-sm text-black px-2 p-1 rounded-lg cursor-pointer'>All</button>
+                <button className='text-[#f9f9f9] px-2 p-1 rounded-lg cursor-pointer'>Active</button>
+                <button className='text-[#f9f9f9] px-2 p-1 rounded-lg cursor-pointer'>Inactive</button>
+                <button className='text-[#f9f9f9] px-2 p-1 rounded-lg cursor-pointer'>Out</button>
+                <button className='text-[#f9f9f9] px-2 p-1 rounded-lg cursor-pointer'>Something</button>
             </div>
         </div>
         {isLoading ? (
@@ -147,49 +148,33 @@ const DashboardOrdersPage = () => {
           </div>
         )
         :orders.length>0?
-        <div className='rounded-xl shadow-sm shadow-black/20 overflow-hidden border border-[#e7e7e7] bg-white my-4 '>
-          <table className='text-sm border-collapse w-full text-left'>
+        <div className='rounded-xl shadow-sm shadow-black/20 overflow-hidden border border-[#e7e7e7] bg-white my-4 w-full'>
+          <table className='md:text-sm text-xs border-collapse w-full text-left'>
             <thead className=''>
               <tr className='text-[#494949]'>
-                <th className='py-3 px-4 border-b border-r border-[#e7e7e7] w-8'>
-                  <input type='checkbox' className='scale-115'/>
-                </th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7]'>ID</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7]'>Customer</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7]'>Order Date</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Items</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Payment Status</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Shipment Status</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Total</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'></th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] lg:table-cell hidden'>ID</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] lg:table-cell hidden'>Customer</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Order Date</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center lg:table-cell hidden'>Items</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Payment Status</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Shipment Status</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Total</th>
               </tr>
             </thead>
-            <tbody className='bg-[#fdfdfd] text-sm'>
-              {orders?.map((order, idx) => (                  
-                <tr key={idx} className='group odd:bg-[#fcfcfc] text-[#1f1f1f]'>
-                  <td className='py-2 px-4  border-b border-r group-last:border-b-0 border-[#e7e7e7] w-8'>
-                    <input type='checkbox' className='scale-115'/>
+            <tbody className='bg-[#fdfdfd]'>
+              {orders?.map((order) => (
+                <tr key={order._id} onClick={()=>nav(`/dashboard/orders/${order._id}`)} className='group odd:bg-[#fcfcfc] text-[#1f1f1f] hover:bg-[#f4f4f4] cursor-pointer'>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light lg:table-cell hidden'>
+                    <p className='font-normal'>#{order.orderNumber?.slice(4)||order._id.slice(3)}</p>
                   </td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>
-                    <p className='font-normal'>#{order.orderNumber||order._id.slice(3)}</p>
-                  </td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>{order.customerInfo.firstName} {order.customerInfo.lastName}</td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light lg:table-cell hidden'>{order.customerInfo.firstName} {order.customerInfo.lastName}</td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light text-center'>
                     {formatDateDisplay(order.createdAt)}
                   </td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{order.items.length}</td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'><div className='flex items-center justify-center w-full h-full font-[Comfortaa]'>{paymentStatusDisplay(order.paymentStatus)}</div></td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'><div className='flex items-center justify-center w-full h-full font-[Comfortaa]'>{fulfillmentStatusDisplay(order.fulfillmentStatus)}</div></td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatNumber(order.grandTotal)}</td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7]'>
-                    <div className='flex justify-center'>
-                      <Link to={`/dashboard/orders/${order._id}`} className='p-2 pl-3.5 inline-flex items-center hover:bg-[#3b3b3b] text-white bg-[#1e1e1e] duration-300 justify-center gap-1.5 border border-[#1e1e1e] rounded-full'>
-                        Details
-                        {/* <span className='p-1.25 border-2 duration-300 border-white rounded-full text-base'><MdDoubleArrow/></span> */}
-                        <span className='duration-300 border-white rounded-full text-base'><MdKeyboardDoubleArrowRight/></span>
-                      </Link>
-                    </div>
-                  </td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center lg:table-cell hidden'>{order.items.length}</td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center'><div className='flex items-center justify-center w-full h-full font-[Comfortaa]'>{paymentStatusDisplay(order.paymentStatus)}</div></td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center'><div className='flex items-center justify-center w-full h-full font-[Comfortaa]'>{fulfillmentStatusDisplay(order.fulfillmentStatus)}</div></td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatNumber(order.grandTotal)}</td>
                 </tr>
               ))}
             </tbody>

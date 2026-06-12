@@ -101,7 +101,7 @@ const CheckoutPage = () => {
   return (
     <div className='min-h-screen bg-[#fcfcfc]'>
       <div className='grid lg:grid-cols-[1fr_1fr]'>
-        <div className='px-16 py-10'>
+        <div className='lg:py-10 p-10 xl:px-20'>
           <h1 className='text-2xl text-gray-800 font-light'>Checkout</h1>
           <div className='mt-6'>
             <h2 className='text-3xl mb-4 flex gap-4 items-center'>Order Summary<span className='bg-gray-200 font-light p-1 text-xs'>{cartItems.length} Items</span></h2>
@@ -139,8 +139,9 @@ const CheckoutPage = () => {
             )}
           </div>
         </div>
-        <div className='bg-white py-8 px-30'>
-          <form className='space-y-4 mt-8' onSubmit={handleSubmit}>
+        <div className='bg-white p-10 lg:py-20 xl:px-20'>
+          <h2 className='text-3xl mb-4 flex gap-4 items-center'>Customer Info</h2>
+          <form className='space-y-4' onSubmit={handleSubmit}>
             <section className='space-y-4'>
               <h2 className='text-lg'>Contact Info</h2>  
               <label className="block mb-2.5 text-sm font-light text-gray-600">Email Address</label>

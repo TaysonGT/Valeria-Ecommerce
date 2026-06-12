@@ -40,7 +40,7 @@ const ResultSection: React.FC<Props> = ({results, isLoading, filters})=>{
                         <div className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
                             <IoSearch className='text-indigo-400'/>
                         </div>
-                        <input type="search" onChange={(e)=>setSearchString(e.target.value)} value={searchString} id="search" className="z-2 block sm:w-140 w-full p-3 ps-9 border border-[#b7b7b7] rounded-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
+                        <input type="search" onChange={(e)=>setSearchString(e.target.value)} value={searchString} id="search" className="z-2 block md:w-140 w-full p-3 ps-9 border border-[#b7b7b7] rounded-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
                         <div onClick={()=>setSearchString('')} className="z-3 absolute cursor-pointer inset-y-0 inset-e-0 flex items-center pe-3">
                             <IoClose className='text-indigo-400'/>
                         </div>

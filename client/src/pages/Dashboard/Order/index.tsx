@@ -113,23 +113,25 @@ const DashboardOrderDetailsPage = () => {
             <Loader size={36} thickness={7} />
           </div>
         ) : order ? (
-          <div className='p-10'>
+          <div className='lg:p-10 p-4'>
             <UpdateOrderStatus {...{show: showUpdateStatus, hide: () => setShowUpdateStatus(false), order, onSave: ()=>{
               loadOrder()
               setShowUpdateStatus(false)
             }}} />
-            <div className='flex justify-between items-center border-b pb-4 border-[#d9d9d9]'>
-              <h1 className='text-3xl font-[Comfortaa]'>Order Details</h1>
-              <span className=''>Order ID: #{order.orderNumber||order?._id}</span>
+            <div className='flex justify-between lg:items-center flex-col lg:flex-row gap-6 gap-y-2 border-b pb-4 border-[#d9d9d9]'>
+              <h1 className='md:text-3xl text-2xl font-[Comfortaa]'>Order Details</h1>
+              <span className='font-[Sans] p-1 px-5 rounded-lg bg-[#292929] text-white font-bold self-start'>ID: #{order.orderNumber||order?._id}</span>
             </div>
-            <div className='grid grid-cols-[2fr_1fr] gap-6 py-4 items-start mt-4'>
+            <div className='grid lg:grid-cols-[2fr_1fr] gap-6 py-4 items-start lg:mt-4'>
               {/* LEFT SECTION */}
               <div className='space-y-4'>
                 <div className='space-y-2'>
-                  <div className='bg-white border-[#d9d9d9] border p-6 text-base gap-14 flex flex-wrap'>
+                  <div className='bg-white border-[#d9d9d9] border p-6 text-base md:gap-14 flex flex-wrap'>
                     <div className='flex-1 flex flex-col items-center'>
                       <label className='text-[#787878] text-sm font-bold'>Delivery Status</label>
-                      <div className='text-3xl p-2 mt-2 bg-[#0d6efd] text-white rounded-full'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.icon}</div>
+                      <div className='text-3xl p-2 mt-2 bg-[#0d6efd] text-white rounded-full'>
+                        {fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.icon}
+                      </div>
                       <p className='text-[#0d6efd] mt-2.5'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.label||'-'}</p>
                       <p className='text-sm text-[#787878]'>{formatDateDisplay(order.statusTimestamps?.[order.fulfillmentStatus])}</p>
                       {order.paymentStatus === 'pending' && (
@@ -154,20 +156,20 @@ const DashboardOrderDetailsPage = () => {
                   <div className='font-bold font-[Comfortaa] p-4 pb-2'>
                     Ordered Items
                   </div>
-                    <table className='text-base w-full float-left text-left border-t border-[#d3d3d3]'>
+                    <table className='text-sm sm:text-base w-full float-left text-left border-t border-[#d3d3d3]'>
                       <thead className='bg-[#f7f7f7] text-[#393939]'>
                         <tr className='border-b border-[#d3d3d3]'>
-                          <th className='py-2 px-4'>ID</th>
+                          <th className='py-2 px-4 md:table-cell hidden'>ID</th>
                           <th className='py-2 px-4'>Product</th>
                           <th className='py-2 px-4 text-center'>Size</th>
                           <th className='py-2 px-4 text-center'>Quantity</th>
                           <th className='py-2 px-4 text-center'>Total</th>
                         </tr>
                       </thead>
-                      <tbody className='bg-white text-base'>
+                      <tbody className='bg-white text-sm sm:text-base'>
                         {order?.items.map((item, idx) => (                  
                           <tr key={idx} className='odd:bg-[#fcfcfc] not-last:border-b border-[#e8e8e8]'>
-                            <td className='py-2 px-4 '>#{item.productId.slice(-7)}</td>
+                            <td className='py-2 px-4 md:table-cell hidden'>#{item.productId.slice(-7)}</td>
                             <td className='py-2 px-4 flex gap-4 items-center'>
                               <div className='relative h-12 aspect-square rounded-xl overflow-hidden shrink-0'>
                                 <img className='h-full w-full object-cover object-top' src={item.productSnapshot?.imgs[0]?.url||'/logo.png'} alt="" />

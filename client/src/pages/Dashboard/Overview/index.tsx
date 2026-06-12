@@ -1,10 +1,4 @@
-// pages/admin/Dashboard.tsx
-import React, { useState, useEffect } from 'react';
-// import {
-//   TrendingUp, TrendingDown, Package, ShoppingBag, Users, Truck,
-//   DollarSign, Clock, AlertCircle, CheckCircle, XCircle, TruckIcon,
-//   Star, Eye, ArrowUp, ArrowDown, Calendar, Download, RefreshCw
-// } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import {
   PieChart, Pie,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -110,14 +104,14 @@ export default function DashboardHomePage() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-6 py-4">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between md:items-center gap-4 flex-col md:flex-row">
             <div>
-              <h1 className="text-2xl font-bold text-[#1f1f1f]">Overview</h1>
+              <h1 className="text-2xl font-[Comfortaa] text-[#1f1f1f]">Overview</h1>
               <p className="text-sm text-gray-500 mt-1">
                 {formatDateDisplay(data.period.start)} - {formatDateDisplay(data.period.end)}
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value as any)}

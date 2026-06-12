@@ -16,7 +16,7 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
     const {total, cartItems, removeFromCart, clearCart, editItemQuantity} = useCart()
 
     return (
-        <div className={`fixed flex flex-col ${!show&&'pointer-events-none'} top-0 h-screen bg-white text-black left-full duration-300 z-110 p-10 w-100 ${show&& '-translate-x-full'}`}>
+        <div className={`fixed flex flex-col ${!show&&'pointer-events-none'} top-0 h-screen bg-white text-black left-full duration-300 z-110 p-10 sm:w-100 ${show&& '-translate-x-full'}`}>
             <div className='flex flex-col gap-1 border-b border-gray-400 pb-6 relative'>
                 <h1 className='text-lg font-bold font-[Playfair]'>Cart</h1>
                 <RiCloseFill onClick={()=>setShow(false)} className='text-red-700 hover:text-red-400 duration-150 cursor-pointer text-3xl absolute top-0 right-0'/>

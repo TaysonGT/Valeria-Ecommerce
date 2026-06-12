@@ -49,12 +49,14 @@ export const formatDateInput = (date: string|number|Date): string => {
   return new Date(date).toISOString().split('T')[0]
 }
 
-export const formatDateDisplay = (date?: string|number|Date): string => {
+export const formatDateDisplay = (date?: string|number|Date, opts?:{time?:boolean}): string => {
   const dateObject = new Date(date||new Date())
   return date?
     new Intl.DateTimeFormat("en-EG", {
       timeZone: "Africa/Cairo",
-      timeStyle: "medium", // Shows hours, minutes, seconds
+      ...opts?.time&&
+        {timeStyle: "medium"}// Shows hours, minutes, seconds
+      ,
       dateStyle: "medium", // Shows day, month, year
       hour12: true        // 12-hour format with AM/PM
     }).format(dateObject)

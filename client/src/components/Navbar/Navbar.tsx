@@ -105,29 +105,23 @@ const Navbar: React.FC = () => {
   const nav = useNavigate()
   
   const dropDownItems = [
-    // {
-    //   label: "Dashboard",
-    //   value: "dashboard",
-    //   icon: <RiDashboardLine className='text-xl'/>,
-    //   onClick: () => nav('/support')
-    // },
     {
       label: "Profile",
       value: "profile",
       icon: <FaRegUserCircle className='text-xl'/>,
-      onClick: () => nav(`/profile/${user?._id}`)
+      onClick: () => nav(`/profile/${user?._id}`, {state:location.pathname})
     },
     {
       label: "My Orders",
       value: "orders",
       icon: <PiPackage className='text-xl'/>,
-      onClick: () => nav(`/my-orders`)
+      onClick: () => nav(`/my-orders`, {state:location.pathname})
     },
     {
       label: "Support",
       value: "support",
       icon: <TfiHeadphoneAlt className='text-xl'/>,
-      onClick: () => nav('/support')
+      onClick: () => nav('/support', {state:location.pathname})
     },
     {
       label: "Logout",
@@ -135,8 +129,8 @@ const Navbar: React.FC = () => {
       color: 'red-500',
       icon: <RiLogoutCircleRLine className='text-xl'/>,
       onClick: async () => {
-        await logout();
-        nav('/');
+        logout();
+        nav('/', {state:location.pathname})
       }
     }
   ]
@@ -151,7 +145,7 @@ const Navbar: React.FC = () => {
       <DarkBackground {... {hide: ()=> setShowCart(false), show: showCart}} />
       <Cart {...{setShow: (v:boolean)=> setShowCart(v), show: showCart}}/>
 
-      <div className='flex justify-between items-center xl:gap-16 gap-10 w-full xl:m-auto sm:px-10 xl:px-20 px-6 2xl:px-30 py-6'>
+      <div className='flex justify-between items-center xl:gap-16 sm:gap-10 gap-4 w-full xl:m-auto sm:px-10 xl:px-20 px-6 2xl:px-30 py-6'>
         <div className='flex-1 flex justify-start items-stretch'>
           <Link to='/'><h1 className='text-4xl font-[Comfortaa] font-extrabold select-none hover:text-[#e0fbff] duration-300'>Valeria</h1></Link>
         </div>
@@ -185,7 +179,7 @@ const Navbar: React.FC = () => {
         </ul>
         <div className='flex-1 flex items-center sm:gap-6 gap-4 text-[28px] justify-end'>
           <MdOutlineSearch onClick={()=>setShowSearchbar(true)} className='cursor-pointer hover:scale-[1.15] duration-200'/>
-          <div className='gap-4 xl:gap-6 hidden sm:flex'>
+          <div className='gap-4 xl:gap-6 flex'>
             <Link to='/'>
               <MdOutlineFavoriteBorder className=' hover:scale-[1.15] duration-200'/>
             </Link>
@@ -215,10 +209,6 @@ const Navbar: React.FC = () => {
           <span className='cursor-pointer lg:hidden block hover:scale-[1.15] duration-75'>
             <RiMenuFill
               onClick={()=>{
-                if (location.pathname.startsWith('/dashboard')) {
-                  window.dispatchEvent(new Event('toggle-dashboard-sidebar'))
-                  return;
-                }
                 setShowMobileNav(v=>!v)
               }}
             />

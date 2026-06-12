@@ -44,11 +44,11 @@ function App() {
                 <Route path='login' element={<LoginPage />} />
                 <Route path='register' element={<RegisterPage />} />
               </Route>
-              <Route path='/' element={<PrivateRoutes withNav withSidebar />}>
+              <Route path='/' element={<PrivateRoutes withNav />}>
                 <Route path='my-orders' element={<OrdersPage />} />
                 <Route path='orders/:orderId' element={<OrderPage />} />
               </Route>
-              <Route path='dashboard' element={<PrivateRoutes withSidebar />}>
+              <Route path='dashboard' element={<PrivateRoutes dashboard />}>
                 <Route index element={<DashboardHomePage />} />
                 <Route path='orders' element={<DashboardOrdersPage />} />
                 <Route path='orders/:orderId' element={<DashboardOrderDetailsPage />} />

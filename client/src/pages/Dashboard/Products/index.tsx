@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { FiGrid, FiList } from 'react-icons/fi'
-import { IoFilter, IoPeople, IoSearch } from 'react-icons/io5'
-import { LuDollarSign, LuPackage, LuShoppingCart } from 'react-icons/lu'
-import { MdAdd, MdKeyboardDoubleArrowRight } from 'react-icons/md'
+import { IoFilter, IoSearch } from 'react-icons/io5'
+import { MdAdd } from 'react-icons/md'
 import { productType } from '../../../types'
 import { formatDateDisplay, formatNumber } from '../../../utils/helpers'
 import axios from 'axios'
@@ -10,7 +9,7 @@ import NavigationController from '../../../components/ui/NavigationController'
 import { useSearch } from '../../../context/SearchContext'
 import { filterType } from '../../Shopping'
 import Loader from '../../../components/Loader'
-import { Link } from 'react-router'
+import { useNavigate } from 'react-router'
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<productType[]>([])
@@ -18,6 +17,8 @@ const ProductsPage = () => {
   const [filters, setFilters] = useState<filterType[]>([])
   const [searchString, setSearchString] = useState('')
   const {searchParams, setSearchParams, setMaxPages, maxPages, pageCount, changePage} = useSearch()
+
+  const nav = useNavigate()
    
   const searchSubmitHandler = (e:React.SubmitEvent<HTMLFormElement>)=> {
     e.preventDefault(); 
@@ -35,36 +36,36 @@ const ProductsPage = () => {
   
   const lastQ = useRef<string>(searchParams.get('q'))
 
-  const analytics = [
-    {
-      title: 'Total Products',
-      type: 'number',
-      amount: 1248,
-      growthLoss: 4.2,
-      icon: <LuPackage/>
-    },
-    {
-      title: 'Total Revenue',
-      type: 'currency',
-      amount: 84320,
-      growthLoss: 12.5,
-      icon: <LuDollarSign/>
-    },
-    {
-      title: 'Total Orders',
-      type: 'number',
-      amount: 142,
-      growthLoss: -1.4,
-      icon: <LuShoppingCart/>
-    },
-    {
-      title: 'Customers',
-      type: 'number',
-      amount: 3240,
-      growthLoss: 2.1,
-      icon: <IoPeople/>
-    }
-  ]
+  // const analytics = [
+  //   {
+  //     title: 'Total Products',
+  //     type: 'number',
+  //     amount: 1248,
+  //     growthLoss: 4.2,
+  //     icon: <LuPackage/>
+  //   },
+  //   {
+  //     title: 'Total Revenue',
+  //     type: 'currency',
+  //     amount: 84320,
+  //     growthLoss: 12.5,
+  //     icon: <LuDollarSign/>
+  //   },
+  //   {
+  //     title: 'Total Orders',
+  //     type: 'number',
+  //     amount: 142,
+  //     growthLoss: -1.4,
+  //     icon: <LuShoppingCart/>
+  //   },
+  //   {
+  //     title: 'Customers',
+  //     type: 'number',
+  //     amount: 3240,
+  //     growthLoss: 2.1,
+  //     icon: <IoPeople/>
+  //   }
+  // ]
 
   useEffect(()=>{
     setProducts([])
@@ -84,18 +85,7 @@ const ProductsPage = () => {
   }, [searchParams])
     
   return (
-    <div className='p-10 font-sans min-h-screen'>
-      <div className='flex justify-between items-center'>
-        <div className=''>
-          <h1 className='text-4xl font-[Elms_Sans]'>Products</h1>
-          <p className='mt-2 font-light text-gray-600'>Manage inventory, pricing and availability across your store</p>
-        </div>
-        <div className='flex gap-2'>
-          <button className='flex items-center gap-2 p-3 pr-4 bg-blue-500 text-white rounded-md cursor-pointer hover:opacity-85 duration-150'>
-            <MdAdd className='text-xl'/>Add Product
-          </button>
-        </div>
-      </div>
+    <div className='md:p-10 p-4 py-8 min-h-screen w-full overflow-hidden'>
       {/* <div className='grid grid-cols-4 gap-4 mt-4'>
         {analytics.map((box, i)=>
           <div key={i} className='p-2 border border-gray-200 rounded-xl'>
@@ -122,9 +112,20 @@ const ProductsPage = () => {
           </div>
         )}
       </div> */}
-      <div className='mt-4'>
-        <div className='flex justify-between'>
-          <div className='flex items-stretch gap-2 font-light'>
+      <div className='flex justify-between items-center px-2 gap-4'>
+        <div className=''>
+          <h1 className='text-4xl font-[Elms_Sans]'>Products</h1>
+          <p className='mt-2 font-light text-gray-600'>Manage inventory, pricing and availability across your store</p>
+        </div>
+        <div className='flex gap-2 font-[Comfortaa]'>
+          <button className='flex items-center gap-2 p-3 pr-4 bg-blue-500 text-white rounded-md cursor-pointer hover:opacity-85 duration-150'>
+            <MdAdd className='text-lg'/>Add
+          </button>
+        </div>
+      </div>
+      <div className='mt-4 w-full'>
+        <div className='flex justify-between gap-4 gap-y-2 flex-wrap'>
+          <div className='flex items-stretch gap-2 font-light flex-wrap'>
             <form onSubmit={searchSubmitHandler} className="relative">
               <button type='submit' className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
                 <IoSearch className='text-[#b7b7b7]'/>
@@ -154,53 +155,37 @@ const ProductsPage = () => {
           </div>
         )
         :products.length>0?
-        <div className='rounded-xl shadow-sm shadow-black/20 overflow-hidden border bg-white border-[#e7e7e7] my-4 '>
+        <div className='rounded-xl shadow-sm shadow-black/20 overflow-hidden border border-[#e7e7e7] bg-white my-4 w-full'>
           <table className='text-sm border-collapse w-full text-left'>
             <thead className=''>
               <tr className='text-[#797979]'>
-                <th className='py-3 px-4 border-b border-r border-[#e7e7e7] w-8'>
-                  <input type='checkbox' className='scale-115'/>
-                </th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7]'>Product</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7]'>ID</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7]'>Creation Date</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Variants</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Base Price</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'>Status</th>
-                <th className='py-3 px-4 border-b border-[#e7e7e7] text-center'></th>
+                <th className='sm:py-3 px-4 p-2 border-b border-[#e7e7e7]'>Product</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] lg:table-cell hidden'>ID</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] lg:table-cell hidden'>Creation Date</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center lg:table-cell hidden'>Variants</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Base Price</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Status</th>
               </tr>
             </thead>
-            <tbody className='bg-white text-sm'>
-              {products?.map((product, idx) => (                  
-                <tr key={idx} className='group odd:bg-[#fefefe] text-[#1f1f1f]'>
-                  <td className='py-2 px-4  border-b border-r group-last:border-b-0 border-[#e7e7e7] w-8'>
-                    <input type='checkbox' className='scale-115'/>
-                  </td>
-                  <td className='py-2 px-4 pr-20  border-b group-last:border-0 border-[#e7e7e7] w-[0.1%]'>
-                    <div className=' flex gap-4 items-center text-base text-nowrap text-ellipsis'>
+            <tbody className='bg-white text-sm text-wrap'>
+              {products?.map((product) => (                  
+                <tr key={product._id} onClick={()=>nav(`/dashboard/products/${product._id}`)} className='group odd:bg-[#fefefe] text-[#1f1f1f] hover:bg-[#f4f4f4] cursor-pointer'>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] '>
+                    <div className=' flex gap-4 items-center'>
                       <img className=' w-12 h-12 rounded-xl overflow-hidden shrink-0 object-cover object-center' src={product.imgs[0]?.url||'/logo.png'} alt="" />
-                      {product.title}
+                      <span className='line-clamp-2 text-ellipsis overflow-x-hidden'>{product.title}</span>
                     </div>
                   </td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light lg:table-cell hidden'>
                     <p className='font-normal'>{product._id.slice(-7)}</p>
                   </td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] font-light'>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light lg:table-cell hidden'>
                     {formatDateDisplay(product.createdAt)}
                   </td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{product.variants.length}</td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatNumber(product.basePrice)}</td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7] text-center'>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center lg:table-cell hidden'>{product.variants.length}</td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatNumber(product.basePrice)}</td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center'>
                     <span className={`capitalize p-2 border ${product.publicationStatus==='active'?'border-green-600 bg-green-100 text-green-600':'border-red-600 bg-red-100 text-red-600'} rounded-lg`}>{product.publicationStatus}</span>
-                  </td>
-                  <td className='py-2 px-4  border-b group-last:border-0 border-[#e7e7e7]'>
-                    <div className='flex justify-center'>
-                      <Link to={`/dashboard/products/${product._id}`} className='p-2 pl-3.5 inline-flex items-center hover:bg-[#3b3b3b] text-white bg-[#1e1e1e] duration-300 justify-center gap-1.5 border border-[#1e1e1e] rounded-full'>
-                        Details
-                        {/* <span className='p-1.25 border-2 duration-300 border-white rounded-full text-base'><MdDoubleArrow/></span> */}
-                        <span className='duration-300 border-white rounded-full text-base'><MdKeyboardDoubleArrowRight/></span>
-                      </Link>
-                    </div>
                   </td>
                 </tr>
               ))}
