@@ -28,7 +28,7 @@ const ProductCard:React.FC<Props> = ({product, autoWidth=false})=>{
                         }
                     </button>
                 </div> */}
-                <div className="relative select-none grow sm:max-h-90 max-h-60 border-b overflow-hidden border-[#dadada]">
+                <div className="relative select-none grow sm:h-70 h-60 border-b overflow-hidden border-[#dadada]">
                     <img loading='lazy' className='object-cover object-top h-full w-full group-hover:scale-105 duration-300' src={product.imgs[0].url} alt="1" />
                     {
                         product.discountPrice&&

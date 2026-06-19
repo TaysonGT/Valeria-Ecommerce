@@ -14,11 +14,11 @@ const FilterGroup:React.FC<Props> = ({filter})=>{
 
     return (
         <div className='mb-6 w-full overflow-x-hidden'>
-            <div className='select-none text-md py-1 border-b border-black cursor-pointer flex justify-between items-center mb-2' onClick={()=>setCollapse(prev=> !prev)}>
+            <div className='select-none font-bold py-1 border-b border-[#989898] cursor-pointer flex justify-between items-center mb-2' onClick={()=>setCollapse(prev=> !prev)}>
                 {filter.title}
-                <FaCaretDown className={'text-sm duration-300 '+ (collapse&& 'rotate-180')}/>
+                <FaCaretDown className={'duration-300 '+ (collapse&& 'rotate-180')}/>
             </div>
-            <div className={`flex flex-col gap-2 duration-300 overflow-hidden ${collapse? 'max-h-96': 'max-h-0'}`}>
+            <div className={`flex flex-col gap-2 pt-1 px-1.5 duration-300 overflow-hidden ${collapse? 'max-h-96': 'max-h-0'}`}>
                 {filter.opts?.map((op, o)=>
                     <FilterElement key={o} {... {parent: filter.title, option: op}}/>
                 )}

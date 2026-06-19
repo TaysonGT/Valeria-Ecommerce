@@ -2,12 +2,15 @@ import { Request } from 'express'
 import { Product, IProduct } from '../schemas/product.schema';
 import { PipelineStage } from 'mongoose';
 
-type filterOption = {code: string, name: string, count: number}
+const filterCache = new Map<string, { data: any; expiresAt: number }>();
+const CACHE_TTL = 30_000; // 30 seconds
 
-type filterType = {
-    title: string,
-    opts: filterOption[]
-}
+// type filterOption = {code: string, name: string, count: number}
+
+// type filterType = {
+//     title: string,
+//     opts: filterOption[]
+// }
 
 interface SearchParams {
   q?: string;
@@ -21,123 +24,87 @@ interface SearchParams {
 }
 
 export const getSearchFilters = async(req: Request, productFilter: any)=> {
-    const {q} = req.query
+    // let filters: filterType[] = []
+    const cacheKey = JSON.stringify(productFilter) || 'default'; // Use the filter, not just q
+    const cached = filterCache.get(cacheKey);
 
-    let filters: filterType[] = []
-    const cacheKey = q || 'default';
-
-    if (!req.app.locals.filterCache || req.app.locals.filterCache.key !== cacheKey) {
-        const [genders, fittings, availabilityList] = await Promise.all([
-            Product.aggregate([
-                {$match: productFilter},
-                {
-                    $group: {
-                        _id: "$gender",
-                        count: {$sum:1}
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'genders',
-                        localField: '_id',
-                        foreignField: 'code',
-                        as: 'genderInfo'
-                    }
-                },
-                { $unwind: "$genderInfo" },
-                {
-                    $project:{
-                        code: "$_id",
-                        name: "$genderInfo.name",
-                        count: 1,
-                        _id: 0
-                    }
-                }
-            ]),
-            Product.aggregate([
-                { $match: productFilter },
-                {
-                    $group: {
-                        _id: "$fitting",
-                        count: { $sum: 1 }
-                    }
-                },
-                { 
-                    $lookup: {
-                        from: 'fittings',
-                        localField: '_id',
-                        foreignField: 'code',
-                        as: 'fittingInfo'
-                    } 
-                },
-                { $unwind: "$fittingInfo" },
-                {
-                    $project:{
-                        code: "$_id",
-                        name: "$fittingInfo.name",
-                        count: 1,
-                        _id: 0
-                    }
-                }
-
-            ]),
-            Product.aggregate([
-                { $match: productFilter },
-                { $unwind: "$variants" }, // Break down variants
-                {
-                $group: {
-                    _id: "$_id", // Group back by product
-                    hasStock: {
-                        $max: { $gt: ["$variants.inventory.stock", 0] } // At least one variant has stock
-                    }
-                }
-                },
-                {
-                $group: {
-                    _id: {
-                    $cond: [
-                        "$hasStock",
-                        "in",
-                        "out"
-                    ]
-                    },
-                    count: { $sum: 1 }
-                }
-                },
-                {
-                    $project: {
-                        code: "$_id",
-                        name: {
-                            $switch: {
-                                branches: [
-                                { case: { $eq: ["$_id", "in"] }, then: "In Stock" },
-                                { case: { $eq: ["$_id", "out"] }, then: "Out of Stock" }
-                                ]
-                            }
-                        },
-                        count: 1,
-                        _id: 0
-                    }
-                }
-            ])
-        ])
-            
-        // Cache the filters
-        req.app.locals.filterCache = {
-            key: cacheKey,
-            data: filters
-        };
-
-        availabilityList.length&& filters.push({title: "Availability", opts: availabilityList})
-        genders.length&& filters.push({title: "Gender", opts: genders})
-        fittings.length&& filters.push({title: "Fitting", opts: fittings})
-
-    } else {
-        filters = req.app.locals.filterCache.data;
+    // Check cache based on the filter conditions
+    if (cached && cached.expiresAt > Date.now()) {
+        return cached.data;
     }
+    
+    const aggregatedFilters = await Product.aggregate([
+        { $match: productFilter },
+        {
+            $facet: {
+                genders: [ { $group: { _id: "$gender", count: { $sum: 1 } } } ],
+                fittings: [ { $group: { _id: "$fitting", count: { $sum: 1 } } } ],
+                availability: [ { $group: { _id: "$hasStock", count: { $sum: 1 } } } ]
+            }
+        },
+        {
+            // Map the grouped facets into your exact title and opts structure
+            $project: {
+                filters: [
+                    {
+                        title: "Gender",
+                        opts: {
+                            $map: {
+                                input: "$genders",
+                                as: "g",
+                                in: { code: { $toString: "$$g._id" }, name: { $toString: "$$g._id" }, count: "$$g.count" }
+                            }
+                        }
+                    },
+                    {
+                        title: "Fitting",
+                        opts: {
+                            $map: {
+                                input: "$fittings",
+                                as: "f",
+                                in: { code: { $toString: "$$f._id" }, name: { $toString: "$$f._id" }, count: "$$f.count" }
+                            }
+                        }
+                    },
+                    {
+                        title: "Availability",
+                        opts: {
+                            $map: {
+                                input: "$availability",
+                                as: "a",
+                                in: { 
+                                    code: { $cond: { if: { $eq: ["$$a._id", true] }, then: "in", else: "out" }}, 
+                                    // Handles boolean true/false to readable text string
+                                    name: { $cond: { if: { $eq: ["$$a._id", true] }, then: "In Stock", else: "Out of Stock" } }, 
+                                    count: "$$a.count" 
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ])
+
+    
+    // aggregatedFilters[0].availability.length&& filters.push({title: "Availability", opts: aggregatedFilters[0].availability})
+    // aggregatedFilters[0].genders.length&& filters.push({title: "Gender", opts: aggregatedFilters[0].genders})
+    // aggregatedFilters[0].fittings.length&& filters.push({title: "Fitting", opts: aggregatedFilters[0].fittings})
+    
+    // console.log({
+    //     aggregatedFilters: aggregatedFilters[0]?.filters,
+    //     opts: aggregatedFilters[0]?.filters?.flatMap((f:any)=>f.opts),
+    //     availability: aggregatedFilters[0].availability
+    // })
+
+    // Cache the filters
+    filterCache.set(cacheKey, {
+        data: aggregatedFilters[0]?.filters,
+        expiresAt: Date.now() + CACHE_TTL
+    });
 
 
-    return filters
+    return aggregatedFilters[0]?.filters
 }
 
 export const findProducts = async (req: Request) => {
@@ -192,20 +159,7 @@ export const findProducts = async (req: Request) => {
         } else if (statuses.includes('in')) {
             productFilter['variants.inventory.stock'] = { $gt: 0 };
         } else if (statuses.includes('out')) {
-            // For 'out', we need an aggregation stage because we need to check ALL variants
-            pipeline.push({
-                $match: {
-                    $expr: {
-                        $allElementsTrue: {
-                            $map: {
-                                input: "$variants",
-                                as: "variant",
-                                in: { $lte: ["$$variant.inventory.stock", 0] }
-                            }
-                        }
-                    }
-                }
-            });
+            productFilter.hasStock = false;  // uses the index, no pipeline stage needed
         }
     }
 
@@ -247,20 +201,32 @@ export const findProducts = async (req: Request) => {
 
     // Add pagination
     const skip = (parseInt(page) - 1) * parseInt(pagination);
-    pipeline.push(
-        { $skip: skip },
-        { $limit: parseInt(pagination) }
-    );
+    // pipeline.push(
+    //     { $skip: skip },
+    //     { $limit: parseInt(pagination) }
+    // );
 
     // Execute aggregation
-    const [products, totalCount] = await Promise.all([
-        Product.aggregate(pipeline),
-        Product.countDocuments(productFilter)  // ← Uses the SAME productFilter
-    ]);
+    // const [products, totalCount] = await Promise.all([
+    //     Product.aggregate(pipeline),
+    //     Product.countDocuments(productFilter)  // ← Uses the SAME productFilter
+    // ]);
+
+    const [{products, total}] = await Product.aggregate([
+        ...pipeline,
+        {
+            $facet: {
+                products: [ { $skip: skip }, { $limit: parseInt(pagination) } ],
+                total: [ { $count: "count" } ]
+            }
+        },
+    ])
+
+    console.log({totalCount: total})
 
     return {
         products: products as IProduct[],
-        totalCount,
+        totalCount: total,
         filters,  // ← Return the filters too
         searchFilter: productFilter
     };

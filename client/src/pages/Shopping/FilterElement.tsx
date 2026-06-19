@@ -36,7 +36,7 @@ const FilterElement:React.FC<Props> = ({parent, option}) =>{
 
     return (
         <div onClick={handleCheck} className='font-light cursor-pointer flex justify-between gap-4 items-center'>
-            <p className='flex gap-2 items-center justify-between grow'><span>{option.name}</span><span>({option.count})</span></p>
+            <p className='flex gap-2 items-center justify-between grow text-[#383838] capitalize'><span>{option.name}</span><span>({option.count})</span></p>
             <input className='cursor-pointer' type='checkbox' name={option.name} onChange={()=>handleCheck} checked={checked} />
         </div>
     )

@@ -10,11 +10,12 @@ export interface IProduct extends Document {
   discountPrice?: number;
   currency: string;
   fitting: string;
-  gender: string;
+  gender: 'male'|'female';
   variants: IVariant[];
   categories: ICategory[];
   collections: ICollection[];
   publicationStatus: 'active'|'inactive';
+  hasStock: boolean,
   imgs: imageType[];
 }
 
@@ -37,6 +38,18 @@ export interface imageType {
   isPrimary?: boolean;
 }
 
+const VariantSchema = new Schema<IVariant>({
+  _id: { type: Schema.Types.ObjectId, auto: true },
+  sizeCode: {type: String, required: true},
+  inventory: {
+    stock: { type: Number, required: true },
+    barcode: { type: String, required: true },
+    reserved: { type: Number, default: 0 },
+    warehouseLocation: String
+  },
+  priceAdjustment: { type: Number, default: 0 }
+});
+
 export const ProductSchema = new Schema<IProduct>({
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -49,18 +62,13 @@ export const ProductSchema = new Schema<IProduct>({
   },
   currency: { type: String, default: 'USD' },
   fitting: { type: String, required: true },
-  gender: { type: String, required: true },
-  variants: [{
-    _id: { type: Schema.Types.ObjectId, auto: true },
-    sizeCode: {type: String, required: true},
-    inventory: {
-      stock: { type: Number, required: true },
-      barcode: { type: String, required: true },
-      reserved: { type: Number, default: 0 },
-      warehouseLocation: String
-    },
-    priceAdjustment: { type: Number, default: 0 }
-  }],
+  gender: { 
+    type: String, 
+    enum: ['male', 'female'],
+    required: true
+  },
+  hasStock: { type: Boolean, default: false },
+  variants: [VariantSchema],
   categories: [{
     _id: { type: Schema.Types.ObjectId, required: true },
     name: { type: String, required: true }
@@ -79,9 +87,18 @@ export const ProductSchema = new Schema<IProduct>({
   timestamps: true // Auto-manage createdAt/updatedAt
 });
 
+ProductSchema.pre('save', function(next) {
+    this.hasStock = this.variants.some(v => 
+        (v.inventory.stock - v.inventory.reserved) > 0
+    );
+    next();
+});
+
 // Indexes
 ProductSchema.index({ title: 'text', description: 'text' });
 ProductSchema.index({ 'variants.sizeCode': 1 });
 ProductSchema.index({ 'categories.id': 1 });
+ProductSchema.index({ hasStock: 1 });
+
 
 export const Product = model('products', ProductSchema);

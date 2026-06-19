@@ -5,13 +5,10 @@ import FilterGroup from './FilterGroup'
 import DarkBackground from '../../components/DarkBackground'
 
 interface Props {
-    filters: filterType[],
-    // show: boolean,
-    // hide: ()=>void
+    filters: filterType[]
 }
 
 const FilterSection: React.FC<Props> = ({filters})=>{
-// const FilterSection: React.FC<Props> = ({filters, show, hide})=>{
     const [showMobile, setShowMobile] = useState<boolean>(false);
 
     useEffect(()=>{
@@ -23,12 +20,12 @@ const FilterSection: React.FC<Props> = ({filters})=>{
     return (
         <>
         {/* Desktop / tablet filters */}
-        <div className='hidden md:block px-6 py-10 flex-1 sticky top-24'>
-            {filters.length>0?
+        <div className='hidden md:block p-6 flex-1 sticky top-24'>
+            {filters?.length?
             <>
             <div className='w-full'>
                 {filters.map((filter, i)=>
-                    filter.opts.length>1&& <FilterGroup key={`${filter.title}-${i}`} {... {filter}}/>
+                    filter.opts?.length>1&& <FilterGroup key={`${filter.title}-${i}`} {... {filter}}/>
                 )}
             </div>
             <PriceFilter/>
@@ -51,11 +48,11 @@ const FilterSection: React.FC<Props> = ({filters})=>{
                 <button onClick={()=>setShowMobile(false)} className='text-xl'>×</button>
             </div>
             <div className='modal-inner'>
-                {filters.length>0?
+                {filters?.length?
                     <>
                         <div className='w-full'>
                             {filters.map((filter, i)=>
-                                filter.opts.length>1&& <FilterGroup key={`${filter.title}-${i}`} {... {filter}}/>
+                                filter.opts?.length>1&& <FilterGroup key={`${filter.title}-${i}`} {... {filter}}/>
                             )}
                         </div>
                         <PriceFilter/>

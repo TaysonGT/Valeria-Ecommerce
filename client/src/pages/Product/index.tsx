@@ -85,7 +85,7 @@ const ProductPage = () => {
                     <div className='grow bg-white border border-[#d9d9d9]'>
                         <div className='flex flex-col md:flex-row'>
                             <div className='p-4 w-full min-w-0'>
-                                <div className='h-100 aspect-square w-full border border-[#d3d3d3] bg-[#F7f7F7]'>
+                                <div className='h-100 aspect-square w-full border border-[#d3d3d3] bg-[#fcfcfc]'>
                                     <img className='h-full w-full object-contain' src={product?.imgs[selectedImage]?.url} alt={product?.imgs[selectedImage]?.altText} />
                                 </div>
                                 <div className='sm:w-100 h-24 mt-1 overflow-hidden'>
@@ -99,10 +99,10 @@ const ProductPage = () => {
                                     onSlideChange={(swiper: SwiperType) => setSelectedImage(swiper.realIndex)}
                                     autoplay={{ delay: 2500, disableOnInteraction: false }}
                                     className='h-full w-full'>
-                                        {product?.imgs.map((img, i)=>
+                                        {product?.imgs.sort((a, b) => Number(a.isPrimary) - Number(b.isPrimary)).map((img, i)=>
                                             <SwiperSlide className='w-24 ' key={i}>
-                                                <div className={`h-full border cursor-pointer bg-[#F2F6F7] ${i===selectedImage? 'border-[#FFB400]': 'border-[#d3d3d3]'}`}>
-                                                    <img key={i} onClick={()=>setSelectedImage(i)} className={`h-full w-full object-contain`} src={img.url} alt={img.altText} />
+                                                <div className={`h-full border cursor-pointer bg-[#fcfcfc] ${i===selectedImage? 'border-[#FFB400]': 'border-[#d3d3d3]'}`}>
+                                                    <img key={i} onClick={()=>setSelectedImage(i)} className={`h-full w-full object-cover`} src={img.url} alt={img.altText} />
                                                 </div>
                                             </SwiperSlide>
                                         )}
@@ -196,28 +196,34 @@ const ProductPage = () => {
                         <div className="p-6 pb-4 border border-[#d9d9d9] shadow-md shadow-black/10 bg-white">
                             <h1 className="text-xl font-bold border-b border-gray-200 pb-2 mb-2">Related Products</h1>
                             <div className="flex flex-col">
-                                {relatedProducts?.map((rProduct, i)=>
-                                    <Link to={`/products/${rProduct._id}`} key={i} className="flex gap-6 items-center py-3 not-last:border-b border-gray-200">
-                                        <div className='h-25 aspect-square bg-[#f3f3f3] border border-[#d3d3d3]'>
-                                            <img src={rProduct.imgs[0].url} className='h-full w-full object-contain' alt={rProduct.imgs[0].altText}/>
-                                        </div>
-                                        <div className='grow flex flex-col gap-2'>
-                                            <div className='flex gap-1 text-[#FFB400]'>
-                                                {[...Array(5)].map((_, i)=>
-                                                    <FaStar key={i}/>
-                                                )}
+                                {relatedProducts?.length? 
+                                    relatedProducts.map((rProduct, i)=>
+                                        <Link to={`/products/${rProduct._id}`} key={i} className="flex gap-6 items-center py-3 not-last:border-b border-gray-200">
+                                            <div className='h-25 aspect-square bg-[#f3f3f3] border border-[#d3d3d3]'>
+                                                <img src={rProduct.imgs.find(i=>i.isPrimary)?.url||rProduct.imgs[0].url} className='h-full w-full object-cover' alt={rProduct.imgs[0].altText}/>
                                             </div>
-                                            <p className="capitalize font-bold">{rProduct.title}</p>
-                                            {/* <p className="capitalize font-bold">{rProduct.title}</p> */}
-                                            <div className='text-[#1f1f1f] font-bold items-center gap-2 flex text-lg'>
-                                                <p>${rProduct.discountPrice||rProduct.basePrice}</p>
-                                                {rProduct.discountPrice&&
-                                                    <p className='line-through opacity-60 mr-2 text-sm'>${rProduct?.basePrice}</p>
-                                                }
+                                            <div className='grow flex flex-col gap-2'>
+                                                <div className='flex gap-1 text-[#FFB400]'>
+                                                    {[...Array(5)].map((_, i)=>
+                                                        <FaStar key={i}/>
+                                                    )}
+                                                </div>
+                                                <p className="capitalize font-bold">{rProduct.title}</p>
+                                                {/* <p className="capitalize font-bold">{rProduct.title}</p> */}
+                                                <div className='text-[#1f1f1f] font-bold items-center gap-2 flex text-lg'>
+                                                    <p>${rProduct.discountPrice||rProduct.basePrice}</p>
+                                                    {rProduct.discountPrice&&
+                                                        <p className='line-through opacity-60 mr-2 text-sm'>${rProduct?.basePrice}</p>
+                                                    }
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                )}
+                                        </Link>
+                                    )
+                                    :
+                                    <div className='py-16 flex items-center justify-center'>
+                                        <Loader size={40} thickness={7}/>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

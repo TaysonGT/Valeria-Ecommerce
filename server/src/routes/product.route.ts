@@ -25,7 +25,6 @@ productRouter.delete('/:productId/variants/:variantId', productController.remove
 productRouter.delete('/:productId/categories/:categoryId', productController.removeCategoryFromProduct)
 
 productRouter.post('/fittings', auth, isPermitted('admin'), productController.createFitting)
-productRouter.post('/genders', auth, isPermitted('admin'), productController.createGender)
 
 
 // productRouter.post('/categories', productController.createCategory)

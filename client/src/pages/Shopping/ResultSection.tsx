@@ -7,7 +7,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import Loader from '../../components/Loader';
 import LightBackground from '../../components/LightBackground';
 import { filterType } from '.';
-import { IoClose, IoSearch } from 'react-icons/io5';
+import { IoSearch } from 'react-icons/io5';
 import { LuFilter } from 'react-icons/lu';
 
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
 const ResultSection: React.FC<Props> = ({results, isLoading, filters})=>{
 
     const {handleSort, searchParams, maxPages, pageCount, changePage, setSearchParams} = useSearch()
-    const [searchString, setSearchString] = useState('')
+    const [searchString, setSearchString] = useState(searchParams.get('q')||'')
     
     const searchSubmitHandler = (e:React.SubmitEvent<HTMLFormElement>)=> {
         e.preventDefault(); 
@@ -34,18 +34,15 @@ const ResultSection: React.FC<Props> = ({results, isLoading, filters})=>{
 
     return (
         <div className='sm:flex-6 flex flex-col border-l font-[Poppins] border-gray-300'>
-            <div className='sm:py-8 py-6 md:px-10 px-4 sm:px-6 flex flex-row flex-wrap justify-between items-end border-b gap-4 border-gray-300'>
-                <form onSubmit={searchSubmitHandler} className="relative flex gap-2 w-full sm:w-auto">
+            <div className='sm:py-8 py-6 md:px-10 px-4 sm:px-6 flex flex-row flex-wrap items-end border-b gap-10 border-gray-300'>
+                <form onSubmit={searchSubmitHandler} className="relative flex gap-1 w-full sm:w-auto">
                     <div className="relative grow">
                         <div className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
                             <IoSearch className='text-indigo-400'/>
                         </div>
                         <input type="search" onChange={(e)=>setSearchString(e.target.value)} value={searchString} id="search" className="z-2 block md:w-140 w-full p-3 ps-9 border border-[#b7b7b7] rounded-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[#b7b7b7]" placeholder="Search by product ID or name" />
-                        <div onClick={()=>setSearchString('')} className="z-3 absolute cursor-pointer inset-y-0 inset-e-0 flex items-center pe-3">
-                            <IoClose className='text-indigo-400'/>
-                        </div>
                     </div>
-                    <button type='submit' className='px-4 py-2 bg-black cursor-pointer text-white rounded-sm font-bold font-[Elms_Sans]'>Search</button>
+                    <button type='submit' className='px-4 py-2 bg-black cursor-pointer text-white rounded-sm font-bold font-[Sans]'>Search</button>
                 </form>
                 <div className='flex sm:gap-6 gap-4 text-sm flex-wrap'>
                     <button onClick={()=>{

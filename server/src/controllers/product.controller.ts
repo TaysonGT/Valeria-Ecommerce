@@ -4,7 +4,6 @@ import { Product } from "../schemas/product.schema";
 import { isValidObjectId, Types } from "mongoose";
 import { ObjectId } from "mongodb";
 import { Fitting } from "../schemas/fitting.schema";
-import { Gender } from "../schemas/gender.schema";
 import { Category } from "../schemas/category.schema";
 // import { Category, ICategory } from "../schemas/category.schema";
 import { findProducts } from "../services/search.service";
@@ -125,17 +124,6 @@ export class ProductController {
 
     }
     
-    async createGender(req: Request, res: Response){
-        const { name, code } = req.body
-        const gender = new Gender({ name, code })
-
-        await gender.save().then(()=>{
-            res.status(201).json({gender, success: true})
-        }).catch((error)=>{
-            res.status(500).json({message: 'Database operation failed', error, success: false})
-        })
-    }
-
     async allProducts(req: Request, res: Response){
         const products =  await Product.find()
 
