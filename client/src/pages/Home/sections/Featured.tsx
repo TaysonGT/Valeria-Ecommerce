@@ -26,7 +26,7 @@ const FeaturedSection = () => {
             </Link>
           </div>
           {/* <p className='text-xl mt-1'>A selection of our highest quality products based on customers opinions</p> */}
-          <div className='grid lg:grid-cols-3 xl:grid-cols-4 grid-cols-1 min-[420px]:grid-cols-2 gap-2 sm:gap-4 mt-6 w-full'>
+          <div className='grid lg:grid-cols-3 xl:grid-cols-4 grid-cols-1 min-[370px]:grid-cols-2 gap-2 sm:gap-4 mt-6 w-full'>
             {featuredProducts?.map((product, i)=>
             <div key={i} className='flex-1 h-full'>
               <ProductCard product={product} autoWidth={true} />

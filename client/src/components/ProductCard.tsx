@@ -28,7 +28,7 @@ const ProductCard:React.FC<Props> = ({product, autoWidth=false})=>{
                         }
                     </button>
                 </div> */}
-                <div className="relative select-none grow max-h-90 border-b overflow-hidden border-[#dadada]">
+                <div className="relative select-none grow sm:max-h-90 max-h-60 border-b overflow-hidden border-[#dadada]">
                     <img loading='lazy' className='object-cover object-top h-full w-full group-hover:scale-105 duration-300' src={product.imgs[0].url} alt="1" />
                     {
                         product.discountPrice&&
@@ -48,7 +48,7 @@ const ProductCard:React.FC<Props> = ({product, autoWidth=false})=>{
                         <FaStar className='text-[#FFB400] text-lg'/>
                         <span className='text-sm text-gray-600'>4.5 (59 Reviews)</span>
                     </div>
-                    <p className='sm:text-lg text-sm'>{product.title}</p>
+                    <p className='sm:text-lg text-base'>{product.title}</p>
                     <div className='gap-2 flex sm:text-xl'>
                         {
                             product.discountPrice?

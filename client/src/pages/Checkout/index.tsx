@@ -99,9 +99,9 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className='min-h-screen bg-[#fcfcfc]'>
+    <div className='min-h-screen bg-[#fcfcfc] w-full'>
       <div className='grid lg:grid-cols-[1fr_1fr]'>
-        <div className='lg:py-10 p-10 xl:px-20'>
+        <div className='lg:py-10 p-6 md:p-10 xl:px-20'>
           <h1 className='text-2xl text-gray-800 font-light'>Checkout</h1>
           <div className='mt-6'>
             <h2 className='text-3xl mb-4 flex gap-4 items-center'>Order Summary<span className='bg-gray-200 font-light p-1 text-xs'>{cartItems.length} Items</span></h2>
@@ -139,7 +139,7 @@ const CheckoutPage = () => {
             )}
           </div>
         </div>
-        <div className='bg-white p-10 lg:py-20 xl:px-20'>
+        <div className='bg-white p-6 md:p-10 lg:py-20 xl:px-20'>
           <h2 className='text-3xl mb-4 flex gap-4 items-center'>Customer Info</h2>
           <form className='space-y-4' onSubmit={handleSubmit}>
             <section className='space-y-4'>
@@ -164,7 +164,7 @@ const CheckoutPage = () => {
             </section>
 
             <section className='space-y-4 mt-8'>
-              <div className='flex items-center justify-between gap-4'>
+              <div className='flex items-center justify-between gap-4 flex-wrap gap-y-1'>
                 <h2 className='text-lg'>Payment details</h2>
                 <span className='text-sm text-gray-500'>{isPaymentComplete ? 'Payment ready' : 'Complete payment information'}</span>
               </div>

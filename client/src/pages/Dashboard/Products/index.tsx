@@ -10,6 +10,7 @@ import { useSearch } from '../../../context/SearchContext'
 import { filterType } from '../../Shopping'
 import Loader from '../../../components/Loader'
 import { useNavigate } from 'react-router'
+import AddProduct from './dialogs/AddProduct'
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<productType[]>([])
@@ -35,6 +36,7 @@ const ProductsPage = () => {
   }
   
   const lastQ = useRef<string>(searchParams.get('q'))
+  const [showAddProduct, setShowAddProduct] = useState(false)
 
   // const analytics = [
   //   {
@@ -112,16 +114,40 @@ const ProductsPage = () => {
           </div>
         )}
       </div> */}
-      <div className='flex justify-between items-center px-2 gap-4'>
+      <div className='flex justify-between items-center px-2 gap-4 w-full'>
         <div className=''>
           <h1 className='text-4xl font-[Elms_Sans]'>Products</h1>
           <p className='mt-2 font-light text-gray-600'>Manage inventory, pricing and availability across your store</p>
         </div>
-        <div className='flex gap-2 font-[Comfortaa]'>
-          <button className='flex items-center gap-2 p-3 pr-4 bg-blue-500 text-white rounded-md cursor-pointer hover:opacity-85 duration-150'>
-            <MdAdd className='text-lg'/>Add
-          </button>
-        </div>
+        <button onClick={()=>setShowAddProduct(true)} className='flex items-center gap-2 p-2.5 pr-4 bg-blue-500 text-white rounded-md cursor-pointer hover:opacity-85 duration-150 font-[Comfortaa]'>
+          <MdAdd className='text-lg'/>Add
+        </button>
+        <AddProduct show={showAddProduct} hide={()=>setShowAddProduct(false)} onSave={async (payload)=>{
+          // Example onSave handler: uploads images and creates product.
+          // Update the endpoint path if your backend expects a different route.
+          try{
+            const form = new FormData()
+            form.append('title', payload.title)
+            form.append('basePrice', String(payload.basePrice))
+            form.append('description', payload.description)
+            payload.categories?.forEach((c:string)=>form.append('categories[]', c))
+            payload.variants?.forEach((v:any, i:number)=>{
+              form.append(`variants[${i}][sizeCode]`, v.sizeCode)
+              form.append(`variants[${i}][priceAdjustment]`, String(v.priceAdjustment||0))
+              form.append(`variants[${i}][inventory][stock]`, String(v.inventory?.stock||0))
+            })
+            ;(payload._images||[]).forEach((f:File)=>form.append('images', f))
+
+            await axios.post('/products', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+
+            // refresh list after creation
+            const { data } = await axios.get(`/products/search?${searchParams.toString()}`)
+            setProducts(data.products)
+          }catch(err){
+            console.error('Create product failed', err)
+            throw err
+          }
+        }} />
       </div>
       <div className='mt-4 w-full'>
         <div className='flex justify-between gap-4 gap-y-2 flex-wrap'>
@@ -163,8 +189,9 @@ const ProductsPage = () => {
                 <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] lg:table-cell hidden'>ID</th>
                 <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] lg:table-cell hidden'>Creation Date</th>
                 <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center lg:table-cell hidden'>Variants</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Stock</th>
                 <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Base Price</th>
-                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Status</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center lg:table-cell hidden'>Status</th>
               </tr>
             </thead>
             <tbody className='bg-white text-sm text-wrap'>
@@ -182,9 +209,15 @@ const ProductsPage = () => {
                   <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light lg:table-cell hidden'>
                     {formatDateDisplay(product.createdAt)}
                   </td>
-                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center lg:table-cell hidden'>{product.variants.length}</td>
-                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatNumber(product.basePrice)}</td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center lg:table-cell hidden'>{product.variants?.length}</td>
                   <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center'>
+                    <div className={`${product.variants?.flatMap((v)=>v.inventory.stock).reduce((a, v)=>a+v,0)>20?'text-green-600':'text-red-600'} font-bold relative`}>
+                      {/* <span className={`w-2 h-2 absolute rounded-full ${product.variants?.flatMap((v)=>v.inventory.stock).reduce((a, v)=>a+v,0)>20?'text-green-500':'text-red-500'}`}></span> */}
+                      {product.variants?.flatMap((v)=>v.inventory.stock).reduce((a, v)=>a+v,0)}
+                    </div>
+                  </td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center'>{formatNumber(product.basePrice)}</td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] text-center lg:table-cell hidden'>
                     <span className={`capitalize p-2 border ${product.publicationStatus==='active'?'border-green-600 bg-green-100 text-green-600':'border-red-600 bg-red-100 text-red-600'} rounded-lg`}>{product.publicationStatus}</span>
                   </td>
                 </tr>

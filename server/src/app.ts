@@ -21,12 +21,12 @@ const PORT = 5000
 const app = express()
 
 app.use(cors({
-    credentials: true,
-    origin: allowedOrigins
+  credentials: true,
+  origin: allowedOrigins
 }))
 app.use(express.json())
-app.use(BodyParser.json())
 app.use(CookieParser())
+app.use(BodyParser.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use('/products', productRouter)

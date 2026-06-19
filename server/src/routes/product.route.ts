@@ -1,6 +1,9 @@
 import express from 'express'
 import { ProductController } from '../controllers/product.controller'
 import { auth, isPermitted } from '../middlewares/auth.middleware'
+import multer from 'multer';
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const productController = new ProductController()
 const productRouter = express.Router()
@@ -12,7 +15,7 @@ productRouter.get('/featured', productController.featuredProducts)
 productRouter.get('/related/:id', productController.relatedProducts)
 productRouter.get('/:id', productController.singleProduct)
 
-productRouter.post('/', auth, isPermitted('admin'), productController.createProduct)
+productRouter.post('/', auth, isPermitted('admin'), upload.single('file'), productController.createProduct)
 productRouter.post('/:productId/variants', productController.createVariant)
 
 productRouter.patch('/:productId', productController.updateProduct)

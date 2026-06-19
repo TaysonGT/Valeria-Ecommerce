@@ -1,64 +1,97 @@
 import { Response, Request } from "express";
-import { imageType, IProduct, IVariant, Product } from "../schemas/product.schema";
+import { Product } from "../schemas/product.schema";
+// import { imageType, IProduct, IVariant, Product } from "../schemas/product.schema";
 import { isValidObjectId, Types } from "mongoose";
 import { ObjectId } from "mongodb";
 import { Fitting } from "../schemas/fitting.schema";
 import { Gender } from "../schemas/gender.schema";
-import { Category, ICategory } from "../schemas/category.schema";
+import { Category } from "../schemas/category.schema";
+// import { Category, ICategory } from "../schemas/category.schema";
 import { findProducts } from "../services/search.service";
-import { ICollection } from "../schemas/collection.schema";
+// import { ICollection } from "../schemas/collection.schema";
 import { ImageService } from '../services/image.service';
 import path from 'path';
 import fs from 'fs';
 
 export class ProductController {
     async createProduct(req: Request, res: Response){
-        const data = req.body
+        const files = req.files
+        const body = req.body
 
-        const dataForm: Partial<IProduct> = {
-            title: data.title,
-            description: data.description,
-            basePrice: data.basePrice,
-            discountPrice: data.discountPrice,
-            currency: data.currency,
-            fitting: data.fitting,
-            gender: data.gender,
-            variants: data.variants.map((v: IVariant)=>({
-                sizeCode: v.sizeCode,
-                inventory: {
-                    stock: v.inventory.stock,
-                    barcode: v.inventory.stock,
-                    reserved: v.inventory.reserved
-                }
-            })),
-            categories: data.categories.map((c: ICategory)=>({
-                categoryId: new Types.ObjectId(c._id),
-                name: c.name
-            })),
-            collections: data.collections.map((c: ICollection)=>({
-                collectionId: new Types.ObjectId(c._id),
-                title: c.title 
-            })),
-            imgs: data.imgs.map((i: imageType)=>({
-                url: i.url,
-                isPrimary: i.isPrimary,
-                altText: i.altText
-            }))
-        }
+        console.log({files,body})
+        res.json({files,body})
+        // const {title, basePrice, discountPrice, categories, variants, description, fitting, currency, gender, collections, images} = req.body
 
-        const product = new Product(dataForm)
+        // if(!title){
+        //     res.json({success:false, message: "Product should have a title"})
+        //     return
+        // }
 
-        await product.save().then(()=>{
-            res.status(201).json({product, success: true})
-        }).catch((error)=>{
-            res.status(500).json({message: 'Database operation failed', error, success: false})
-        })
+        // if(!basePrice){
+        //     res.json({success:false, message: "Product should have a base price"})
+        //     return
+        // }
+
+        // const parsedCategories:ICategory[] = []
+        
+        // categories?.forEach(async(c:ICategory)=>{
+        //     const category = await this.getCategory(c._id)
+        //     category&& parsedCategories.push(category)
+        // })
+
+        // const parsedVariants = variants?.map((v:string)=>{
+        //     const parsed = JSON.parse(v)
+        //     if(!parsed.sizeCode){
+        //         res.json({success:false, message: "Size Code can't be empty"})
+        //         return
+        //     }
+        // })
+
+        // const dataForm: Partial<IProduct> = {
+        //     title: title,
+        //     description: description,
+        //     basePrice: basePrice,
+        //     discountPrice: discountPrice,
+        //     currency: currency,
+        //     fitting: fitting,
+        //     gender: gender,
+        //     variants: parsedVariants.map((v: IVariant)=>({
+        //         sizeCode: v.sizeCode,
+        //         inventory: {
+        //             stock: v.inventory.stock || 0,
+        //             barcode: v.inventory.stock || '',
+        //             reserved: v.inventory.reserved || 0
+        //         }
+        //     })),
+        //     categories: parsedCategories,
+        //     collections: collections.map((c: ICollection)=>({
+        //         collectionId: new Types.ObjectId(c._id),
+        //         title: c.title 
+        //     })),
+        //     imgs: images?.map((i: imageType)=>({
+        //         url: i.url,
+        //         isPrimary: i.isPrimary,
+        //         altText: i.altText
+        //     }))
+        // }
+
+        // const product = new Product(dataForm)
+
+        // await product.save().then(()=>{
+        //     res.status(201).json({product, success: true, message: 'New product added successfully!'})
+        // }).catch((error)=>{
+        //     res.status(500).json({message: 'Database operation failed', error, success: false})
+        // })
     }
     
     async allCategories(req: Request, res: Response){
         const categories =  await Category.find()
 
         res.status(201).json({categories, success: true});
+    }
+
+    async getCategory(id: string|Types.ObjectId){
+        return await Category.findById(id)
     }
 
     async searchProducts(req: Request, res: Response){
