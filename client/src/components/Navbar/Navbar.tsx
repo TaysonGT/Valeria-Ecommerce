@@ -145,9 +145,9 @@ const Navbar: React.FC = () => {
       <DarkBackground {... {hide: ()=> setShowCart(false), show: showCart}} />
       <Cart {...{setShow: (v:boolean)=> setShowCart(v), show: showCart}}/>
 
-      <div className='flex justify-between items-center xl:gap-16 sm:gap-10 gap-4 w-full xl:m-auto sm:px-10 xl:px-20 px-6 2xl:px-30 py-6'>
+      <div className='flex justify-between items-center xl:gap-16 sm:gap-10 gap-4 w-full xl:m-auto sm:px-10 xl:px-20 px-6 2xl:px-30 py-4'>
         <div className='flex-1 flex justify-start items-stretch'>
-          <Link to='/'><h1 className='text-4xl font-[Comfortaa] font-extrabold select-none hover:text-[#e0fbff] duration-300'>Valeria</h1></Link>
+          <Link to='/'><h1 className='text-2xl md:text-3xl xl:text-4xl font-[Comfortaa] font-extrabold select-none hover:text-[#e0fbff] duration-300'>Valeria</h1></Link>
         </div>
         <ul className='flex-1 lg:flex hidden xl:gap-12 gap-8 text-md justify-center items-center'>
           {links.map((link, i)=>
@@ -177,7 +177,7 @@ const Navbar: React.FC = () => {
             </div>
           )}
         </ul>
-        <div className='flex-1 flex items-center sm:gap-6 gap-4 text-[28px] justify-end'>
+        <div className='flex-1 flex items-center sm:gap-6 gap-4 text-2xl md:text-[28px] justify-end'>
           <MdOutlineSearch onClick={()=>setShowSearchbar(true)} className='cursor-pointer hover:scale-[1.15] duration-200'/>
           <div className='gap-4 xl:gap-6 flex'>
             <Link to='/'>
@@ -191,7 +191,7 @@ const Navbar: React.FC = () => {
             }
             <button onClick={()=> setShowCart(true)} className='cursor-pointer group hover:scale-[1.15] duration-200 relative'>
               <MdOutlineShoppingBag className=' '/>
-              <span className='absolute -top-1 -left-2 text-[12px] bg-[#ffd041] text-gray-700 font-bold rounded-full w-4.5 h-4.5 flex justify-center items-center'>{cartItems.length}</span>
+              <span className='absolute -top-1 -left-1 md:-left-2 text-[10px] md:text-xs bg-[#ffd041] text-gray-700 font-bold rounded-full w-3.5 h-3.5 md:w-4.5 md:h-4.5 flex justify-center items-center'>{cartItems.length}</span>
             </button>
           </div>
           <div className='hidden lg:block ml-4'> 

@@ -23,9 +23,9 @@ const CategoriesSection = () => {
   return (
     <section className='py-20 bg-white font-[Comfortaa]'>
       <div className='max-w-7xl mx-auto sm:px-6 px-4'>
-        <div className='text-center mb-16'>
-          <h2 className='text-4xl md:text-5xl font-bold text-gray-900 mb-4'>Shop by Category</h2>
-          <p className='text-xl text-gray-600 max-w-2xl mx-auto'>Discover our curated collections designed to match your unique style and preferences.</p>
+        <div className='text-center mb-8 lg:mb-16'>
+          <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4'>Shop by Category</h2>
+          <p className='text-lg md:text-xl text-gray-600 max-w-2xl mx-auto'>Discover our curated collections designed to match your unique style and preferences.</p>
         </div>
 
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>

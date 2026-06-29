@@ -5,7 +5,7 @@ const PublicRoute = ({withNav=false}) => {
   return (
     <div className='relative max-w-screen flex flex-col'> 
       {withNav&& <Navbar /> }
-      <div className={`${withNav&&'pt-22'}`}>
+      <div className={`${withNav&&'pt-16 md:pt-20'}`}>
         <Outlet /> 
       </div>
     </div>

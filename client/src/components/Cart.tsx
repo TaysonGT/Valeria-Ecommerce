@@ -56,7 +56,7 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
                 <button onClick={()=>{
                     nav('/cart')
                     setShow(false)
-                    }} className='flex-1 px-8 py-2.5 font-bold z-0 bg-[#043aff] hover:bg-transparent hover:text-[#071c1f] border border-[#043aff] hover:border-[#071c1f] duration-400 text-white ltr btn cursor-pointer'>View Cart</button>
+                    }} className='flex-1 px-8 py-2.5 font-bold z-0 bg-primary-700 hover:bg-transparent hover:text-[#071c1f] border border-primary-700 hover:border-[#071c1f] duration-400 text-white ltr btn cursor-pointer'>View Cart</button>
                 <button onClick={()=>{
                     nav('/checkout')
                     setShow(false)

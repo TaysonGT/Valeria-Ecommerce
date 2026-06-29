@@ -34,12 +34,12 @@ const LimitedOffer = () => {
   return (
     <section className='bg-white border-6 border-amber-300 font-sans'>
       <div className='w-full flex items-center relative bg-[url(/imgs/landing/limited-offer.jpg)] bg-no-repeat bg-cover bg-center'>
-        <div className='p-16 py-14 flex flex-col sm:items-center gap-6 h-full bg-linear-to-l from-black/30 to-black/90 w-full text-center'>
-          <p className='text-5xl text-red-400 font-light font-[Elms_Sans]'>Limited Edition</p>
-          <p className='text-amber-300 text-7xl leading-tight uppercase font-[Titan_One]'>Buy 2 <span className='text-white'>Get</span> <span className='text-primary-200'>1 Free</span></p>
-          <Link to={'/shop'} className='text-4xl flex gap-4 items-center bg-black text-white px-8 pr-5 py-3 rounded-full font-[Elms_Sans] hover:bg-white hover:text-black duration-200 border-white border cursor-pointer '>
+        <div className='p-4 py-10 lg:p-16 lg:py-14 flex flex-col sm:items-center gap-4 lg:gap-6 h-full bg-linear-to-l from-black/30 to-black/90 w-full text-center'>
+          <p className='text-3xl md:text-5xl text-red-400 font-light font-[Elms_Sans]'>Limited Edition</p>
+          <p className='text-amber-300 text-4xl lg:text-7xl leading-tight uppercase font-[Titan_One]'>Buy 2 <span className='text-white'>Get</span> <span className='text-primary-200'>1 Free</span></p>
+          <Link to={'/shop'} className='self-center text-xl lg:text-4xl flex lg:gap-4 gap-2 items-center bg-black text-white px-4 pr-3 py-2.5 lg:px-8 lg:pr-5 lg:py-3 rounded-full font-[Elms_Sans] hover:bg-white hover:text-black duration-200 border-white border cursor-pointer '>
             Discover Offers
-            <FiArrowRight className='text-4xl'/>
+            <FiArrowRight className='text-xl lg:text-4xl'/>
           </Link>
         </div>
       </div>
