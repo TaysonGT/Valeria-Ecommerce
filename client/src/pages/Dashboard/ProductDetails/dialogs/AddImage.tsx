@@ -27,6 +27,41 @@ const AddImage: React.FC<Props> = ({ show, hide, onSave, productId }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState('Image size cannot be more than 2 MBs')
 
+  const uploadSingleImage = async (file: File):Promise<{public_id:string, secure_url:string}|undefined> => {
+    if (!images.length) {
+      toast.error("Please select a file first!")
+      return
+    };
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      
+      if (data.secure_url&&data.public_id) {
+        return {secure_url: data.secure_url, public_id: data.public_id}
+      } else {
+        toast.error("Upload failed");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   // Add image handler
   const addImages = useCallback((files: FileList | null) => {
     if (!files) return;
@@ -108,19 +143,16 @@ const AddImage: React.FC<Props> = ({ show, hide, onSave, productId }) => {
       return;
     }
     setIsUploading(true);
-    
-    const formData = new FormData();
 
-    images.forEach(image => {
-        formData.append('images', image.file);
-    });  
+    const uploadPromises = images.map(image => uploadSingleImage(image.file));
 
-    productService.uploadImages(productId, formData)
+    const imgsInfo = await Promise.all(uploadPromises);
+
+    productService.uploadImages(productId, {imgsInfo: imgsInfo.filter(i=>i!==undefined)})
     .then(({data})=>{
         if (data.success) {
-            toast.success(`Uploaded ${images.length} image(s) successfully`);
+            toast.success(data.message||`Uploaded ${images.length} image(s) successfully`);
             // Clean up preview URLs
-            images.forEach(img => URL.revokeObjectURL(img.preview));
             setImages([]);
             onSave();
             hide();
@@ -130,12 +162,6 @@ const AddImage: React.FC<Props> = ({ show, hide, onSave, productId }) => {
     }).catch((error)=>toast.error(error.response?.data?.message || 'Upload failed'))
     .finally(()=>setIsUploading(false))
   }
-
-  useEffect(() => {
-    return () => {
-      images.forEach(img => URL.revokeObjectURL(img.preview));
-    };
-  }, []);
 
   useEffect(() => {
     setUploadError('')

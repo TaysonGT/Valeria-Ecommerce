@@ -35,6 +35,7 @@ export interface imageType {
   _id?: Schema.Types.ObjectId;
   url: string;
   altText: string;
+  publicId?: string;
   isPrimary?: boolean;
 }
 
@@ -81,6 +82,7 @@ export const ProductSchema = new Schema<IProduct>({
     _id: { type: Schema.Types.ObjectId, auto: true },
     url: {type: String, required: true},
     altText: {type: String, required: true},
+    publicId: {type: String, required: false},
     isPrimary: { type: Boolean, default: false }
   }]
 }, { 
@@ -100,5 +102,19 @@ ProductSchema.index({ 'variants.sizeCode': 1 });
 ProductSchema.index({ 'categories.id': 1 });
 ProductSchema.index({ hasStock: 1 });
 
+ProductSchema.index({ 
+    gender: 1, 
+    fitting: 1, 
+    hasStock: 1, 
+    createdAt: -1 
+});
+
+// For price sorting
+ProductSchema.index({ 
+    gender: 1, 
+    fitting: 1, 
+    hasStock: 1, 
+    effectivePrice: 1 
+});
 
 export const Product = model('products', ProductSchema);

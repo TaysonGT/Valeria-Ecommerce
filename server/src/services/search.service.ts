@@ -2,16 +2,6 @@ import { Request } from 'express'
 import { Product, IProduct } from '../schemas/product.schema';
 import { PipelineStage } from 'mongoose';
 
-const filterCache = new Map<string, { data: any; expiresAt: number }>();
-const CACHE_TTL = 30_000; // 30 seconds
-
-// type filterOption = {code: string, name: string, count: number}
-
-// type filterType = {
-//     title: string,
-//     opts: filterOption[]
-// }
-
 interface SearchParams {
   q?: string;
   gender?: string;
@@ -24,14 +14,6 @@ interface SearchParams {
 }
 
 export const getSearchFilters = async(req: Request, productFilter: any)=> {
-    // let filters: filterType[] = []
-    const cacheKey = JSON.stringify(productFilter) || 'default'; // Use the filter, not just q
-    const cached = filterCache.get(cacheKey);
-
-    // Check cache based on the filter conditions
-    if (cached && cached.expiresAt > Date.now()) {
-        return cached.data;
-    }
     
     const aggregatedFilters = await Product.aggregate([
         { $match: productFilter },
@@ -73,8 +55,7 @@ export const getSearchFilters = async(req: Request, productFilter: any)=> {
                                 input: "$availability",
                                 as: "a",
                                 in: { 
-                                    code: { $cond: { if: { $eq: ["$$a._id", true] }, then: "in", else: "out" }}, 
-                                    // Handles boolean true/false to readable text string
+                                    code: { $cond: { if: { $eq: ["$$a._id", true] }, then: "in", else: "out" }},
                                     name: { $cond: { if: { $eq: ["$$a._id", true] }, then: "In Stock", else: "Out of Stock" } }, 
                                     count: "$$a.count" 
                                 }
@@ -85,24 +66,6 @@ export const getSearchFilters = async(req: Request, productFilter: any)=> {
             }
         }
     ])
-
-    
-    // aggregatedFilters[0].availability.length&& filters.push({title: "Availability", opts: aggregatedFilters[0].availability})
-    // aggregatedFilters[0].genders.length&& filters.push({title: "Gender", opts: aggregatedFilters[0].genders})
-    // aggregatedFilters[0].fittings.length&& filters.push({title: "Fitting", opts: aggregatedFilters[0].fittings})
-    
-    // console.log({
-    //     aggregatedFilters: aggregatedFilters[0]?.filters,
-    //     opts: aggregatedFilters[0]?.filters?.flatMap((f:any)=>f.opts),
-    //     availability: aggregatedFilters[0].availability
-    // })
-
-    // Cache the filters
-    filterCache.set(cacheKey, {
-        data: aggregatedFilters[0]?.filters,
-        expiresAt: Date.now() + CACHE_TTL
-    });
-
 
     return aggregatedFilters[0]?.filters
 }
@@ -201,16 +164,6 @@ export const findProducts = async (req: Request) => {
 
     // Add pagination
     const skip = (parseInt(page) - 1) * parseInt(pagination);
-    // pipeline.push(
-    //     { $skip: skip },
-    //     { $limit: parseInt(pagination) }
-    // );
-
-    // Execute aggregation
-    // const [products, totalCount] = await Promise.all([
-    //     Product.aggregate(pipeline),
-    //     Product.countDocuments(productFilter)  // ← Uses the SAME productFilter
-    // ]);
 
     const [{products, total}] = await Product.aggregate([
         ...pipeline,
@@ -221,8 +174,6 @@ export const findProducts = async (req: Request) => {
             }
         },
     ])
-
-    console.log({totalCount: total})
 
     return {
         products: products as IProduct[],

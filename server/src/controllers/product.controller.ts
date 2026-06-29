@@ -1,86 +1,86 @@
 import { Response, Request } from "express";
-import { Product } from "../schemas/product.schema";
-// import { imageType, IProduct, IVariant, Product } from "../schemas/product.schema";
+import { imageType, IProduct, IVariant, Product } from "../schemas/product.schema";
 import { isValidObjectId, Types } from "mongoose";
 import { ObjectId } from "mongodb";
 import { Fitting } from "../schemas/fitting.schema";
-import { Category } from "../schemas/category.schema";
-// import { Category, ICategory } from "../schemas/category.schema";
+import { Category, ICategory } from "../schemas/category.schema";
 import { findProducts } from "../services/search.service";
-// import { ICollection } from "../schemas/collection.schema";
 import { ImageService } from '../services/image.service';
 import path from 'path';
 import fs from 'fs';
+import { ICollection } from "../schemas/collection.schema";
+import { cloudinary } from "../utils/cloudinary.config";
 
 export class ProductController {
     async createProduct(req: Request, res: Response){
-        const files = req.files
-        const body = req.body
+        const {title, basePrice, discountPrice, categories, variants, description, fitting, currency, gender, collections, images} = req.body
 
-        console.log({files,body})
-        res.json({files,body})
-        // const {title, basePrice, discountPrice, categories, variants, description, fitting, currency, gender, collections, images} = req.body
+        if(!title){
+            res.json({success:false, message: "Product should have a title"})
+            return
+        }
 
-        // if(!title){
-        //     res.json({success:false, message: "Product should have a title"})
-        //     return
-        // }
+        if(!basePrice){
+            res.json({success:false, message: "Product should have a base price"})
+            return
+        }
 
-        // if(!basePrice){
-        //     res.json({success:false, message: "Product should have a base price"})
-        //     return
-        // }
-
-        // const parsedCategories:ICategory[] = []
+        const parsedCategories:ICategory[] = []
         
-        // categories?.forEach(async(c:ICategory)=>{
-        //     const category = await this.getCategory(c._id)
-        //     category&& parsedCategories.push(category)
-        // })
+        categories?.forEach(async(c:ICategory)=>{
+            const category = await this.getCategory(c._id)
+            category&& parsedCategories.push(category)
+        })
 
-        // const parsedVariants = variants?.map((v:string)=>{
-        //     const parsed = JSON.parse(v)
-        //     if(!parsed.sizeCode){
-        //         res.json({success:false, message: "Size Code can't be empty"})
-        //         return
-        //     }
-        // })
+        variants?.forEach((variant:IVariant)=>{
+            if(!variant.sizeCode){
+                res.status(400).json({success:false, message: "Size Code can't be empty"})
+                return
+            }
+            if(
+                typeof (variant.inventory.stock||0) !== 'number' ||
+                typeof (variant.inventory.reserved||0) !== 'number'
+            ){
+                res.status(400).json({success:false, message: `Variant ${variant.sizeCode} has bad input for Stock or Reserved fields`})
+                return
+            }
+        })
 
-        // const dataForm: Partial<IProduct> = {
-        //     title: title,
-        //     description: description,
-        //     basePrice: basePrice,
-        //     discountPrice: discountPrice,
-        //     currency: currency,
-        //     fitting: fitting,
-        //     gender: gender,
-        //     variants: parsedVariants.map((v: IVariant)=>({
-        //         sizeCode: v.sizeCode,
-        //         inventory: {
-        //             stock: v.inventory.stock || 0,
-        //             barcode: v.inventory.stock || '',
-        //             reserved: v.inventory.reserved || 0
-        //         }
-        //     })),
-        //     categories: parsedCategories,
-        //     collections: collections.map((c: ICollection)=>({
-        //         collectionId: new Types.ObjectId(c._id),
-        //         title: c.title 
-        //     })),
-        //     imgs: images?.map((i: imageType)=>({
-        //         url: i.url,
-        //         isPrimary: i.isPrimary,
-        //         altText: i.altText
-        //     }))
-        // }
+        const dataForm: Partial<IProduct> = {
+            title: title,
+            description: description,
+            basePrice: basePrice,
+            discountPrice: discountPrice,
+            currency: currency,
+            fitting: fitting,
+            gender: gender,
+            variants: variants?.map((v: IVariant)=>({
+                sizeCode: v.sizeCode,
+                inventory: {
+                    stock: v.inventory.stock || 0,
+                    barcode: v.inventory.stock || '',
+                    reserved: v.inventory.reserved || 0
+                }
+            }))||[],
+            categories: parsedCategories||[],
+            collections: collections?.map((c: ICollection)=>({
+                collectionId: new Types.ObjectId(c._id),
+                title: c.title 
+            }))||[],
+            imgs: images?.map((i: imageType)=>({
+                url: i.url,
+                isPrimary: i.isPrimary,
+                altText: i.altText
+            }))||[]
+        }
 
-        // const product = new Product(dataForm)
+        const product = new Product(dataForm)
 
-        // await product.save().then(()=>{
-        //     res.status(201).json({product, success: true, message: 'New product added successfully!'})
-        // }).catch((error)=>{
-        //     res.status(500).json({message: 'Database operation failed', error, success: false})
-        // })
+        await product.save().then(()=>{
+            res.status(201).json({product, success: true, message: 'New product added successfully!'})
+        }).catch((error)=>{
+            res.status(500).json({message: 'Database operation failed', error, success: false})
+        })
     }
     
     async allCategories(req: Request, res: Response){
@@ -125,7 +125,7 @@ export class ProductController {
     }
     
     async allProducts(req: Request, res: Response){
-        const products =  await Product.find()
+        const products =  await Product.find().lean()
 
         res.json({products, success: true});
     }
@@ -435,6 +435,103 @@ export class ProductController {
 
         } catch (error) {
             console.error('[setPrimaryImage] Error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+            });
+        }
+    };
+    
+    async addImagesToProduct(req: Request, res: Response){
+        const {id} = req.params
+        const {imgsInfo} = req.body as {imgsInfo: {public_id:string, secure_url:string}[]}
+        
+        try{
+            const product = await Product.findById(id)
+            if(!product){
+                res.status(404).json({success:false, message: 'Product not found'})
+                return
+            }
+
+            const newImgs:imageType[] = imgsInfo.map(img=>(
+                {
+                    url: img.secure_url,
+                    publicId: img.public_id,
+                    altText: product.title
+                }
+            ))
+
+            product.imgs.push(...newImgs)
+
+            await product.save()
+            res.status(201).json({product, success: true, message: 'Images added successfully'});
+        }catch(error){
+            res.status(500).json({message: 'Database operation failed', error, success: false})
+        }
+    }
+
+    async removeImage(req: Request, res: Response){
+        try{
+            const {productId, imageId} = req.params
+            
+            if (!isValidObjectId(productId)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid product ID format',
+                });
+                return;
+            }
+            
+            if (!isValidObjectId(imageId)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid image ID format',
+                });
+                return;
+            }
+            
+            const product = await Product.findById(productId);
+
+            if (!product) {
+                res.status(404).json({
+                    success: false,
+                    message: 'Product not found',
+                });
+                return;
+            }
+
+            const image = product.imgs.find(
+                (image)=>image._id?.toString()===imageId
+            )
+
+            if (!image) {
+                res.status(404).json({
+                    success: false,
+                    message: 'Image not found for this product',
+                });
+                return;
+            }
+
+            // CLOUDINARY STORAGE OPERATIONS
+            if(image.publicId){
+                const result = await cloudinary.uploader.destroy(image.publicId)
+                if(result.result !== 'ok'){
+                    res.status(404).json({success:false, message: 'Asset not found or already deleted.', details: result})
+                }
+            }
+
+            product.imgs = product.imgs.filter(image=>image._id?.toString()!==imageId)
+
+            await product.save()
+
+            res.status(201).json({
+                success: true,
+                message: 'Image removed successfully',
+                data: product,
+            });
+
+        } catch (error) {
+            console.error('[removeImage] Error:', error);
             res.status(500).json({
                 success: false,
                 message: 'Internal server error',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { Modal } from '../../../../components/ui/Modal'
 import { Button } from '../../../../components/ui/Button'
 import { HiPlus, HiTrash } from 'react-icons/hi'
@@ -24,17 +24,30 @@ interface AddProductProps {
 const emptyVariant = (): Variant => ({ id: String(Date.now()) + Math.random().toString(36).slice(2), sizeCode: '', priceAdjustment: 0, stock: 0 })
 
 const AddProduct: React.FC<AddProductProps> = ({ show, hide, onSave }) => {
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    basePrice: 0
+  })
+
   const [title, setTitle] = useState('')
   const [basePrice, setBasePrice] = useState<number | ''>('')
   const [description, setDescription] = useState('')
   const [categories, setCategories] = useState<string[]>([])
   const [categoryInput, setCategoryInput] = useState('')
-  const [images, setImages] = useState<File[]>([])
-  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  // const [images, setImages] = useState<File[]>([])
+  // const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [variants, setVariants] = useState<Variant[]>([emptyVariant()])
+
   const [saving, setSaving] = useState(false)
   
   const nav = useNavigate()
+
+  const inputHandler = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>)=>{
+    const fieldName = e.target.name
+    const fieldValue = fieldName === 'basePrice'? Number(e.target.value||0) : e.target.value
+    setForm((prev)=>({...prev, [fieldName]: fieldValue}))
+  }
 
   const addCategory = () => {
     const val = categoryInput.trim()
@@ -45,19 +58,19 @@ const AddProduct: React.FC<AddProductProps> = ({ show, hide, onSave }) => {
 
   const removeCategory = (c: string) => setCategories(prev => prev.filter(x => x !== c))
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-    const arr = Array.from(files)
-    setImages(prev => [...prev, ...arr])
-    const newPreviews = arr.map(f => URL.createObjectURL(f))
-    setImagePreviews(prev => [...prev, ...newPreviews])
-  }
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files
+  //   if (!files) return
+  //   const arr = Array.from(files)
+  //   setImages(prev => [...prev, ...arr])
+  //   const newPreviews = arr.map(f => URL.createObjectURL(f))
+  //   setImagePreviews(prev => [...prev, ...newPreviews])
+  // }
 
-  const removeImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index))
-    setImagePreviews(prev => prev.filter((_, i) => i !== index))
-  }
+  // const removeImage = (index: number) => {
+  //   setImages(prev => prev.filter((_, i) => i !== index))
+  //   setImagePreviews(prev => prev.filter((_, i) => i !== index))
+  // }
 
   const addVariant = () => setVariants(prev => [...prev, emptyVariant()])
   
@@ -68,64 +81,76 @@ const AddProduct: React.FC<AddProductProps> = ({ show, hide, onSave }) => {
   const removeVariant = (id: string) => setVariants(prev => prev.filter(v => v.id !== id))
 
   const resetForm = () => {
+    setForm({
+      title: '',
+      description: '',
+      basePrice: 0
+    })
     setTitle('')
     setBasePrice('')
     setDescription('')
     setCategories([])
     setCategoryInput('')
-    setImages([])
-    setImagePreviews([])
+    // setImages([])
+    // setImagePreviews([])
     setVariants([emptyVariant()])
   }
 
   const submit = async (e?: React.FormEvent) => {
     e?.preventDefault()
     const payload = {
-      title,
-      basePrice: typeof basePrice === 'number' ? basePrice : Number(basePrice || 0),
-      description,
+      // title,
+      // basePrice: typeof basePrice === 'number' ? basePrice : Number(basePrice || 0),
+      // description,
+      ...form,
       categories,
       // images: images (File[]) - caller should handle upload / multipart
       variants: variants.map(v => ({ sizeCode: v.sizeCode, priceAdjustment: v.priceAdjustment || 0, inventory: { stock: v.stock || 0 } })),
       publicationStatus: 'active'
     }
 
-    try {
       setSaving(true)
-      if (onSave) {
-        // onSave is responsible for calling the API and handling files if required
-        await onSave({ ...payload, _images: images })
-      } else {
-        // Example axios template (commented):
-        const form = new FormData()
-        form.append('title', payload.title)
-        form.append('basePrice', String(payload.basePrice))
-        form.append('description', payload.description)
-        payload.categories.forEach(c => form.append('categories[]', c))
-        payload.variants.forEach(c => form.append('variants[]', JSON.stringify(c)))
-        images.forEach((f) => form.append('images', f))
+
+      axios.post('/products', payload)
+      .then(({data})=>{
+        if(!data.success){
+          return toast.error(data.message)
+        }
+        toast.success(data.message)
+        hide()
+        nav(`/dashboard/products/${data.product._id}`)
+      }).catch(error=>
+        toast.error(error.response.data.message)
+      ).finally(()=>setSaving(false))
+
+      // if (onSave) {
+      //   // onSave is responsible for calling the API and handling files if required
+      //   await onSave({ ...payload, _images: images })
+      // } else {
+      //   // Example axios template (commented):
+      //   const form = new FormData()
+      //   form.append('title', payload.title)
+      //   form.append('basePrice', String(payload.basePrice))
+      //   form.append('description', payload.description)
+      //   payload.categories.forEach(c => form.append('categories[]', c))
+      //   payload.variants.forEach(c => form.append('variants[]', JSON.stringify(c)))
+      //   // images.forEach((f) => form.append('images', f))
         
-        axios.post('/products', form, { headers: { 'Content-Type': 'multipart/form-data' } })
-        .then(({data})=>{
-            if(!data.success){
-                return toast.error(data.message)
-            }
-            toast.success(data.message)
-            nav(`/dashboard/products/${data.product._id}`)
-        }).catch(error=>
-            toast.error(error.response.data.message)
-        ).finally(()=>setSaving(false))
+      //   axios.post('/products', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+      //   .then(({data})=>{
+      //       if(!data.success){
+      //           return toast.error(data.message)
+      //       }
+      //       toast.success(data.message)
+      //       nav(`/dashboard/products/${data.product._id}`)
+      //   }).catch(error=>
+      //       toast.error(error.response.data.message)
+      //   ).finally(()=>setSaving(false))
 
-        console.warn('onSave not provided - payload prepared:', payload)
-      }
+      //   console.warn('onSave not provided - payload prepared:', payload)
+      // }
 
-      resetForm()
-      hide()
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setSaving(false)
-    }
+      // resetForm()
   }
 
   return (
@@ -134,17 +159,17 @@ const AddProduct: React.FC<AddProductProps> = ({ show, hide, onSave }) => {
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div>
             <label className='block mb-1'>Product Name</label>
-            <input value={title} onChange={(e)=>setTitle(e.target.value)} className='border rounded-md w-full px-3 py-2' />
+            <input value={form.title} name="title" onChange={inputHandler} className='border rounded-md w-full px-3 py-2' />
           </div>
           <div>
             <label className='block mb-1'>Base Price</label>
-            <input value={basePrice as any} onChange={(e)=>setBasePrice(e.target.value ? Number(e.target.value) : '')} type='number' className='border rounded-md w-full px-3 py-2' />
+            <input value={form.basePrice} name="basePrice" onChange={inputHandler} type='number' className='border rounded-md w-full px-3 py-2' />
           </div>
         </div>
 
         <div>
           <label className='block mb-1'>Description</label>
-          <textarea value={description} onChange={(e)=>setDescription(e.target.value)} className='border rounded-md w-full px-3 py-2 min-h-25'></textarea>
+          <textarea value={form.description} name="description" onChange={inputHandler} className='border rounded-md w-full px-3 py-2 min-h-25'></textarea>
         </div>
 
         <div>
@@ -164,14 +189,14 @@ const AddProduct: React.FC<AddProductProps> = ({ show, hide, onSave }) => {
         </div>
 
         <div>
-            <div className='flex justify-between gap-4 items-center flex-wrap gap-y-2'>
+            {/* <div className='flex justify-between gap-4 items-center flex-wrap gap-y-2'>
                 <label className='block '>Images</label>
                 <label className="relative inline-flex gap-2 items-center cursor-pointer text-white bg-primary-600 hover:bg-primary-500 box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-md text-sm px-4 py-2 pl-3 focus:outline-none pointer-cursor">
                     <input type="file" onChange={handleImageChange} className='w-full h-full absolute top-0 left-0 -z-1 opacity-0' />
                     <FiUploadCloud className='text-xl'/>
                     <p className="text-sm">Upload</p>
                 </label>
-            </div>
+            </div> */}
             {/* <input type='file' accept='image/*' className='cursor-pointer border rounded p-2 px-3 focus:ring-brand focus:border-brand block w-full shadow-xs' multiple onChange={handleImageChange} />             */}
             {/* {
             images.length<1&&
@@ -200,7 +225,7 @@ const AddProduct: React.FC<AddProductProps> = ({ show, hide, onSave }) => {
                 </div>
             </div>} */}
 
-            <div className='flex gap-2 mt-2.5 p-2 flex-wrap border border-[#d3d3d3] border-dashed rounded-lg'>
+            {/* <div className='flex gap-2 mt-2.5 p-2 flex-wrap border border-[#d3d3d3] border-dashed rounded-lg'>
                 {!imagePreviews?.length?
                 <div className='text-[#939393] text-center w-full py-4'>
                     No images
@@ -213,7 +238,7 @@ const AddProduct: React.FC<AddProductProps> = ({ show, hide, onSave }) => {
                     <button type='button' onClick={()=>removeImage(i)} className='absolute hover:bg-red-500 hover:text-white rounded-full cursor-pointer top-1 right-1 bg-white/80 px-1 text-sm text-red-600'><IoClose/></button>
                 </div>
                 ))}
-            </div>
+            </div> */}
         </div>
 
         <div>

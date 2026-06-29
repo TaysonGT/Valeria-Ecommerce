@@ -7,15 +7,9 @@ import userRouter from './routes/user.route'
 import orderRouter from './routes/order.route'
 import mongoose from 'mongoose'
 import reportingRouter from './routes/reporting.route'
-require('dotenv').config(); // Loads variables into process.env
+require('dotenv').config();
 
 const allowedOrigins = process.env.NODE_ENV == 'production' ? process.env.FRONTEND_URL : true
-
-mongoose.connect(process.env.MONGODB_URI||'mongodb://localhost:27017/valeria')
-  .then(() => {
-    console.log('connected to MongoDB!')
-  })
-  .catch((err) => console.error(err))
 
 const PORT = 5000
 const app = express()
@@ -34,6 +28,17 @@ app.use('/users', userRouter)
 app.use('/orders', orderRouter)
 app.use('/reports', reportingRouter)
 
-app.listen(PORT, () => {
+
+const startServer = async()=>{
+  await mongoose.connect(process.env.MONGODB_URI||'mongodb://localhost:27017/valeria')
+  .then(() => {
+      console.log('connected to MongoDB!')
+    })
+    .catch((err) => console.error(err))
+
+  app.listen(PORT, () => {
     console.log(`Started Express Server on Port: ${PORT}`)
-})
+  })
+}
+
+startServer()

@@ -28,6 +28,19 @@ export const useProductDetails = () => {
         })
     }
 
+    const removeImage = async(imgId:string)=>{
+        if (!product) return
+        productService.removeImage(product._id, imgId)
+        .then(({data})=>{
+            if(data.success){
+                toast.success(data.message)
+                fetchProduct()
+                return
+            }
+            toast.error(data.error)
+        })
+    }
+
     const removeVariant = async(variantId:string)=>{
         if (!product) return
         productService.removeVariant(product._id, variantId)
@@ -133,6 +146,7 @@ export const useProductDetails = () => {
         saveEdit,
         removeCategory,
         removeVariant,
+        removeImage,
         setPrimaryImage,
         refetch: fetchProduct,
     };
