@@ -33,8 +33,8 @@ const ResultSection: React.FC<Props> = ({results, isLoading, filters})=>{
     }
 
     return (
-        <div className='sm:flex-6 flex flex-col border-l font-[Poppins] border-gray-300'>
-            <div className='sm:py-8 py-6 md:px-10 px-4 sm:px-6 flex flex-row flex-wrap items-end border-b gap-10 border-gray-300'>
+        <div className='sm:flex-6 flex flex-col border-l font-[Poppins] bg-[#f7f7f7] border-gray-300'>
+            <div className='py-6 px-4 sm:px-6 flex flex-row flex-wrap items-end border-b gap-10 border-gray-300 bg-white'>
                 <form onSubmit={searchSubmitHandler} className="relative flex gap-1 w-full sm:w-auto">
                     <div className="relative grow">
                         <div className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">

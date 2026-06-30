@@ -65,11 +65,12 @@ const ProductPage = () => {
             <Loader size={35} thickness={7}/>
         </div>
         :
-        <div className='flex flex-col h-full bg-[#f3f3f3] font-[Comfortaa] pt-5 p-3'>
+        <div className='grow bg-[#f3f3f3] flex-col flex font-[Outfit] p-3'>
             {!product?
-                <div className='m-auto'>
-                    <h1 className='text-5xl font-bold text-gray-600'>Product Not Found!</h1>
-                    <Link className='text-blue-600 text-xl mt-2 flex items-end' to={'/shop'}>Go back to shopping page <MdNavigateNext className='text-2xl'/></Link>
+                <div className='mx-auto py-20 space-y-2'>
+                    <h1 className='text-6xl sm:text-8xl font-extrabold text-gray-600'>404</h1>
+                    <h1 className='text-2xl sm:text-3xl font-bold text-gray-600'>Product Not Found!</h1>
+                    <Link className='text-blue-600 text-lg lg:text-xl mt-2 flex items-end' to={'/shop'}>Go back to shopping page <MdNavigateNext className='text-2xl'/></Link>
                 </div>
                 :<>
                 {/* <div className='w-full flex gap-4'>
@@ -82,9 +83,9 @@ const ProductPage = () => {
                     </div>  
                 </div> */}
                 <div className='flex basis-0 w-full flex-col xl:flex-row gap-3'>
-                    <div className='grow bg-white border border-[#d9d9d9]'>
+                    <div className='grow bg-white border border-[#d9d9d9] p-6'>
                         <div className='flex flex-col md:flex-row gap-2'>
-                            <div className='md:hidden pt-6 px-4 space-y-2 flex justify-between gap-8 flex-wrap gap-y-2'>
+                            <div className='md:hidden space-y-2 flex justify-between gap-8 flex-wrap gap-y-2'>
                                 <div className='flex gap-8 items-center gap-y-2 flex-wrap'>
                                     <h1 className='text-2xl font-bold'>{product.title}</h1>
                                     <div className=' gap-2 text-lg text-[#FFB400] flex md:hidden'>
@@ -94,13 +95,9 @@ const ProductPage = () => {
                                         <p className='text-sm'>(95 Reviews)</p>
                                     </div>
                                 </div>
-                                {/* <div className='flex items-end gap-2 md:gap-4 md:mt-2 font-bold md:hidden'>
-                                    <p className='text-3xl md:text-4xl font-bold'>${product.discountPrice||product.basePrice}</p>
-                                    {product.discountPrice&& <p className='line-through text-xl md:text-3xl text-[#aaa]'>${product.basePrice}</p>}
-                                </div> */}
                                 
                             </div>
-                            <div className='px-4 md:p-4 w-full min-w-0'>
+                            <div className='w-full min-w-0 mt-1 md:mt-0'>
                                 <div className='h-60 md:h-100 aspect-square w-full border border-[#d3d3d3] bg-[#fcfcfc]'>
                                     <img className='h-full w-full object-contain' src={product?.imgs[selectedImage]?.url} alt={product?.imgs[selectedImage]?.altText} />
                                 </div>
@@ -125,7 +122,7 @@ const ProductPage = () => {
                                     </Swiper>
                                 </div>
                             </div>
-                            <div className='grow p-4 sm:px-6 sm:p-4 lg:pl-2 lg:p-8 pb-0 space-y-4'>
+                            <div className='grow py-4 lg:py-2 lg:pl-4 pb-0 space-y-4 lg:space-y-2'>
                                 <div className=' gap-2 text-lg text-[#FFB400] hidden md:flex'>
                                     {[...Array(5)].map((_, i)=>
                                         <FaStar key={i}/>
@@ -152,7 +149,7 @@ const ProductPage = () => {
                                     </div>
                                 </div>
                                 
-                                <div className=''>
+                                <div className='py-4 space-y-4'>
                                     {!isInCart(product._id) ?
                                     <>
                                         <div className='flex gap-2 items-center flex-wrap'>
@@ -163,7 +160,7 @@ const ProductPage = () => {
                                                 )}
                                             </div>
                                         </div>
-                                        <div className='flex flex-wrap gap-4 gap-y-2 my-6 text-sm '>
+                                        <div className='flex flex-wrap gap-4 gap-y-2 text-sm '>
                                             <div className="flex items-stretch">
                                                 <button onClick={()=>setQuantity(prev=>Math.max(prev-1,1))} className="border border-gray-200 cursor-pointer p-2 w-10 aspect-square">-</button>
                                                 <input onChange={(e)=>setQuantity(parseInt(e.target.value))} className="text-center flex items-center justify-center border border-gray-300 w-10 aspect-square" type="number" min={1} value={quantity} />
@@ -200,7 +197,7 @@ const ProductPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='px-4 md:px-6 pb-4'>
+                        <div className='pb-4'>
                             <div className="flex border-b border-gray-300 font-bold text-base md:text-lg gap-8">
                                 <p className={`p-2 border-b-3`}>Description</p>
                             </div>
