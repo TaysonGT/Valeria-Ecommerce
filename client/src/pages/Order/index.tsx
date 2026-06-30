@@ -54,11 +54,11 @@ const OrderPage = () => {
               <h1 className='text-3xl font-[Comfortaa]'>Order Details</h1>
               <span className=''>Order ID: {order?._id}</span>
             </div>
-            <div className='flex flex-col items-center gap-2 p-6 bg-[#fefefe] border border-[#d9d9d9] border-t-0'>
+            <div className='flex flex-col items-center gap-4 p-6 bg-[#fefefe] border border-[#d9d9d9] border-t-0'>
+              {order.fulfillmentStatus!=='cancelled' &&<p className=' font-bold text-primary-700'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message}</p>}
               <div className=''>
                 <ShippingStatusBig status={order.fulfillmentStatus} timestamps={order.statusTimestamps} />
               </div>
-              {order.fulfillmentStatus!=='cancelled' &&<p className=' font-bold text-gray-600'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message}</p>}
             </div>
             <div className='grid grid-cols-[2fr_1fr] gap-6 py-4 items-start mt-4'>
               {/* LEFT SECTION */}

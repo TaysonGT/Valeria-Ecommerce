@@ -14,35 +14,42 @@ import { IoAnalyticsOutline, IoMegaphoneOutline, IoPeopleOutline } from 'react-i
 import { AiOutlineProduct } from 'react-icons/ai';
 import { TbDiscount } from 'react-icons/tb';
 import DarkBackground from '../DarkBackground';
+import { HiLockClosed } from 'react-icons/hi';
 
 const customerLinks = [
-{title: '',
+{
+  title: '',
   links: [
     {
       name: "Profile",
       path: "/profile",
       icon: <MdPerson2 />,
+      active: true
     },
     {
       name: "Orders",
       path: "/my-orders",
       keywords: ['orders', 'my-orders'],
       icon: <FiInbox />,
+      active: true
     },
     {
       name: "Shipping Addresses",
       path: "/shipping-addresses",
       icon: <FiUsers />,
+      active: true
     },
     {
       name: "Payment Methods",
       path: "/payment-methods",
-      icon: <RiToolsFill/>
+      icon: <RiToolsFill/>,
+      active: true
     },
     {
       name: "Support",
       path: "/support",
-      icon: <RiFeedbackFill/>
+      icon: <RiFeedbackFill/>,
+      active: true
     }
   ]
 }]
@@ -55,28 +62,33 @@ const adminLinks = [
         name: "Overview",
         path: "/dashboard",
         icon: <RiSpeedUpLine />,
+        active: true
       },
       {
         name: "Products",
         path: "/dashboard/products",
         keywords: ['/dashboard/product'],
+        active: true,
         icon: <AiOutlineProduct />,
       },
       {
         name: "Orders",
         path: "/dashboard/orders",
         keywords: ['/dashboard/orders'],
+        active: true,
         icon: <FiPackage />,
       },
       {
         name: "Finances",
         path: "/dashboard/finances",
-        icon: <RiBankLine/>
+        icon: <RiBankLine/>,
+        active: false
       },
       {
         name: "Customers",
         path: "/dashboard/customers",
         icon: <IoPeopleOutline />,
+        active: false
       }
     ]
   },
@@ -86,22 +98,26 @@ const adminLinks = [
       {
         name: "Content",
         path: "/dashboard/content",
-        icon: <FiType/>
+        icon: <FiType/>,
+        active: false
       },
       {
         name: "Analytics",
         path: "/dashboard/analytics",
-        icon: <IoAnalyticsOutline/>
+        icon: <IoAnalyticsOutline/>,
+        active: false
       },
       {
         name: "Marketing",
         path: "/dashboard/marketing",
-        icon: <IoMegaphoneOutline/>
+        icon: <IoMegaphoneOutline/>,
+        active: false
       },
       {
         name: "Discounts",
         path: "/dashboard/discounts",
-        icon: <TbDiscount/>
+        icon: <TbDiscount/>,
+        active: false
       }
     ]
   } 
@@ -130,20 +146,20 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
       {/* Desktop / tablet sidebar (unchanged) */}
       <div 
         ref={sidebarRef}
-        className={`hidden lg:flex flex-col sticky ${withNav? 'h-[calc(100vh-98px)] top-24':' top-0 h-screen'} left-0 pb-6 bg-white text-primary-text z-99 border-r border-gray-200 shadow-sm hover:shadow-md transition-all`}
+        className={`hidden lg:flex flex-col sticky ${withNav? 'h-[calc(100vh-98px)] top-24':' top-0 h-screen'} left-0 pb-6 bg-[#0b0c4f] text-white z-99 border-r border-[#080930] shadow-sm hover:shadow-md transition-all`}
       >
-      <Link to='/' className='flex items-center gap-2 py-8 px-4 border-[#d9d9d9] border-b'>
+      <Link to='/' className='flex items-center gap-4 py-6 px-4 border-[#080930] border-b'>
         <div className='w-10 aspect-square'>
-          <img src={'/logo.png'} alt='Valeria logo'/>
+          <img src={'/logo-light.svg'} alt='Valeria logo'/>
 
         </div>
         <p className='text-2xl font-[Elms_Sans]'>Valeria</p>
       </Link>
       {/* Navigation Links */}
-      <div className='flex-col text-md justify-center pt-5 flow-root root gap-6 space-y-3 grow overflow-y-auto'>
+      <div className='flex-col text-md justify-center px-4 flow-root rootspace-y-3 grow overflow-y-auto font-[Outfit]'>
         {getLinks(user).map((set, x) => (
-        <div key={x} className='space-y-2.5 px-5'>
-          {set.title&&<h3 className='text-[#1f1f1f] text-sm font-bold px-2 font-[Sans]'>{set.title}</h3>}
+          <div key={x} className='space-y-2.5 py-4 not-last:border-b border-[#0b0044]'>
+          {/* {set.title&&<h3 className='text-[#1f1f1f] text-sm font-bold px-2 font-[Sans]'>{set.title}</h3>} */}
           <ul className='flex flex-col text-md justify-center gap-1'>
             {set.links.map((link,i)=>
               <Link 
@@ -153,17 +169,30 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
                   relative select-none z-9 cursor-pointer py-3.5
                   pr-20
                   pl-4
+                  border
                   rounded-lg
                   flex items-center gap-3.5 duration-150 text-sm 
-                  ${
+                  overflow-hidden
+                  ${ link.active?
                     ((link.path === (location.pathname.endsWith('/') ? 
                       location.pathname.slice(0, -1) : 
                       location.pathname))
                       ||
                       link.keywords?.find(k=>location.pathname.includes(k))
-                    )? 'bg-primary-50/70 text-primary-600' : 'hover:bg-gray-50'}
+                    )? 'bg-primary-100 text-primary-950 border-none ' : 'border-transparent hover:bg-primary-100/90 hover:text-primary-950'
+                    :
+                    'border-primary-950 pointer-events-none'
+                  }
                 `}
               >
+                {!link.active&&
+                  <div className='flex items-center gap-2 font-medium justify-center absolute top-0 left-0 h-full w-full bg-black/20 text-sm text-white'>
+                    <div className='flex items-center justify-center bg-black/70 gap-1 p-1.5 rounded-lg px-2 pr-3'>
+                      <HiLockClosed className=' text-xl'/>
+                      Coming soon
+                    </div>
+                  </div>
+                }
                   <div className={`
                     flex items-center justify-center shrink-0
                     text-2xl duration-100 rounded-lg
@@ -176,8 +205,9 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
           </ul>
         </div>
         ))}
-        <div className='flex items-center gap-2 p-4 border-y border-[#d3d3d3]'>
-          <div className='w-10 rounded-full overflow-hidden border border-[#d3d3d3] aspect-square'>
+      </div>
+        <div className='flex items-center gap-2 p-4 bg-primary-800  border-[#ebebeb]'>
+          <div className='w-10 rounded-full overflow-hidden border border-[#ebebeb] aspect-square'>
             <img src={user?.avatarUrl||'/'} onError={(e)=> {
               e.currentTarget.onerror=null; e.currentTarget.src='/imgs/avatar.webp'
             }} className='w-full h-full object-cover object-top' alt='User Avatar'/>
@@ -185,40 +215,50 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
           <p className='text-sm font-[Comfortaa]'>{user?.firstname} {user?.lastname}</p>
         </div>
       </div>
-      </div>
 
       {/* Mobile dashboard drawer, toggled via event */}
       <DarkBackground show={showMobile} hide={()=>setShowMobile(false)} direction='left'/>
-      <div className={`block lg:hidden fixed left-0 top-0 bottom-0 ${showMobile? 'translate-x-0':'-translate-x-full'} bg-white z-120 p-4 duration-300 overflow-y-auto border-r border-[#d3d3d3] shadow-md `}>
-        <div className='flex items-center gap-4 py-4 border-b border-[#d9d9d9] mb-4'>
+      <div className={`block lg:hidden fixed left-0 top-0 bottom-0 ${showMobile? 'translate-x-0':'-translate-x-full'} bg-[#0b0c4f] text-white z-120 p-4 duration-300 overflow-y-auto border-r border-[#d3d3d3] shadow-md `}>
+        <Link to='/' className='flex items-center gap-4 py-4 border-b border-[#080930]'>
           <div className='w-10 aspect-square'>
-            <img src={'/logo.png'} alt='Valeria logo'/>
+            <img src={'/logo-light.svg'} alt='Valeria logo'/>
           </div>
           <p className='text-2xl font-[Elms_Sans]'>Valeria</p>
-          <button onClick={()=>setShowMobile(false)} className='ml-auto text-xl'>×</button>
-        </div>
-        <div className='flex-col text-md justify-center pt-2 flow-root root gap-6 space-y-3'>
+          {/* <button onClick={()=>setShowMobile(false)} className='ml-auto text-xl'>×</button> */}
+        </Link>
+        <div className='flex-col text-md justify-center flow-root root'>
           {getLinks(user).map((set, x) => (
-            <div key={x} className='space-y-2.5 px-2'>
-              {set.title&&<h3 className='text-[#1f1f1f] text-sm font-bold px-2 font-[Sans]'>{set.title}</h3>}
+          <div key={x} className='space-y-2.5 py-4 not-last:border-b border-[#080930]'>
+              {/* {set.title&&<h3 className='text-[#1f1f1f] text-sm font-bold px-2 font-[Sans]'>{set.title}</h3>} */}
               <ul className='flex flex-col text-md justify-center gap-1'>
                 {set.links.map((link,i)=>
                   <Link 
                     to={link.path}
                     key={i}
                     onClick={()=>setShowMobile(false)}
-                    className={`relative select-none z-9 cursor-pointer py-3.5 pr-20 pl-4
-                      ${((
+                    className={`relative select-none z-9 cursor-pointer py-3.5 pr-20 pl-4 border
+                      ${link.active?
+                        ((
                         link.path === (location.pathname.endsWith('/') ? 
                         location.pathname.slice(0, -1) : 
                         location.pathname))
                         ||
                         link.keywords?.find(k=>location.pathname.includes(k))
                         )? 
-                        'bg-primary-50/70 text-primary-600' 
-                        : 'hover:bg-gray-50'}
-                    rounded-lg flex items-center gap-3.5 duration-150 text-sm hover:bg-gray-50`}
+                        'bg-primary-100 text-primary-950 border-none ' : 'border-transparent hover:bg-primary-100/90 hover:text-primary-950'
+                        :
+                        'border-primary-950 pointer-events-none'
+                      }
+                    rounded-lg overflow-hidden flex items-center gap-3.5 duration-150 text-sm hover:bg-gray-50`}
                   >
+                    {!link.active&&
+                      <div className='flex items-center gap-2 font-medium justify-center absolute top-0 left-0 h-full w-full bg-black/20 text-sm text-white'>
+                        <div className='flex items-center justify-center bg-black/70 gap-1 p-1.5 rounded-lg px-2 pr-3'>
+                          <HiLockClosed className=' text-xl'/>
+                          Coming soon
+                        </div>
+                      </div>
+                    }
                       <div className={`flex items-center justify-center shrink-0 text-2xl duration-100 rounded-lg`}>{link.icon}</div>
                       <p className=' font-medium text-nowrap'>{link.name}</p>
                   </Link>

@@ -11,8 +11,9 @@ import { FiAlertCircle, FiCheckCircle, FiClock, FiDownload, FiPackage, FiRefresh
 import { FaDollarSign } from 'react-icons/fa';
 import { Link } from 'react-router';
 import Loader from '../../../components/Loader';
-import { productType } from '../../../types';
+import { IOrder, productType } from '../../../types';
 import { fulfillmentStatuses } from '../../../components/ui/ShippingStatusBig';
+import { fetchOrders } from '../../../services/order.service';
 
 interface DashboardData {
   period: { start: string; end: string };
@@ -54,8 +55,24 @@ export default function DashboardHomePage() {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
   const [refreshing, setRefreshing] = useState(false);
+  const [orders, setOrders] = useState<IOrder[]>([]);
+
+  const fetchLatestOrders = async()=>{
+    try {
+      const response = await axios.get('/orders/latest');
+      if (response.data.success) {
+        setOrders(response.data.orders);
+      }
+    } catch (error) {
+      toast.error('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }
 
   const fetchDashboard = async () => {
+    fetchLatestOrders()
     try {
       const response = await axios.get('/reports/dashboard');
       if (response.data.success) {
@@ -100,9 +117,9 @@ export default function DashboardHomePage() {
   const isPositiveGrowth = revenueGrowth >= 0;
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-[#f6f6f6] p-4 lg:p-6 py-4 space-y-2 font-[Outfit] ">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 z-10">
+      {/* <div className="bg-white border-b border-gray-200 z-10">
         <div className="px-6 py-4">
           <div className="flex justify-between md:items-center gap-4 flex-col md:flex-row">
             <div>
@@ -125,7 +142,7 @@ export default function DashboardHomePage() {
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-[#fcfcfc] flex items-center gap-2"
               >
                 <FiRefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                 Refresh
@@ -137,13 +154,48 @@ export default function DashboardHomePage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="p-6 space-y-6">
+        <div className="md:p-2 p-2">
+          <div className="flex justify-between md:items-center gap-4 flex-col md:flex-row">
+            <div>
+              <h1 className="text-3xl lg:text-4xl text-[#1f1f1f] font-normal">Overview</h1>
+              <p className="text-sm text-gray-500 mt-1">
+                {formatDateDisplay(data.period.start)} - {formatDateDisplay(data.period.end)}
+              </p>
+            </div>
+            <div className="flex gap-3 flex-wrap">
+              <select
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value as any)}
+                className="bg-white px-3 py-2 border border-[#d3d3d3] rounded-sm text-sm"
+              >
+                <option value="week">Last 7 Days</option>
+                <option value="month">This Month</option>
+                <option value="quarter">This Quarter</option>
+                <option value="year">This Year</option>
+              </select>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="bg-white px-3 py-2 pr-4 cursor-pointer border border-[#d3d3d3] rounded-sm hover:bg-[#fdfdfd] flex items-center gap-2"
+              >
+                <FiRefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+              {/* <button className="px-3 py-2 pr-4 cursor-pointer bg-blue-600 text-white rounded-sm hover:bg-blue-700 flex items-center gap-2">
+                <FiDownload className="w-4 h-4" />
+                Export
+              </button> */}
+            </div>
+          </div>
+        </div>
+
+      <div className="space-y-6">
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="flex justify-between items-start">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-[#e9e9e9]">
+            <div className="flex justify-between items-end gap-4 flex-wrap-reverse">
               <div>
                 <p className="text-sm text-gray-500">Total Revenue</p>
                 <p className="text-2xl font-bold mt-1">{formatNumber(data.summary.totalRevenue)}</p>
@@ -152,40 +204,40 @@ export default function DashboardHomePage() {
                   <span>{Math.abs(revenueGrowth)}% vs last period</span>
                 </div>
               </div>
-              <div className="p-3 bg-blue-50 rounded-lg">
+              <div className="p-3 bg-blue-50 border-blue-300 border rounded-lg">
                 <FaDollarSign className="w-6 h-6 text-blue-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="flex justify-between items-start">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-[#e9e9e9]">
+            <div className="flex justify-between items-end gap-4 flex-wrap-reverse">
               <div>
                 <p className="text-sm text-gray-500">Total Orders</p>
                 <p className="text-2xl font-bold mt-1">{data.summary.totalOrders}</p>
                 <p className="text-sm text-gray-500 mt-2">Avg Order: {formatNumber(data.summary.averageOrderValue)}</p>
               </div>
-              <div className="p-3 bg-green-50 rounded-lg">
+              <div className="p-3 bg-green-50 border-green-300 border rounded-lg">
                 <FiShoppingBag className="w-6 h-6 text-green-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="flex justify-between items-start">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-[#e9e9e9]">
+            <div className="flex justify-between items-end gap-4 flex-wrap-reverse">
               <div>
                 <p className="text-sm text-gray-500">Customers</p>
                 <p className="text-2xl font-bold mt-1">{data.customers.totalCustomers}</p>
                 <p className="text-sm text-gray-500 mt-2">LTV: {formatNumber(data.customers.averageCustomerLifetimeValue)}</p>
               </div>
-              <div className="p-3 bg-purple-50 rounded-lg">
+              <div className="p-3 bg-purple-50 border-purple-300 border rounded-lg">
                 <FiUsers className="w-6 h-6 text-purple-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="flex justify-between items-start">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-[#e9e9e9]">
+            <div className="flex justify-between items-end gap-4 flex-wrap-reverse">
               <div>
                 <p className="text-sm text-gray-500">Inventory Value</p>
                 <p className="text-2xl font-bold mt-1">{formatNumber(data.inventoryValue)}</p>
@@ -194,7 +246,7 @@ export default function DashboardHomePage() {
                   {data.lowStockAlert.count} low stock items
                 </p>
               </div>
-              <div className="p-3 bg-orange-50 rounded-lg">
+              <div className="p-3 bg-orange-50 border-orange-300 border rounded-lg">
                 <FiPackage className="w-6 h-6 text-orange-600" />
               </div>
             </div>
@@ -204,9 +256,9 @@ export default function DashboardHomePage() {
         {/* Charts Row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Revenue Trend */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="lg:col-span-2 bg-white rounded-xl text-sm shadow-sm p-4 lg:p-6 border border-[#e9e9e9]">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-gray-900">Revenue Trend</h3>
+              <h3 className="font-semibold text-gray-900 text-base">Revenue Trend</h3>
               <div className="flex gap-2">
                 <button className="text-xs px-2 py-1 text-gray-500 hover:text-gray-700">Daily</button>
                 <button className="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded">Weekly</button>
@@ -225,7 +277,7 @@ export default function DashboardHomePage() {
           </div>
 
           {/* Order Status Distribution */}
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white rounded-xl shadow-sm p-4 lg:p-6 border border-[#e9e9e9]">
             <h3 className="font-semibold text-gray-900 mb-4">Order Status</h3>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
@@ -246,9 +298,9 @@ export default function DashboardHomePage() {
             </ResponsiveContainer>
             <div className="grid grid-cols-2 gap-2 mt-4">
               {statusData.map((status) => (
-                <div key={status.name} className="flex justify-between text-sm">
-                  <span className="text-gray-600 capitalize">{status.name?.replace('_', ' ')}</span>
+                <div key={status.name} className="flex gap-2 text-sm">
                   <span className="font-medium">{status.value}</span>
+                  <span className="text-gray-600 capitalize">{status.name?.replace('_', ' ')}</span>
                 </div>
               ))}
             </div>
@@ -258,7 +310,7 @@ export default function DashboardHomePage() {
         {/* Charts Row 2 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top Products */}
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-[#e9e9e9]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold text-gray-900">Top Selling Products</h3>
               <Link to={'/dashboard/products'} className="text-sm text-blue-600 hover:text-blue-700">View All →</Link>
@@ -287,7 +339,7 @@ export default function DashboardHomePage() {
           </div>
 
           {/* Low Stock Alert */}
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-[#e9e9e9]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold text-gray-900 flex items-center gap-2">
                 <FiAlertCircle className="w-5 h-5 text-red-500" />
@@ -321,27 +373,27 @@ export default function DashboardHomePage() {
         {/* Orders & Delivery Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Activity - Simplified */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-4 lg:p-6 border border-[#e9e9e9]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold text-gray-900">Recent Orders</h3>
               <Link to={'/dashboard/orders'} className="text-sm text-blue-600 hover:text-blue-700">View All Orders →</Link>
             </div>
             <div className="space-y-3">
-              {[1, 2, 3, 4].map((_, i) => (
-                <div key={i} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
+              {orders.map((order) => (
+                <div key={order._id} className="flex items-center justify-between p-3 hover:bg-[#fcfcfc] rounded-lg transition">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
                       <FiPackage className="w-5 h-5 text-gray-500" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">ORD-2024-{1000 + i}</p>
-                      <p className="text-sm text-gray-500">Customer Name • {2 + i} items</p>
+                      <p className="font-medium text-gray-900">{order.orderNumber||order._id}</p>
+                      <p className="text-sm text-gray-500">{order.customerInfo.firstName} • {order.items.length} items</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">${(89.99 + i * 20).toFixed(2)}</p>
+                    <p className="font-semibold">${order.grandTotal.toFixed(2)}</p>
                     <span className={`text-xs px-2 py-1 rounded-full ${statusColors.pending}`}>
-                      Pending
+                      {order.fulfillmentStatus}
                     </span>
                   </div>
                 </div>
@@ -350,25 +402,25 @@ export default function DashboardHomePage() {
           </div>
 
           {/* Quick Stats */}
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-[#e9e9e9]">
             <h3 className="font-semibold text-gray-900 mb-4">Quick Stats</h3>
             <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2">
+              <div className="flex justify-between items-center p-3 px-5 bg-[#fcfcfc] border-[#e9e9e9] border rounded-lg">
+                <div className="flex items-center gap-4">
                   <FiTruck className="w-5 h-5 text-blue-600" />
                   <span className="text-sm">Active Deliveries</span>
                 </div>
                 <span className="font-bold text-lg">{data.orderStatus.out_for_delivery + data.orderStatus.shipped}</span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2">
+              <div className="flex justify-between items-center p-3 px-5 bg-[#fcfcfc] border-[#e9e9e9] border rounded-lg">
+                <div className="flex items-center gap-4">
                   <FiClock className="w-5 h-5 text-orange-600" />
                   <span className="text-sm">Pending Approval</span>
                 </div>
                 <span className="font-bold text-lg">{data.orderStatus.pending}</span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2">
+              <div className="flex justify-between items-center p-3 px-5 bg-[#fcfcfc] border-[#e9e9e9] border rounded-lg">
+                <div className="flex items-center gap-4">
                   <FiCheckCircle className="w-5 h-5 text-green-600" />
                   <span className="text-sm">Completed This Month</span>
                 </div>
@@ -377,8 +429,8 @@ export default function DashboardHomePage() {
             </div>
 
             {/* Delivery Method Breakdown - Simplified */}
-            <div className="mt-6 pt-6 border-t">
-              <h4 className="font-medium text-gray-900 mb-3">Delivery Methods</h4>
+            <div className="mt-6 pt-4 border-t border-[#e9e9e9]">
+              <h4 className="text-[#1f1f1f] mb-4 font-bold">Delivery Methods</h4>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Carrier Delivery</span>

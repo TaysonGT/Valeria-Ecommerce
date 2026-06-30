@@ -28,12 +28,12 @@ const TestimonialsSection = () => {
   return (
     <section className='py-20 bg-gray-50'>
       <div className='max-w-7xl mx-auto px-4 md:px-6'>
-        <div className='text-center mb-16'>
-          <h2 className='text-3xl sm:text-4xl md:text-5xl leading-relaxed font-bold text-gray-900 mb-4 font-[Comfortaa]'>What Our Customers Say</h2>
-          <p className='text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-[Elms_Sans]'>Don't just take our word for it - hear from our satisfied customers who love shopping with Valeria.</p>
+        <div className='text-center mb-10 md:mb-16 font-[Outfit]'>
+          <h2 className='text-3xl sm:text-4xl md:text-5xl leading-relaxed font-medium text-[#1f1f1f] mb-4'>What Our Customers Say</h2>
+          <p className='text-lg md:text-xl text-[#3f3f3f] max-w-2xl mx-auto font-light'>Don't just take our word for it - hear from our satisfied customers who love shopping with Valeria.</p>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8'>
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
@@ -50,7 +50,7 @@ const TestimonialsSection = () => {
               </p>
 
               <div className='flex items-center'>
-                <div className='w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4'>
+                <div className='w-12 h-12 bg-linear-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4'>
                   {testimonial.name.charAt(0)}
                 </div>
                 <div>

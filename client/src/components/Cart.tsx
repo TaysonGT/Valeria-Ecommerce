@@ -16,10 +16,10 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
     const {total, cartItems, removeFromCart, clearCart, editItemQuantity} = useCart()
 
     return (
-        <div className={`fixed flex flex-col ${!show&&'pointer-events-none'} top-0 h-screen bg-white text-black left-full duration-300 z-110 p-10 sm:w-100 ${show&& '-translate-x-full'}`}>
-            <div className='flex flex-col gap-1 border-b border-gray-400 pb-6 relative'>
-                <h1 className='text-lg font-bold font-[Playfair]'>Cart</h1>
-                <RiCloseFill onClick={()=>setShow(false)} className='text-red-700 hover:text-red-400 duration-150 cursor-pointer text-3xl absolute top-0 right-0'/>
+        <div className={`fixed flex flex-col ${!show&&'pointer-events-none'} top-0 h-screen bg-white text-black left-full duration-300 z-110 p-10 sm:w-100 font-[Outfit] ${show&& '-translate-x-full'}`}>
+            <div className='flex flex-col gap-1 border-b border-[#a2a2a2] pb-6 relative'>
+                <h1 className='text-xl font-bold'>Cart</h1>
+                <RiCloseFill onClick={()=>setShow(false)} className='text-red-700 hover:text-red-400 duration-150 cursor-pointer text-2xl md:text-3xl absolute top-0 right-0'/>
             </div>
             <div className='flex flex-col grow overflow-y-auto relative gap-2 py-3'>
             {cartItems.length>0?
@@ -45,10 +45,10 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
                 </div>
                 )}
                 </>:
-                <p className='text-center font-[Playfair] text-lg mt-10 text-gray-600'>Your cart is currently empty.</p>
+                <p className='text-center text-lg mt-10 text-gray-600'>Your cart is currently empty.</p>
             }
             </div>
-            <div className='flex font-bold text-lg py-4 mb-4 border-y border-gray-200 justify-between gap-4'>
+            <div className='flex font-bold text-lg py-4 mb-4 border-y border-[#d9d9d9] justify-between gap-4'>
                 <p>Subtotal:</p>
                 <p className='text-[#1f1f1f]'>{formatNumber(total)}</p>
             </div>
@@ -62,7 +62,7 @@ const Cart:React.FC<Props> = ({show, setShow})=>{
                     setShow(false)
                     }} className='flex-1 px-8 py-2.5 font-bold z-0 hover:bg-transparent bg-[#071c1f] border border-[#071c1f] duration-400 text-white hover:text-[#071c1f] rtl before:bg-[#071c1f] btn cursor-pointer'>Checkout</button>
             </div>
-            <p className='mt-4 font-[Playfair]'>Free Shippping on All Orders Over $100!</p>
+            <p className='mt-4'>Free Shippping on All Orders Over $100!</p>
         </div>
     )
 }

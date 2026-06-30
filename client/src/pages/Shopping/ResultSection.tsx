@@ -75,7 +75,7 @@ const ResultSection: React.FC<Props> = ({results, isLoading, filters})=>{
                     </div>
                 </div>
             </div>
-            <div className='sm:px-10 sm:py-6 p-4 grow'>
+            <div className='p-4 grow'>
                 {isLoading?
                 <>
                     <LightBackground />

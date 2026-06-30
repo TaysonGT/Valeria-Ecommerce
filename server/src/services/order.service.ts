@@ -34,8 +34,8 @@ export class OrderService {
   /**
    * Update order status with full validation and audit trail
    */
-  async getAllOrders(
-    {status, page}:{status?: string, page: number,})
+  async getOrdersByStatus(
+    {status, page, limit=10}:{status?: string, page: number, limit?: number})
   : Promise<{ 
     totalPages: number; 
     counts: any; 
@@ -56,7 +56,80 @@ export class OrderService {
     }
     
     // Pagination settings
-    const limit = 10;
+    const skip = (page - 1) * limit;
+    
+    // Base query - only get orders for this user
+    const baseQuery = {};
+    
+    // Get paginated orders with status filter
+    const orders = await Order.find({ 
+      ...baseQuery,
+      ...status&&{fulfillmentStatus: { $in: statusArray }}
+    })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec();
+    
+    // Get total counts for each status type
+    const statusCounts = await Order.aggregate([
+    // { $match: {userId: new ObjectId(req.user.id)} },
+    {
+        $group: {
+        _id: "$fulfillmentStatus",
+        count: { $sum: 1 }
+        }
+    }
+    ]);
+    
+    // Format status counts with default 0 for missing statuses
+    const counts = {
+        pending: 0,
+        processing: 0,
+        shipped: 0,
+        delivered: 0,
+        cancelled: 0
+    };
+    
+    statusCounts.forEach(item => {
+    if (counts.hasOwnProperty(item._id)) {
+        counts[item._id as keyof typeof counts] = item.count;
+    }
+    });
+    
+    // Get total count for current filtered status (for pagination)
+    const totalFilteredCount = await Order.countDocuments({
+    ...baseQuery,
+    fulfillmentStatus: { $in: statusArray }
+    });
+    
+    const totalPages = Math.ceil(totalFilteredCount / limit)
+    
+    return {totalPages, counts, orders, totalFilteredCount, limit};  
+  }
+
+  async getAllOrders(
+    {status, page, limit=10}:{status?: string, page: number, limit?: number})
+  : Promise<{ 
+    totalPages: number; 
+    counts: any; 
+    orders: IOrder[], 
+    totalFilteredCount: number; 
+    limit: number 
+  }> {
+    // Validate status
+    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    // const filterStatus = validStatuses.includes(status) ? status : 'pending';
+    
+    let statusArray: string[];
+    
+    statusArray = validStatuses.filter(s=>s!=='delivered'&&s!=='cancelled');
+    
+    if(status&&validStatuses.includes(status)){
+      statusArray = [status]
+    }
+    
+    // Pagination settings
     const skip = (page - 1) * limit;
     
     // Base query - only get orders for this user

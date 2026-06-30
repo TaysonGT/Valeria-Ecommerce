@@ -77,6 +77,39 @@ export class OrderController {
     }
   };
 
+  async getLatestOrders (req: AuthenticatedRequest, res: Response) {
+    try {
+      const {
+        orders, 
+        totalPages, 
+        totalFilteredCount, 
+        limit
+      } = await orderService.getAllOrders({ page: 1, limit: 5});
+
+      return res.status(200).json({
+        success: true,
+        message: `Latest Orders fetched successfully`,
+        orders,
+        pagination: {
+          currentPage: 1,
+          totalPages,
+          totalItems: totalFilteredCount,
+          itemsPerPage: limit,
+          hasNextPage: 1 < totalPages,
+            hasPrevPage: false
+          }
+      });
+      
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      return res.status(400).json({
+        success: false,
+        message: 'Failed to fetch orders',
+        error: error.message
+      });
+    }
+  };
+
   async getAllOrders (req: AuthenticatedRequest, res: Response) {
     try {
       const { page = '1', status }: OrderQuery = req.query;

@@ -47,7 +47,7 @@ const ProductDetails = () => {
         )
         :
         (
-        <div className='xl:p-10 sm:px-6 px-2 p-6 md:space-y-6 space-y-4 bg-[#fafafa] min-h-screen overflow-x-hidden w-full  font-[Sans]'>
+        <div className='xl:p-4 p-2 md:space-y-6 space-y-4 bg-[#fafafa] min-h-screen overflow-x-hidden w-full  font-[Sans]'>
             <AddVariant {...{
                 productId: product?._id,
                 show: showAddVariant,
@@ -62,58 +62,16 @@ const ProductDetails = () => {
                 onSave: refetch
             }} />
 
-            <div className='px-4'>
-                <h1 className='md:text-4xl sm:text-3xl text-2xl font-[Elms_Sans]'>Product Details</h1>
-                <p className='md:text-base text-sm mt-2 font-light text-[#777]'>Preview, edit or delete product</p>
-            </div>
-            <div className='bg-white shadow-xs border border-gray-200 rounded-md md:p-6 p-4 space-y-4 overflow-x-hidden'>
+            <div className='bg-white shadow-xs border border-[#d3d3d3] md:p-6 p-4 space-y-4 overflow-x-hidden'>
                 <div className='flex justify-between items-center gap-4 mb-8 flex-wrap gap-y-2'>
-                    <h1 className='md:text-2xl text-xl font-[Elms_Sans]'>Primary Details</h1>
+                    <h1 className='md:text-2xl text-xl font-[Elms_Sans]'>Product Details</h1>
                     <Button onClick={()=>setShowAddImage(true)} variant='primary' className='gap-2 px-3 pl-2.5 py-2.5 items-center md:hidden flex text-sm'>
                         <LuImagePlus className='text-xl'/>
                         Upload
                     </Button>
                 </div>
-                <div className='w-full flex gap-4 overflow-x-hidden'>
-                    <div className='shrink-0 hidden md:block'>
-                        <button onClick={()=>setShowAddImage(true)} className="flex flex-col items-center justify-center w-full h-full border border-[#d9d9d9] bg-[#fdfdfd] rounded-lg cursor-pointer px-10">
-                            <div className="flex flex-col items-center justify-center text-[#777] pt-5 pb-6">
-                                <LuImagePlus className='text-4xl'/>
-                                <p className="mb-2 text-sm mt-2">Add image or drag and drop</p>
-                                <p className="text-xs">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                            </div>
-                        </button>
-                    </div> 
-                    <Swiper 
-                    slidesPerView="auto"
-                    modules={[Navigation]}
-                    navigation={true}
-                    spaceBetween={15}
-                    className='grow min-w-0'>
-                        {product?.imgs.map((image, i)=>
-                            <SwiperSlide className='flex flex-col rounded-lg border border-[#d9d9d9] bg-[#fdfdfd] w-75! shrink-0! overflow-hidden' key={i}>
-                                <img className='object-cover w-full h-60 shrink-0' src={image.url} alt={image.altText}/>
-                                <div className='flex justify-between py-3 px-4 bg-[#fdfdfd] border-t border-[#d9d9d9]'>
-                                    <div className='flex gap-2 items-center text-sm'>
-                                        <input type="radio" onClick={()=>setPrimaryImage(image._id)} defaultChecked={image.isPrimary} className='w-5 h-5' name="main" id="" />
-                                        Primary
-                                    </div>
-                                    <div className='flex gap-2'>
-                                        <button className='p-1 text-xl rounded-sm cursor-pointer border text-indigo-500 border-indigo-500'>
-                                            <IoCrop/>
-                                        </button>
-                                        <button onClick={()=>removeImage(image._id)} className='p-1 text-xl rounded-sm cursor-pointer border text-red-500 border-red-500'>
-                                            <TbTrash/>
-                                        </button>
-                                    </div>
-                                </div>
-                                {/* </div>
-                                <div key={i} > */}
-                            </SwiperSlide>
-                        )}
-                    </Swiper>
-                </div>
-                <div className='space-y-2 mt-8 pt-6 border-t border-gray-100'>
+                
+                <div className='space-y-2'>
                     <div className='flex md:gap-6 gap-2 md:flex-row flex-col'>
                         <form onSubmit={saveEdit} className='flex-1'>
                             <label className='block mb-1'>Product Name</label>
@@ -163,8 +121,47 @@ const ProductDetails = () => {
                         )}
                     </div>
                 </div>
+                <div className='w-full flex gap-4 overflow-x-hidden'>
+                    <div className='shrink-0 hidden md:block'>
+                        <button onClick={()=>setShowAddImage(true)} className="flex flex-col items-center justify-center w-full h-full border border-[#d9d9d9] bg-[#fdfdfd] rounded-lg cursor-pointer px-10">
+                            <div className="flex flex-col items-center justify-center text-[#777] pt-5 pb-6">
+                                <LuImagePlus className='text-4xl'/>
+                                <p className="mb-2 text-sm mt-2">Add image or drag and drop</p>
+                                <p className="text-xs">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                            </div>
+                        </button>
+                    </div> 
+                    <Swiper 
+                    slidesPerView="auto"
+                    modules={[Navigation]}
+                    navigation={true}
+                    spaceBetween={15}
+                    className='grow min-w-0'>
+                        {product?.imgs.map((image, i)=>
+                            <SwiperSlide className='flex flex-col rounded-lg border border-[#d9d9d9] bg-[#fdfdfd] w-75! shrink-0! overflow-hidden' key={i}>
+                                <img className='object-cover w-full h-60 shrink-0' src={image.url} alt={image.altText}/>
+                                <div className='flex justify-between py-3 px-4 bg-[#fdfdfd] border-t border-[#d9d9d9]'>
+                                    <div className='flex gap-2 items-center text-sm'>
+                                        <input type="radio" onClick={()=>setPrimaryImage(image._id)} defaultChecked={image.isPrimary} className='w-5 h-5' name="main" id="" />
+                                        Primary
+                                    </div>
+                                    <div className='flex gap-2'>
+                                        <button className='p-1 text-xl rounded-sm cursor-pointer border text-indigo-500 border-indigo-500'>
+                                            <IoCrop/>
+                                        </button>
+                                        <button onClick={()=>removeImage(image._id)} className='p-1 text-xl rounded-sm cursor-pointer border text-red-500 border-red-500'>
+                                            <TbTrash/>
+                                        </button>
+                                    </div>
+                                </div>
+                                {/* </div>
+                                <div key={i} > */}
+                            </SwiperSlide>
+                        )}
+                    </Swiper>
+                </div>
             </div>
-            <div className=' bg-white p-6 shadow-xs border border-gray-200 '>
+            <div className=' bg-white p-6 shadow-xs border border-[#d3d3d3] '>
                 <div className='flex justify-between items-center gap-4 flex-wrap gap-y-2'>
                     <h1 className='md:text-2xl text-xl'>Product Variants</h1>
                     <Button variant='primary' onClick={()=>setShowAddVariant(true)} className='px-4 py-2 border rounded cursor-pointer text-sm'>Add Variant</Button>

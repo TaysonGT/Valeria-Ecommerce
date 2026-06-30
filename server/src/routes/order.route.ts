@@ -100,6 +100,11 @@ orderRouter.post('/create', (req, res, next) => {
 })
 
 // Customer: Get my orders
+orderRouter.get('/latest', (req, res, next) => {
+  void orderController.getLatestOrders(req as any, res).catch(next)
+})
+
+// Customer: Get my orders
 orderRouter.get('/my-orders', (req, res, next) => {
   void orderController.getMyOrders(req as any, res).catch(next)
 })

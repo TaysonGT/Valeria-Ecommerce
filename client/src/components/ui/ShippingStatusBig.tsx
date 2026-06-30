@@ -1,6 +1,6 @@
 import { FulfillmentStatus } from '../../types'
 import { LuPackage, LuPackageCheck, LuPackageOpen } from 'react-icons/lu'
-import { MdReceipt } from 'react-icons/md'
+import { MdCheck, MdReceipt } from 'react-icons/md'
 import { TbCancel, TbTruckDelivery } from 'react-icons/tb'
 import { formatDateDisplay } from '../../utils/helpers'
 
@@ -106,7 +106,7 @@ const ShippingStatusBig = ({ status, timestamps }: { status: FulfillmentStatus, 
                         <p>{formatDateDisplay(timestamps?.[status.value])}</p>
                 </div>
                 <div className='p-1'>
-                    <div className={`text-3xl text-white ${
+                    <div className={`text-3xl text-white relative ${
                     isTerminal? 
                     currentIndex+1===i? 
                     'bg-[#0a5edb]'
@@ -121,21 +121,33 @@ const ShippingStatusBig = ({ status, timestamps }: { status: FulfillmentStatus, 
                     :'bg-[#c7c7c7]'
                     
                     } p-2 rounded-full`}>
+                        {isTerminal? 
+                        currentIndex+1>i&&
+                        <div className='p-0.5  absolute -top-2 -left-2 rounded-full bg-primary-600 border-2 border-white'>
+                            <MdCheck className='text-white text-lg'/>
+                        </div>
+                        :currentIndex>i&&
+                        <div className='p-0.5  absolute -top-2 -left-2 rounded-full bg-primary-600 border-2 border-white'>
+                            <MdCheck className='text-white text-lg'/>
+                        </div>
+                        }
                         {status.icon}
                     </div>
                 </div>
             </div>
-            {i<fulfillmentStatuses.length-2&&<div className={`h-1 w-36 
-                ${isTerminal? 
-                    currentIndex>=i? 
-                    'bg-black'
-                    :'bg-[#d9d9d9]'
-                    
-                    :currentIndex>i?
-                    'bg-black'
-                    :'bg-[#d9d9d9]'
-                }`}
-            />}
+            {i<fulfillmentStatuses.length-2&&
+                <div className={`h-1 w-36 
+                    ${isTerminal? 
+                        currentIndex>=i? 
+                        'bg-black'
+                        :'bg-[#d9d9d9]'
+                        
+                        :currentIndex>i?
+                        'bg-black'
+                        :'bg-[#d9d9d9]'
+                    }`}
+                />
+            }
           </div>
           )}
       </div>

@@ -37,27 +37,27 @@ const Login = () => {
 
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-[#f4f4f4] px-4'>
+    <div className='min-h-screen flex items-center justify-center bg-[#f4f4f4] px-4 font-[Outfit]'>
       <div className='max-w-md w-full bg-white rounded-3xl shadow-xl p-8'>
-        <h2 className='text-3xl font-bold mb-6 text-center'>Sign In</h2>
-        <form onSubmit={onSubmit} className='space-y-4'>
+        <h2 className='text-3xl font-extralight text-center'>Sign In</h2>
+        <form onSubmit={onSubmit} className='space-y-4 mt-8'>
           <label className='block'>
-            <span className='text-sm font-semibold'>Username</span>
+            <span className='text-sm font-medium px-2'>Username</span>
             <input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className='mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none'
+              className='mt-1 w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none'
               placeholder='username'
               required
             />
           </label>
           <label className='block'>
-            <span className='text-sm font-semibold'>Password</span>
+            <span className='text-sm font-medium px-2'>Password</span>
             <input
               type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none'
+              className='mt-1 w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none'
               placeholder='password'
               required
             />
@@ -72,7 +72,7 @@ const Login = () => {
         </form>
         <p className='mt-6 text-center text-sm text-gray-600'>
           New here?{' '}
-          <span onClick={() => navigate('/auth/register')} className='cursor-pointer font-semibold text-black'>
+          <span onClick={() => navigate('/auth/register')} className='cursor-pointer  font-medium text-black'>
             Create an account
           </span>
         </p>

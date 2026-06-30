@@ -35,9 +35,9 @@ function App() {
           <CartProvider>
             <Routes>
               <Route path='/' element={<PublicRoute withNav />}>
+                <Route index element={<HomePage />} />
                 <Route path='shop' element={<ShoppingPage />} />
                 <Route path='test' element={<TestPage/>}/>
-                <Route index element={<HomePage />} />
                 <Route path='products/:productId' element={<ProductPage />} />
               </Route>
               <Route path='/auth' element={<LoginRoute />}>

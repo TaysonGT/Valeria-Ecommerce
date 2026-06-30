@@ -147,7 +147,7 @@ const Navbar: React.FC = () => {
 
       <div className='flex justify-between items-center xl:gap-16 sm:gap-10 gap-4 w-full xl:m-auto sm:px-10 xl:px-20 px-6 2xl:px-30 py-4'>
         <div className='flex-1 flex justify-start items-stretch'>
-          <Link to='/'><h1 className='text-2xl md:text-3xl xl:text-4xl font-[Comfortaa] font-extrabold select-none hover:text-[#e0fbff] duration-300'>Valeria</h1></Link>
+          <Link to='/'><h1 className='text-2xl md:text-3xl font-[Comfortaa] font-extrabold select-none hover:text-[#e0fbff] duration-300'>Valeria</h1></Link>
         </div>
         <ul className='flex-1 lg:flex hidden xl:gap-12 gap-8 text-md justify-center items-center'>
           {links.map((link, i)=>

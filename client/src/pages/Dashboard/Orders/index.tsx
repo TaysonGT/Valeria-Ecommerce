@@ -112,7 +112,7 @@ const DashboardOrdersPage = () => {
     }
       
   return (
-    <div className='md:p-10 p-6 py-8 min-h-screen w-full overflow-hidden'>
+    <div className='md:p-6 p-4 min-h-screen w-full overflow-hidden'>
         <div className=''>
           <h1 className='text-4xl font-[Elms_Sans]'>Orders</h1>
           <p className='mt-2 font-light text-gray-600'>Manage orders, update and availability across your store</p>
@@ -153,7 +153,7 @@ const DashboardOrdersPage = () => {
             <thead className=''>
               <tr className='text-[#494949]'>
                 <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] lg:table-cell hidden'>ID</th>
-                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] lg:table-cell hidden'>Customer</th>
+                <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] xl:table-cell hidden'>Customer</th>
                 <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Order Date</th>
                 <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center lg:table-cell hidden'>Items</th>
                 <th className='sm:py-3 sm:px-4 p-2 border-b border-[#e7e7e7] text-center'>Payment Status</th>
@@ -167,7 +167,7 @@ const DashboardOrdersPage = () => {
                   <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light lg:table-cell hidden'>
                     <p className='font-normal'>#{order.orderNumber?.slice(4)||order._id.slice(3)}</p>
                   </td>
-                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light lg:table-cell hidden'>{order.customerInfo.firstName} {order.customerInfo.lastName}</td>
+                  <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light xl:table-cell hidden'>{order.customerInfo.firstName} {order.customerInfo.lastName}</td>
                   <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] font-light text-center'>
                     {formatDateDisplay(order.createdAt)}
                   </td>

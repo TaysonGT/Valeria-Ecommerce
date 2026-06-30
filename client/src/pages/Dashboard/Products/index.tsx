@@ -20,6 +20,21 @@ const ProductsPage = () => {
   const {searchParams, setSearchParams, setMaxPages, maxPages, pageCount, changePage} = useSearch()
 
   const nav = useNavigate()
+
+  const fetchProducts = async()=>{
+    const currentQ = searchParams.get('q');
+    axios.get(`/products/search?${searchParams.toString()}`)
+    .then(({data})=>{
+        setProducts(data.products)
+        setMaxPages(Math.ceil(data.totalCount/parseInt(searchParams.get('pagination')||'10')))
+        if (!filters.length || currentQ !== lastQ.current) {
+          setFilters(data.filters);
+          lastQ.current = currentQ;
+        }
+        setIsLoading(false)
+    })
+
+  }
    
   const searchSubmitHandler = (e:React.SubmitEvent<HTMLFormElement>)=> {
     e.preventDefault(); 
@@ -72,22 +87,11 @@ const ProductsPage = () => {
   useEffect(()=>{
     setProducts([])
     setIsLoading(true)
-    const currentQ = searchParams.get('q');
-    axios.get(`/products/search?${searchParams.toString()}`)
-    .then(({data})=>{
-        setProducts(data.products)
-        setMaxPages(Math.ceil(data.totalCount/parseInt(searchParams.get('pagination')||'10')))
-        if (!filters.length || currentQ !== lastQ.current) {
-          setFilters(data.filters);
-          lastQ.current = currentQ;
-        }
-        setIsLoading(false)
-    })
-
+    fetchProducts()
   }, [searchParams])
     
   return (
-    <div className='md:p-10 p-4 py-8 min-h-screen w-full overflow-hidden'>
+    <div className='md:p-6 p-4 min-h-screen w-full overflow-hidden'>
       {/* <div className='grid grid-cols-4 gap-4 mt-4'>
         {analytics.map((box, i)=>
           <div key={i} className='p-2 border border-gray-200 rounded-xl'>
@@ -122,32 +126,7 @@ const ProductsPage = () => {
         <button onClick={()=>setShowAddProduct(true)} className='flex items-center gap-2 p-2.5 pr-4 bg-blue-500 text-white rounded-md cursor-pointer hover:opacity-85 duration-150 font-[Comfortaa]'>
           <MdAdd className='text-lg'/>Add
         </button>
-        <AddProduct show={showAddProduct} hide={()=>setShowAddProduct(false)} onSave={async (payload)=>{
-          // Example onSave handler: uploads images and creates product.
-          // Update the endpoint path if your backend expects a different route.
-          try{
-            const form = new FormData()
-            form.append('title', payload.title)
-            form.append('basePrice', String(payload.basePrice))
-            form.append('description', payload.description)
-            payload.categories?.forEach((c:string)=>form.append('categories[]', c))
-            payload.variants?.forEach((v:any, i:number)=>{
-              form.append(`variants[${i}][sizeCode]`, v.sizeCode)
-              form.append(`variants[${i}][priceAdjustment]`, String(v.priceAdjustment||0))
-              form.append(`variants[${i}][inventory][stock]`, String(v.inventory?.stock||0))
-            })
-            ;(payload._images||[]).forEach((f:File)=>form.append('images', f))
-
-            await axios.post('/products', form, { headers: { 'Content-Type': 'multipart/form-data' } })
-
-            // refresh list after creation
-            const { data } = await axios.get(`/products/search?${searchParams.toString()}`)
-            setProducts(data.products)
-          }catch(err){
-            console.error('Create product failed', err)
-            throw err
-          }
-        }} />
+        <AddProduct show={showAddProduct} hide={()=>setShowAddProduct(false)} onSave={fetchProducts} />
       </div>
       <div className='mt-4 w-full'>
         <div className='flex justify-between gap-4 gap-y-2 flex-wrap'>
@@ -199,7 +178,7 @@ const ProductsPage = () => {
                 <tr key={product._id} onClick={()=>nav(`/dashboard/products/${product._id}`)} className='group odd:bg-[#fefefe] text-[#1f1f1f] hover:bg-[#f4f4f4] cursor-pointer'>
                   <td className='sm:py-2 sm:px-4 p-2  border-b group-last:border-0 border-[#e7e7e7] '>
                     <div className=' flex gap-4 items-center'>
-                      <img className=' w-12 h-12 rounded-xl overflow-hidden shrink-0 object-cover object-center' src={product.imgs[0]?.url||'/logo.png'} alt="" />
+                      <img className=' w-12 h-12 rounded-xl border border-[#a9a9a9] overflow-hidden shrink-0 object-cover object-center' src={product.imgs[0]?.url||'/logo.png'} alt="" />
                       <span className='line-clamp-2 text-ellipsis overflow-x-hidden'>{product.title}</span>
                     </div>
                   </td>
