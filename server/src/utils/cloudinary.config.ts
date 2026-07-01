@@ -1,4 +1,5 @@
 import {v2} from 'cloudinary'
+import 'dotenv/config'
 
 export const cloudinary = v2.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

@@ -514,9 +514,16 @@ export class ProductController {
 
             // CLOUDINARY STORAGE OPERATIONS
             if(image.publicId){
-                const result = await cloudinary.uploader.destroy(image.publicId)
-                if(result.result !== 'ok'){
-                    res.status(404).json({success:false, message: 'Asset not found or already deleted.', details: result})
+                try {
+                    const result = await cloudinary.uploader.destroy(image.publicId);
+                    if (result.result !== 'ok' && result.result !== 'not found') {
+                        res.status(404).json({success:false, message: 'Failed to delete image from storage'});
+                        return
+                    }
+                } catch (error) {
+                    // Handle network errors, timeouts, etc.
+                    res.status(404).json({success:false, message: 'Storage service temporarily unavailable.'})
+                    return
                 }
             }
 

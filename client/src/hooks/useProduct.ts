@@ -30,6 +30,7 @@ export const useProductDetails = () => {
 
     const removeImage = async(imgId:string)=>{
         if (!product) return
+        setSaving(true)
         productService.removeImage(product._id, imgId)
         .then(({data})=>{
             if(data.success){
@@ -38,22 +39,28 @@ export const useProductDetails = () => {
                 return
             }
             toast.error(data.error)
-        })
+        }).catch((error)=>toast.error(error.response.data.message))
+        setSaving(false)
     }
 
     const removeVariant = async(variantId:string)=>{
         if (!product) return
+        setSaving(true)
         productService.removeVariant(product._id, variantId)
         .then(({data})=>{
             if(data.success){
-                return toast.success(data.message)
+                toast.success(data.message)
+                fetchProduct()
+                return
             }
             toast.error(data.error)
-        })
+        }).catch((error)=>toast.error(error.response.data.message))
+        .finally(()=>setSaving(false))
     }
 
     const setPrimaryImage = async(imgId:string)=>{
         if (!product) return
+        setSaving(true)
         productService.setPrimaryImage(product._id, imgId)
         .then(({data})=>{
             if(data.success){
@@ -62,7 +69,8 @@ export const useProductDetails = () => {
                 return
             }
             toast.error(data.error)
-        })
+        }).catch((error)=>toast.error(error.response.data.message))
+        setSaving(false)
     }
 
     const startEdit = async(field:'title'|'basePrice'|'description')=>{
