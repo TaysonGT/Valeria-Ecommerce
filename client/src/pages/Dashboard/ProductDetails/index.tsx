@@ -14,26 +14,38 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import {Navigation} from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation';
+import { FaDollarSign, FaEdit } from 'react-icons/fa'
+import EditVariant from './dialogs/EditVariant'
 
 
 const ProductDetails = () => {
     const {
         product,
+
         isLoading,
         saving,
+
         editField,
         editValue,
-        showAddVariant,
-        showAddImage,
-        setEditValue,
-        setShowAddVariant,
-        setShowAddImage,
         startEdit,
         cancelEdit,
         saveEdit,
+
+        showAddImage,
+        showAddVariant,
+        showEditVariant,
+
+        setShowAddVariant,
+        setShowEditVariant,
+        setShowAddImage,
+        setEditValue,
+        
+        setPrimaryImage,
+        setSelectedVariant,
+        selectedVariant,
+        
         removeCategory,
         removeVariant,
-        setPrimaryImage,
         removeImage,
         refetch
     } = useProductDetails();
@@ -52,6 +64,14 @@ const ProductDetails = () => {
                 productId: product?._id,
                 show: showAddVariant,
                 hide: ()=>setShowAddVariant(false),
+                onSave: refetch
+            }} />
+            
+            <EditVariant {...{
+                productId: product?._id,
+                variant: selectedVariant,
+                show: showEditVariant&&!!selectedVariant,
+                hide: ()=>setShowEditVariant(false),
                 onSave: refetch
             }} />
             
@@ -237,12 +257,15 @@ const ProductDetails = () => {
                             </td>
                             <td className='text-center px-4 py-2 w-[0.1%]  border border-[#c1c1c1]'>
                                 <div className='flex gap-2 justify-center'>
-                                    <button className='text-sm p-2 pr-3 rounded-lg border bg-blue-500 text-white font-bold flex items-center gap-2'>
-                                        <IoInformationCircle/> Details
+                                        <button onClick={()=>{
+                                          setSelectedVariant(variant)
+                                          setShowEditVariant(true)
+                                        }} className='text-sm p-1 px-3 pr-3 cursor-pointer rounded-lg border bg-primary-500 text-white font-bold flex items-center gap-2'>
+                                            <FaEdit/> Edit
                                     </button>
-                                    <div onClick={()=>removeVariant(variant._id)} className='p-1 px-2 pr-3 cursor-pointer flex gap-2 items-center text-sm rounded-md bg-red-500 text-white duration-150'>
+                                        <button onClick={()=>removeVariant(variant._id)} className='p-1 px-2 pr-3 cursor-pointer flex gap-2 items-center text-sm rounded-md bg-red-500 text-white duration-150'>
                                         <IoTrash className=''/> Remove
-                                    </div>
+                                        </button>
                                 </div>
                             </td>
                         </tr>

@@ -253,6 +253,91 @@ export class ProductController {
         }
     };
 
+    async patchVariant(req: Request, res: Response){
+        const {productId, variantId} = req.params as {productId: string, variantId:string}
+
+        if (!isValidObjectId(productId)) {
+            res.status(400).json({
+                success: false,
+                message: 'Invalid product ID format',
+            });
+            return;
+        }
+
+        if (!isValidObjectId(variantId)) {
+            res.status(400).json({
+                success: false,
+                message: 'Invalid variant ID format',
+            });
+            return;
+        }
+
+        try {
+            const { sizeCode, inventory, priceAdjustment } = req.body;
+
+            // Validate required fields
+            if (!sizeCode || !inventory?.stock === undefined || !inventory?.barcode) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Missing required fields: sizeCode, inventory.stock, inventory.barcode',
+                });
+                return;
+            }
+
+            const product = await Product.findById(productId);
+
+            if (!product) {
+                res.status(404).json({
+                    success: false,
+                    message: 'Product not found',
+                });
+                return;
+            }
+
+            // Check for duplicate sizeCode within the same product
+            const variant = product.variants.find(
+                (variant) => variant._id?.toString() === variantId
+            );
+
+            if (!variant) {
+                res.status(409).json({
+                    success: false,
+                    message: `Variant doesn't exist`,
+                });
+                return;
+            }
+
+            product.variants = [
+                ...product.variants.filter(variant=>variant._id?.toString()!==variantId),
+                {
+                    _id: new Types.ObjectId(variantId),
+                    sizeCode: sizeCode || variant.sizeCode,
+                    priceAdjustment: priceAdjustment || variant.priceAdjustment,
+                    inventory: {
+                        barcode: inventory.barcode || variant.inventory.barcode,
+                        stock: inventory.stock || variant.inventory.stock,
+                        reserved: inventory.reserved || variant.inventory.reserved,
+                        warehouseLocation: inventory.warehouseLocation || variant.inventory.warehouseLocation,
+                    }
+                }
+            ]
+            
+            await product.save();
+
+            res.status(201).json({
+                success: true,
+                message: 'Variant updated successfully',
+            });
+        } catch (error) {
+            console.error('[patchProductVariant] Error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+            });
+        }
+    };
+
+    
     async removeVariant(req: Request, res: Response){
         try {
             const { productId, variantId } = req.params;
@@ -305,7 +390,7 @@ export class ProductController {
                 message: 'Variant removed successfully',
             });
         } catch (error) {
-            console.error('[createProductVariant] Error:', error);
+            console.error('[removeProductVariant] Error:', error);
             res.status(500).json({
                 success: false,
                 message: 'Internal server error',

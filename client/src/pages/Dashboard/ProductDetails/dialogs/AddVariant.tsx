@@ -81,7 +81,7 @@ const AddVariant:React.FC<Props> = ({show, hide, onSave, productId}) => {
             <input onChange={inputHandler} name='inventory.warehouseLocation' type='string' className={`border mb-6 bg-[#fcfcfc] border-gray-300 text-base text-[#1f1f1f] rounded-md block w-full px-3 py-2.5 shadow-xs outline-0`} />
             <div className='flex gap-2 justify-end'>
                 <button type='submit' className='px-3 py-2 cursor-pointer border bg-blue-600 text-white rounded-md'>Save</button>
-                <button onClick={hide} className='px-3 py-2 cursor-pointer border border-[#5f5f5f] text-[#5f5f5f] rounded-md'>Cancel</button>
+                <button type='button' onClick={hide} className='px-3 py-2 cursor-pointer border border-[#5f5f5f] text-[#5f5f5f] rounded-md'>Cancel</button>
             </div>
         </form>
     </Modal>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { productService } from "../services/product.service";
 import { toast } from "react-toastify";
-import { productType } from "../types";
+import { productType, variantType } from "../types";
 
 export const useProductDetails = () => {
     const { productId } = useParams();
@@ -13,10 +13,13 @@ export const useProductDetails = () => {
     const [editField, setEditField] = useState<'title' | 'basePrice' | 'description'>();
     const [editValue, setEditValue] = useState('');
     const [showAddVariant, setShowAddVariant] = useState(false);
+    const [showEditVariant, setShowEditVariant] = useState(false);
     const [showAddImage, setShowAddImage] = useState(false);
+    const [selectedVariant, setSelectedVariant] = useState<variantType|null>(null);
 
     const removeCategory = async(categoryId:string)=>{
         if (!product) return
+        setSaving(true)
         productService.removeCategory(product._id, categoryId)
         .then(({data})=>{
             if(data.success){
@@ -25,7 +28,8 @@ export const useProductDetails = () => {
                 return
             }
             toast.error(data.error)
-        })
+        }).catch((error)=>toast.error(error.response.data.message))
+        .finally(()=>setSaving(false))
     }
 
     const removeImage = async(imgId:string)=>{
@@ -40,7 +44,7 @@ export const useProductDetails = () => {
             }
             toast.error(data.error)
         }).catch((error)=>toast.error(error.response.data.message))
-        setSaving(false)
+        .finally(()=>setSaving(false))
     }
 
     const removeVariant = async(variantId:string)=>{
@@ -70,7 +74,7 @@ export const useProductDetails = () => {
             }
             toast.error(data.error)
         }).catch((error)=>toast.error(error.response.data.message))
-        setSaving(false)
+        .finally(()=>setSaving(false))
     }
 
     const startEdit = async(field:'title'|'basePrice'|'description')=>{
@@ -105,9 +109,8 @@ export const useProductDetails = () => {
                 return
             }
             toast.error(data.error)
-        }).finally(()=>{
-            cancelEdit()
-        })
+        }).catch((error)=>toast.error(error.response.data.message))
+        .finally(()=>cancelEdit())
     }
 
     const fetchProduct = async()=>{
@@ -138,14 +141,18 @@ export const useProductDetails = () => {
         product,
         isLoading,
         saving,
-        selectedImage,
         editField,
         editValue,
         showAddVariant,
+        showEditVariant,
+        selectedVariant,
+        selectedImage,
         showAddImage,
         // Setters
         setEditValue,
         setShowAddVariant,
+        setShowEditVariant,
+        setSelectedVariant,
         setShowAddImage,
         setSelectedImage,
         // Actions

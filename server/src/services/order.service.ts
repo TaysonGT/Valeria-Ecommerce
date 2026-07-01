@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { Order, IOrder, OrderFulfillmentStatus, IOrderItem } from "../schemas/order.schema";
 import { IProduct, IVariant, Product } from "../schemas/product.schema";
-import mongoose from "mongoose";
+import mongoose, {Types} from "mongoose";
 import { processPayment } from "./payment.service";
 
 export interface StatusUpdatePayload {
@@ -236,6 +236,7 @@ export class OrderService {
 
         orderItems.push({
           productId: product._id as ObjectId,
+          variantId: cartItem.variant._id as Types.ObjectId,
           productSnapshot: {
             title: product.title,
             basePrice: product.basePrice,

@@ -21,6 +21,7 @@ export type OrderTrackingInfo = {
 
 export interface IOrderItem {
   productId: Types.ObjectId;
+  variantId: Types.ObjectId;
   productSnapshot: {
     title: string;
     basePrice: number;
@@ -119,6 +120,7 @@ export interface IOrder extends Document {
 
 const OrderItemSchema = new Schema<IOrderItem>({
   productId: { type: Schema.Types.ObjectId, ref: 'products', required: true },
+  variantId: { type: Schema.Types.ObjectId, required: true },
   productSnapshot: {
     title: { type: String, required: true },
     basePrice: { type: Number, required: true },

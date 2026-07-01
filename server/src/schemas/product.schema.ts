@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { Schema, model } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 import { ICategory } from './category.schema';
 import { ICollection } from './collection.schema';
 
@@ -20,7 +20,7 @@ export interface IProduct extends Document {
 }
 
 export interface IVariant {
-  _id?: Schema.Types.ObjectId;
+  _id?: Types.ObjectId;
   sizeCode: string;
   inventory: {
     stock: number;
@@ -40,7 +40,7 @@ export interface imageType {
 }
 
 const VariantSchema = new Schema<IVariant>({
-  _id: { type: Schema.Types.ObjectId, auto: true },
+  _id: { type: Schema.Types.ObjectId, required: true, auto: true },
   sizeCode: {type: String, required: true},
   inventory: {
     stock: { type: Number, required: true },

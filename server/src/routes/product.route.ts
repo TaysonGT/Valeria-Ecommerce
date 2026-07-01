@@ -17,6 +17,7 @@ productRouter.post('/:id/images', auth, isPermitted('admin'), productController.
 productRouter.post('/:productId/variants', auth, isPermitted('admin'), productController.createVariant)
 
 productRouter.patch('/:productId', productController.updateProduct)
+productRouter.patch('/:productId/variants/:variantId', productController.patchVariant)
 productRouter.put('/:productId/images/:imageId/set-primary', productController.setProductImagePrimary)
 
 productRouter.delete('/:productId/variants/:variantId', productController.removeVariant)
