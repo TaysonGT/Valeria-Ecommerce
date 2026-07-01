@@ -1,11 +1,11 @@
 import Loader from '../../../components/Loader'
 import { LuImagePlus } from 'react-icons/lu'
-import { TbTrash } from 'react-icons/tb'
-import { IoClose, IoCrop, IoInformationCircle, IoTrash } from 'react-icons/io5'
+import { TbTrash, TbTruckDelivery } from 'react-icons/tb'
+import { IoClose, IoCrop, IoTrash } from 'react-icons/io5'
 import { MdClose } from 'react-icons/md'
-import { HiCheck, HiPlus } from 'react-icons/hi'
+import { HiCheck, HiPlus, HiStar } from 'react-icons/hi'
 import { formatNumber } from '../../../utils/helpers'
-import { FiEdit } from 'react-icons/fi'
+import { FiEdit, FiShoppingBag, FiTrendingDown, FiTrendingUp } from 'react-icons/fi'
 import AddVariant from './dialogs/AddVariant'
 import { useProductDetails } from '../../../hooks/useProduct'
 import AddImage from './dialogs/AddImage'
@@ -59,7 +59,7 @@ const ProductDetails = () => {
         )
         :
         (
-        <div className='xl:p-4 p-2 md:space-y-6 space-y-4 bg-[#fafafa] min-h-screen overflow-x-hidden w-full  font-[Sans]'>
+        <div className='md:p-4 p-2 md:space-y-6 space-y-4 bg-[#fafafa] min-h-screen overflow-x-hidden w-full'>
             <AddVariant {...{
                 productId: product?._id,
                 show: showAddVariant,
@@ -82,15 +82,8 @@ const ProductDetails = () => {
                 onSave: refetch
             }} />
 
-            <div className='bg-white shadow-xs border border-[#d3d3d3] md:p-6 p-4 space-y-4 overflow-x-hidden'>
-                <div className='flex justify-between items-center gap-4 mb-8 flex-wrap gap-y-2'>
-                    <h1 className='md:text-2xl text-xl font-[Elms_Sans]'>Product Details</h1>
-                    <Button onClick={()=>setShowAddImage(true)} variant='primary' className='gap-2 px-3 pl-2.5 py-2.5 items-center md:hidden flex text-sm'>
-                        <LuImagePlus className='text-xl'/>
-                        Upload
-                    </Button>
-                </div>
-                
+            <div className='bg-white shadow-xs border border-[#d3d3d3] md:p-8 md:py-6 rounded-xl p-6 space-y-4 overflow-x-hidden'>
+                <h1 className='md:text-3xl text-2xl font-[Elms_Sans]'>Product Details</h1>
                 <div className='space-y-2'>
                     <div className='flex md:gap-6 gap-2 md:flex-row flex-col'>
                         <form onSubmit={saveEdit} className='flex-1'>
@@ -141,35 +134,45 @@ const ProductDetails = () => {
                         )}
                     </div>
                 </div>
+            </div>
+            <div className='bg-white shadow-xs border border-[#d3d3d3] md:p-8 md:py-6 rounded-xl p-6 space-y-4 overflow-x-hidden'>
+                <div className='flex justify-between items-center gap-4 flex-wrap gap-y-2'>
+                    <h1 className='md:text-3xl text-2xl font-[Elms_Sans]'>Images</h1>
+                    <Button onClick={()=>setShowAddImage(true)} variant='primary' className='gap-2 px-3 pl-2.5 py-2.5 items-center flex text-sm'>
+                        <LuImagePlus className='text-xl'/>
+                        Upload
+                    </Button>
+                </div>
                 <div className='w-full flex gap-4 overflow-x-hidden'>
-                    <div className='shrink-0 hidden md:block'>
-                        <button onClick={()=>setShowAddImage(true)} className="flex flex-col items-center justify-center w-full h-full border border-[#d9d9d9] bg-[#fdfdfd] rounded-lg cursor-pointer px-10">
-                            <div className="flex flex-col items-center justify-center text-[#777] pt-5 pb-6">
-                                <LuImagePlus className='text-4xl'/>
-                                <p className="mb-2 text-sm mt-2">Add image or drag and drop</p>
-                                <p className="text-xs">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                            </div>
-                        </button>
-                    </div> 
                     <Swiper 
+                    key={product?.imgs.find(i=>i.isPrimary)?._id}
                     slidesPerView="auto"
                     modules={[Navigation]}
                     navigation={true}
                     spaceBetween={15}
                     className='grow min-w-0'>
-                        {product?.imgs.map((image, i)=>
+                        {product?.imgs.sort((b,a) => Number(a.isPrimary) - Number(b.isPrimary)).map((image, i)=>
                             <SwiperSlide className='flex flex-col rounded-lg border border-[#d9d9d9] bg-[#fdfdfd] w-75! shrink-0! overflow-hidden' key={i}>
                                 <img className='object-cover w-full h-60 shrink-0' src={image.url} alt={image.altText}/>
                                 <div className='flex justify-between py-3 px-4 bg-[#fdfdfd] border-t border-[#d9d9d9]'>
-                                    <div className='flex gap-2 items-center text-sm'>
-                                        <input type="radio" onClick={()=>setPrimaryImage(image._id)} defaultChecked={image.isPrimary} className='w-5 h-5' name="main" id="" />
-                                        Primary
+                                    <div className='flex gap-2 text-sm'>
+                                        {/* <input type="radio" onClick={()=>setPrimaryImage(image._id)} defaultChecked={image.isPrimary} className='w-5 h-5' name="main" id="" />
+                                        Primary */}
+                                        {!image.isPrimary?
+                                            <button disabled={saving} onClick={()=>setPrimaryImage(image._id)} className='bg-black hover:bg-[#1f1f1f] p-2 px-3 text-white rounded-md'>
+                                                Set Primary
+                                            </button>
+                                            :
+                                            <span className='text-2xl px-3 py-1 border-primary-700 bg-primary-50 border-2 text-primary-600 rounded-xl flex items-center'>
+                                                <HiStar/>
+                                            </span>
+                                        }
                                     </div>
                                     <div className='flex gap-2'>
-                                        <button className='p-1 text-xl rounded-sm cursor-pointer border text-indigo-500 border-indigo-500'>
+                                        <button disabled={saving} className='p-1 px-2 text-xl rounded-sm cursor-pointer border border-[#1f1f1f] bg-[#f9f9f9] text-[#1f1f1f]'>
                                             <IoCrop/>
                                         </button>
-                                        <button onClick={()=>removeImage(image._id)} className='p-1 text-xl rounded-sm cursor-pointer border text-red-500 border-red-500'>
+                                        <button disabled={saving} onClick={()=>removeImage(image._id)} className='p-1 px-2 text-xl rounded-sm cursor-pointer border text-white border-red-500 bg-red-500'>
                                             <TbTrash/>
                                         </button>
                                     </div>
@@ -181,12 +184,12 @@ const ProductDetails = () => {
                     </Swiper>
                 </div>
             </div>
-            <div className=' bg-white p-6 shadow-xs border border-[#d3d3d3] '>
+            <div className='flex flex-col gap-4 bg-white md:p-8 md:py-6 rounded-xl p-6 shadow-xs border border-[#d3d3d3] '>
                 <div className='flex justify-between items-center gap-4 flex-wrap gap-y-2'>
-                    <h1 className='md:text-2xl text-xl'>Product Variants</h1>
-                    <Button variant='primary' onClick={()=>setShowAddVariant(true)} className='px-4 py-2 border rounded cursor-pointer text-sm'>Add Variant</Button>
+                    <h1 className='md:text-3xl text-2xl font-[Elms_Sans]'>Variants</h1>
+                    <Button variant='primary' onClick={()=>setShowAddVariant(true)} className='px-4 py-2.5 border rounded cursor-pointer text-sm bg-primary-600 hover:bg-primary-500'>Add Variant</Button>
                 </div>
-                <div className='flex gap-4 mt-4 flex-wrap sm:hidden justify-center'>
+                <div className='flex gap-4  flex-wrap sm:hidden justify-center'>
                     {product?.variants.map(variant=>(
                         <div className='relative p-2 flex-1 border group border-[#c1c1c1] rounded-sm shadow-sm flex flex-col w-full min-[550px]:w-auto' key={variant._id}>
                             <div onClick={()=>removeVariant(variant._id)} className='absolute p-1 px-1.5 pl-2 cursor-pointer flex gap-2 items-center text-sm rounded-md bg-red-500 text-white group-hover:top-2 right-2 top-0 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto pointer-events-none duration-150'>
@@ -228,51 +231,130 @@ const ProductDetails = () => {
                         </div>
                     ))}
                 </div>
-                <table className='mt-4 w-full sm:table hidden'>
-                    <thead>
-                        <tr>
-                            <th className='font-bold p-2  border border-[#c1c1c1]'>Size</th>
-                            <th className='font-bold p-2  border border-[#c1c1c1]'>Adjustment</th>
-                            <th className='font-bold p-2  border border-[#c1c1c1]'>Stock</th>
-                            <th className='font-bold p-2  border border-[#c1c1c1]'>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    {product?.variants.map(variant=>(
-                        <tr className='relative p-2 rounded-sm shadow-sm ' key={variant._id}>
+                <div className='sm:block hidden border border-[#c1c1c1] bg-[#434b61] overflow-hidden'>
+                    <table className='w-full'>
+                        <thead>
+                            <tr className='text-white '>
+                                <th className='font-bold p-2'>Size</th>
+                                <th className='font-bold p-2'>Adjustment</th>
+                                <th className='font-bold p-2'>Stock</th>
+                                <th className='font-bold p-2'>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             
-                            <td className='text-center px-2 py-1  border border-[#c1c1c1]'>
-                                {variant.sizeCode}
-                            </td>
-                            <td className='text-center px-2 py-1  border border-[#c1c1c1]'>
-                                {variant.priceAdjustment?
-                                    formatNumber(variant.priceAdjustment)
-                                    :
-                                    '--'
-                                }
-                            </td>
-                            <td className='text-center px-2 py-1  border border-[#c1c1c1]'>
-                                {variant.inventory.stock}
-                            </td>
-                            <td className='text-center px-4 py-2 w-[0.1%]  border border-[#c1c1c1]'>
-                                <div className='flex gap-2 justify-center'>
+                        {product?.variants.map(variant=>(
+                            <tr className='relative p-2 rounded-sm not-last:border-b bg-[#f8faff] odd:bg-[#fdfeff] border-[#c1c1c1]' key={variant._id}>
+                                
+                                <td className='text-center px-2 py-1'>
+                                    {variant.sizeCode}
+                                </td>
+                                <td className='text-center px-2 py-1'>
+                                    {variant.priceAdjustment?
+                                        formatNumber(variant.priceAdjustment)
+                                        :
+                                        '--'
+                                    }
+                                </td>
+                                <td className='text-center px-2 py-1'>
+                                    {variant.inventory.stock}
+                                </td>
+                                <td className='text-center px-4 py-2 w-[0.1%]'>
+                                    <div className='flex gap-2 justify-center'>
                                         <button onClick={()=>{
                                           setSelectedVariant(variant)
                                           setShowEditVariant(true)
                                         }} className='text-sm p-1 px-3 pr-3 cursor-pointer rounded-lg border bg-primary-500 text-white font-bold flex items-center gap-2'>
                                             <FaEdit/> Edit
-                                    </button>
-                                        <button onClick={()=>removeVariant(variant._id)} className='p-1 px-2 pr-3 cursor-pointer flex gap-2 items-center text-sm rounded-md bg-red-500 text-white duration-150'>
-                                        <IoTrash className=''/> Remove
                                         </button>
-                                </div>
-                            </td>
-                        </tr>
+                                        <button onClick={()=>removeVariant(variant._id)} className='p-1 px-2 pr-3 cursor-pointer flex gap-2 items-center text-sm rounded-md bg-red-500 text-white duration-150'>
+                                            <IoTrash className=''/> Remove
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
 
-                    ))}
-                    </tbody>
-                </table>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+                <Button variant='danger' className='cursor-pointer self-end'>
+                    Reset Stock
+                </Button>
+            </div>
+            <div className='bg-white shadow-xs border border-[#d3d3d3] md:p-8 md:py-6 rounded-xl p-6 space-y-4 overflow-x-hidden'>
+                <h1 className='md:text-3xl text-2xl font-[Elms_Sans]'>Lifecycle</h1>
+                <div className='flex gap-2 flex-wrap '>
+                    <div className="bg-white rounded-xl shadow-sm shadow-black/10 p-6 border border-[#e9e9e9]">
+                        <div className="flex justify-between items-end gap-4 flex-wrap-reverse">
+                            <div>
+                                <p className="text-sm text-gray-500">Outgoing Orders</p>
+                                <p className="text-2xl font-bold mt-1">3</p>
+                                <p className="text-sm text-gray-500 mt-2">Avg Order: {formatNumber(40.65)}</p>
+                            </div>
+                            <div className="p-3 bg-purple-50 border-purple-300 border rounded-lg">
+                                <TbTruckDelivery className="w-6 h-6 text-purple-600" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-sm shadow-black/10 p-6 border border-[#e9e9e9]">
+                        <div className="flex justify-between items-end gap-4 flex-wrap-reverse">
+                            <div>
+                                <p className="text-sm text-gray-500">Total Orders</p>
+                                <p className="text-2xl font-bold mt-1">38</p>
+                                <p className="text-sm text-gray-500 mt-2">Avg Order: {formatNumber(46.65)}</p>
+                            </div>
+                            <div className="p-3 bg-green-50 border-green-300 border rounded-lg">
+                                <FiShoppingBag className="w-6 h-6 text-green-600" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-sm shadow-black/10 p-6 border border-[#e9e9e9]">
+                        <div className="flex justify-between items-end gap-4 flex-wrap-reverse">
+                            <div>
+                                <p className="text-sm text-gray-500">Total Revenue</p>
+                                <p className="text-2xl font-bold mt-1">{formatNumber(1679.34)}</p>
+                                <div className={`flex items-center gap-1 mt-2 text-sm ${true ? 'text-green-600' : 'text-red-600'}`}>
+                                {true ? <FiTrendingUp className="w-4 h-4" /> : <FiTrendingDown className="w-4 h-4" />}
+                                <span>{Math.abs(34.32)}% vs last period</span>
+                                </div>
+                            </div>
+                            <div className="p-3 bg-blue-50 border-blue-300 border rounded-lg">
+                                <FaDollarSign className="w-6 h-6 text-blue-600" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className='mt-8 pt-6 border-t border-[#d9d9d9] space-y-4'>
+                    <div className='flex gap-4 items-center'>
+                        <h3 className='text-xl font-[Elms_Sans]'>Publication Status</h3>
+                        <p className={`p-1 px-3 rounded-lg text-base border inline-block capitalize font-semibold ${product?.publicationStatus==='active'?'bg-green-50 text-green-600 border-green-300':'bg-amber-50 text-amber-600 border-amber-600'}`}>{product?.publicationStatus}</p>
+                    </div>
+                    <div className='flex flex-col gap-2 items-start'>
+                        {
+                            product?.publicationStatus==='active'?
+                            <Button className='cursor-pointer bg-mist-600 hover:bg-mist-500 text-white'>
+                                Deactivate Product
+                            </Button>
+                            :
+                            <Button className='cursor-pointer bg-green-600 hover:bg-green-500'>
+                                Activate Product
+                            </Button>
+                        }
+                    </div>
+                </div>
+                <div className='pt-6 mt-8 border-t border-[#d9d9d9] space-y-4'>
+                    <div className='flex gap-4 items-center'>
+                        <h3 className='text-xl font-[Elms_Sans]'>Actions</h3>
+                    </div>
+                    <div className='flex gap-4 flex-col items-start'>
+                        
+                        <Button variant='danger' className='cursor-pointer'>
+                            Delete Product
+                        </Button>
+                        <p className='text-sm font-bold text-red-600'>Make sure this product is not included in any current order before deleting.</p>
+                    </div>
+                </div>
             </div>
         </div>
         )

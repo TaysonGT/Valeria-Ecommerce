@@ -42,17 +42,17 @@ const OrderPage = () => {
   }, [token, loading, orderId])
 
   return (
-    <div className='min-h-screen font-sans bg-[#fafafa]'>
+    <div className='min-h-screen font-[Outfit] bg-[#fafafa]'>
       <div className='mx-auto space-y-6'>
         {isLoading ? (
           <div className='flex justify-center py-20'>
             <Loader size={36} thickness={7} />
           </div>
         ) : order ? (
-          <div className='p-10'>
+          <div className='p-6 lg:px-10'>
             <div className='flex justify-between items-center border-b pb-4 border-[#d9d9d9]'>
-              <h1 className='text-3xl font-[Comfortaa]'>Order Details</h1>
-              <span className=''>Order ID: {order?._id}</span>
+              <h1 className='text-3xl '>Order Details</h1>
+              <span className='font-[Sans] p-1 px-3 rounded-lg bg-[#292929] text-white self-start'>{order.orderNumber||order?._id}  </span>
             </div>
             <div className='flex flex-col items-center gap-4 p-6 bg-[#fefefe] border border-[#d9d9d9] border-t-0'>
               {order.fulfillmentStatus!=='cancelled' &&<p className=' font-bold text-primary-700'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message}</p>}
@@ -63,9 +63,9 @@ const OrderPage = () => {
             <div className='grid grid-cols-[2fr_1fr] gap-6 py-4 items-start mt-4'>
               {/* LEFT SECTION */}
               <div className='space-y-4'>
-                <div className='space-y-2'>
-                  <div className='text-xl'>
-                    Items
+                <div className='bg-[#fdfdfd] shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
+                  <div className='font-bold  p-4 pb-2'>
+                    Ordered Items
                   </div>
                   <div className='bg-white shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
                     <table className='text-base w-full float-left text-left'>
@@ -111,11 +111,11 @@ const OrderPage = () => {
               </div>
               {/* RIGHT SECTION */}
               <div className='space-y-6'>
-                <div className='space-y-2'>
-                  <div className='text-xl'>
-                    Basic Details
+                <div className='bg-[#fdfdfd] shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
+                  <div className='font-bold  p-4 pb-2'>
+                    Order Information
                   </div>
-                  <div className='bg-white border-[#d9d9d9] border p-6 text-base space-y-4'>
+                  <div className='bg-white border-[#d9d9d9] border p-4 text-base space-y-4'>
                     <div className=''>
                       <label className='text-[#787878] text-sm'>Order ID</label>
                       <p>{order?._id}</p>
@@ -134,8 +134,8 @@ const OrderPage = () => {
                     </div>
                   </div>
                 </div>
-                <div className='space-y-2'>
-                  <div className='text-xl'>
+                <div className='bg-[#fdfdfd] shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
+                  <div className='font-bold  p-4 pb-2'>
                     Customer Information
                   </div>
                   <div className='bg-white shadow-sm rounded-sm border border-[#d3d3d3]'>

@@ -12,7 +12,7 @@ import { PiClockFill } from 'react-icons/pi'
 import { TbBrandStripe } from 'react-icons/tb'
 import UpdateOrderStatus from './dialogs/UpdateStatusModal'
 import { toast } from 'react-toastify'
-import { FaCheck, FaHandHoldingUsd } from 'react-icons/fa'
+import { FaHandHoldingUsd } from 'react-icons/fa'
 import { RiPaypalFill, RiRefund2Fill } from 'react-icons/ri'
 import ShippingTimeline from '../../../components/ui/ShippingTimeline'
 import { HiCheck } from 'react-icons/hi'
@@ -153,9 +153,9 @@ const DashboardOrderDetailsPage = () => {
                 </div>
                 <div className='space-y-2'>
                   <div className='bg-[#fdfdfd] shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
-                  <div className='font-bold font-[Comfortaa] p-4 pb-2'>
-                    Ordered Items
-                  </div>
+                    <div className='font-bold font-[Comfortaa] p-4 pb-2'>
+                      Ordered Items
+                    </div>
                     <table className='text-sm sm:text-base w-full float-left text-left border-t border-[#d3d3d3]'>
                       <thead className='bg-[#f7f7f7] text-[#393939]'>
                         <tr className='border-b border-[#d3d3d3]'>

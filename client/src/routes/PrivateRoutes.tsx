@@ -17,7 +17,7 @@ const PrivateRoutes = ({withNav=false, dashboard=false}) => {
   }
 
   return (
-    <div className={`relative max-w-screen w-full `}> 
+    <div className={`relative max-w-screen w-full font-[Outfit]`}> 
       {withNav&& <Navbar /> }
       <div className={`relative flex items-start w-full h-full ${withNav&&'pt-24'}`}>
         {dashboard?

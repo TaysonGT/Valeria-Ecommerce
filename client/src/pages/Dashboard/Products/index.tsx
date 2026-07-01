@@ -118,6 +118,7 @@ const ProductsPage = () => {
           </div>
         )}
       </div> */}
+      <AddProduct show={showAddProduct} hide={()=>setShowAddProduct(false)} onSave={fetchProducts} />
       <div className='flex justify-between items-center px-2 gap-4 w-full'>
         <div className=''>
           <h1 className='text-4xl font-[Elms_Sans]'>Products</h1>
@@ -126,7 +127,6 @@ const ProductsPage = () => {
         <button onClick={()=>setShowAddProduct(true)} className='flex items-center gap-2 p-2.5 pr-4 bg-blue-500 text-white rounded-md cursor-pointer hover:opacity-85 duration-150 font-[Comfortaa]'>
           <MdAdd className='text-lg'/>Add
         </button>
-        <AddProduct show={showAddProduct} hide={()=>setShowAddProduct(false)} onSave={fetchProducts} />
       </div>
       <div className='mt-4 w-full'>
         <div className='flex justify-between gap-4 gap-y-2 flex-wrap'>

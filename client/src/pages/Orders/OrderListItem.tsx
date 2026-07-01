@@ -12,7 +12,7 @@ const OrderListItem = ({order}:{order:IOrder}) => {
     key={order._id} className='bg-white rounded-sm border border-[#d3d3d3] p-6 flex justify-between'>
         <div className='text-gray-900'>
             <div className='flex gap-4'>
-                <div className='text-4xl p-3 h-full aspect-square rounded-md border text-[#63a8b9] border-[#d3d3d3] shadow-sm'>
+                <div className='text-4xl p-3 h-full aspect-square rounded-md border bg-primary-500 text-white shadow-md'>
                     <LuPackageOpen/>
                 </div>
                 <div className='text-black text-lg font-[::Elms_Sans] leading-snug'>
@@ -34,7 +34,7 @@ const OrderListItem = ({order}:{order:IOrder}) => {
                 <p className='text-sm text-gray-600'>Last updated: {new Date(order.updatedAt).toLocaleString()}</p>
             </div>
             <div className='flex gap-4 self-end'>
-                <button onClick={() => navigate(`/orders/${order._id}`)} className='py-2 px-6 rounded-lg cursor-pointer bg-[#269ab8] text-white hover:bg-[#17b1d8]'>Order Details</button>
+                <button onClick={() => navigate(`/orders/${order._id}`)} className='py-2 px-6 rounded-lg cursor-pointer bg-primary-500 text-white hover:bg-primary-400'>Order Details</button>
                 {/* <button className='py-2 px-6 rounded-lg cursor-pointer border-red-500 border text-red-500 hover:bg-red-50'>Cancel Order</button> */}
             </div>
         </div>

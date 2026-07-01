@@ -76,7 +76,7 @@ const OrdersPage = () => {
   },[selectedTab])
 
   return (
-    <div className='min-h-screen bg-[#fcfcfc] p-2'>
+    <div className='min-h-screen bg-[#fcfcfc] p-2 w-full'>
       <div className='rounded-sm p-8 shadow-sm'>
         <div>
           <h1 className='text-4xl font-light font-[Elms_Sans]'>My Orders</h1>
