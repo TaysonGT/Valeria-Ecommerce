@@ -13,6 +13,10 @@ export const productService = {
     axios.delete(`/products/${productId}/images/${imgId}`),
   setPrimaryImage: (productId: string, imageId: string) =>
     axios.put(`/products/${productId}/images/${imageId}/set-primary`),
+  activateProduct: (productId: string) =>
+    axios.put(`/products/${productId}/activate`),
+  deactivateProduct: (productId: string) =>
+    axios.put(`/products/${productId}/deactivate`),
   uploadImages: (productId: string, formData:{imgsInfo: {secure_url: string,public_id:string}[]} )=> 
     axios.post(`/products/${productId}/images`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }

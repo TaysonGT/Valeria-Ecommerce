@@ -18,6 +18,8 @@ productRouter.post('/:productId/variants', auth, isPermitted('admin'), productCo
 
 productRouter.patch('/:productId', productController.updateProduct)
 productRouter.patch('/:productId/variants/:variantId', productController.patchVariant)
+productRouter.put('/:productId/deactivate', productController.deactivateProduct)
+productRouter.put('/:productId/activate', productController.activateProduct)
 productRouter.put('/:productId/images/:imageId/set-primary', productController.setProductImagePrimary)
 
 productRouter.delete('/:productId/variants/:variantId', productController.removeVariant)

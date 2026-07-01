@@ -59,6 +59,36 @@ export const useProductDetails = () => {
             }
             toast.error(data.error)
         }).catch((error)=>toast.error(error.response.data.message))
+        setSaving(false)
+    }
+
+    const activateProduct = async()=>{
+        if (!product) return
+        setSaving(true)
+        productService.activateProduct(product._id)
+        .then(({data})=>{
+            if(data.success){
+                toast.success(data.message)
+                fetchProduct()
+                return
+            }
+            toast.error(data.error)
+        }).catch((error)=>toast.error(error.response.data.message))
+        .finally(()=>setSaving(false))
+    }
+
+    const deactivateProduct = async()=>{
+        if (!product) return
+        setSaving(true)
+        productService.deactivateProduct(product._id)
+        .then(({data})=>{
+            if(data.success){
+                toast.success(data.message)
+                fetchProduct()
+                return
+            }
+            toast.error(data.error)
+        }).catch((error)=>toast.error(error.response.data.message))
         .finally(()=>setSaving(false))
     }
 
@@ -163,6 +193,10 @@ export const useProductDetails = () => {
         removeVariant,
         removeImage,
         setPrimaryImage,
+
+        activateProduct,
+        deactivateProduct,
+
         refetch: fetchProduct,
     };
 }

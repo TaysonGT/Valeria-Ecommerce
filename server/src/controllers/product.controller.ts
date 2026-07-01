@@ -654,7 +654,7 @@ export class ProductController {
                 return 
             }
 
-            res.send({ message: "Update product successfully", success: true });
+            res.json({ message: "Update product successfully", success: true });
         } catch (error) {
             res.status(500).send(error);
         }
@@ -770,4 +770,47 @@ export class ProductController {
         }
     }
     
+    async activateProduct(req: Request, res: Response) {
+        const { productId } = req.params;
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        
+        if (product.publicationStatus==='active') {
+            return res.status(400).json({ success: false, message: 'Product is already active.' });
+        }
+
+        product.publicationStatus = 'active'
+
+        await product.save()
+
+        return res.status(201).json({
+            success: true,
+            message: 'Product activated successfully',
+            product,
+        });   
+    }
+
+    async deactivateProduct(req: Request, res: Response) {
+        const { productId } = req.params;
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        
+        if (product.publicationStatus!=='active') {
+            return res.status(400).json({ success: false, message: 'Product is already inactive.' });
+        }
+
+        product.publicationStatus = 'inactive'
+
+        await product.save()
+
+        return res.status(201).json({
+            success: true,
+            message: 'Product deactivated successfully',
+            product,
+        });   
+    }
 }

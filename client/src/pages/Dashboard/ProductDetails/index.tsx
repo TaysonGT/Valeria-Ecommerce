@@ -47,6 +47,10 @@ const ProductDetails = () => {
         removeCategory,
         removeVariant,
         removeImage,
+
+        activateProduct,
+        deactivateProduct,
+
         refetch
     } = useProductDetails();
 
@@ -333,11 +337,11 @@ const ProductDetails = () => {
                     <div className='flex flex-col gap-2 items-start'>
                         {
                             product?.publicationStatus==='active'?
-                            <Button className='cursor-pointer bg-mist-600 hover:bg-mist-500 text-white'>
+                            <Button onClick={deactivateProduct} className='cursor-pointer bg-mist-600 hover:bg-mist-500 text-white'>
                                 Deactivate Product
                             </Button>
                             :
-                            <Button className='cursor-pointer bg-green-600 hover:bg-green-500'>
+                            <Button onClick={activateProduct} className='cursor-pointer bg-green-600 hover:bg-green-500'>
                                 Activate Product
                             </Button>
                         }
