@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, Navigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Loader from '../../components/Loader'

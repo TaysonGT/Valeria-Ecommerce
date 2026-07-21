@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { SetURLSearchParams, useSearchParams } from 'react-router';
+import { useSearchParams, type SetURLSearchParams } from 'react-router';
 
 
 type pageAction = "next" | "previous" | "start" | "end"

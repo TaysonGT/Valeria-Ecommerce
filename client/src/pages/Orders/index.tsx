@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 import axios from 'axios'
 import { useAuth } from '../../context/AuthContext'
 import Loader from '../../components/Loader'
