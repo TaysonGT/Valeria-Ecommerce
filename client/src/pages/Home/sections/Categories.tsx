@@ -50,7 +50,7 @@ const CategoriesSection = () => {
 
         <div className='text-center mt-12'>
           <Link
-            to='/search'
+            to='/shop'
             className='inline-block bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300'
           >
             View All Categories
