@@ -7,13 +7,13 @@ import {
 import { formatNumber, formatDateDisplay } from '../../../utils/helpers';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { FiAlertCircle, FiCheckCircle, FiClock, FiDownload, FiPackage, FiRefreshCw, FiShoppingBag, FiTrendingDown, FiTrendingUp, FiTruck, FiUsers } from 'react-icons/fi';
+import { FiAlertCircle, FiCheckCircle, FiClock, FiPackage, FiRefreshCw, FiShoppingBag, FiTrendingDown, FiTrendingUp, FiTruck, FiUsers } from 'react-icons/fi';
 import { FaDollarSign } from 'react-icons/fa';
 import { Link } from 'react-router';
 import Loader from '../../../components/Loader';
 import { IOrder, productType } from '../../../types';
 import { fulfillmentStatuses } from '../../../components/ui/ShippingStatusBig';
-import { fetchOrders } from '../../../services/order.service';
+// import { fetchOrders } from '../../../services/order.service';
 
 interface DashboardData {
   period: { start: string; end: string };
@@ -380,17 +380,17 @@ export default function DashboardHomePage() {
             </div>
             <div className="space-y-3">
               {orders.map((order) => (
-                <div key={order._id} className="flex items-center justify-between p-3 hover:bg-[#fcfcfc] rounded-lg transition">
-                  <div className="flex items-center gap-3">
+                <div key={order._id} className="flex items-center gap-2 justify-between p-3 hover:bg-[#fcfcfc] rounded-lg transition w-full">
+                  <div className="grow flex items-center gap-3 overflow-hidden">
                     <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
                       <FiPackage className="w-5 h-5 text-gray-500" />
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{order.orderNumber||order._id}</p>
+                    <div className='grow text-nowrap overflow-hidden'>
+                      <p className="font-medium text-gray-900 truncate">{order.orderNumber||order._id}</p>
                       <p className="text-sm text-gray-500">{order.customerInfo.firstName} • {order.items.length} items</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <p className="font-semibold">${order.grandTotal.toFixed(2)}</p>
                     <span className={`text-xs px-2 py-1 rounded-full ${statusColors.pending}`}>
                       {order.fulfillmentStatus}

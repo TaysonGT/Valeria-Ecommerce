@@ -146,11 +146,11 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
       {/* Desktop / tablet sidebar (unchanged) */}
       <div 
         ref={sidebarRef}
-        className={`hidden lg:flex flex-col sticky ${withNav? 'h-[calc(100vh-98px)] top-24':' top-0 h-screen'} left-0 pb-6 bg-[#0b0c4f] text-white z-99 border-r border-[#080930] shadow-sm hover:shadow-md transition-all`}
+        className={`hidden lg:flex flex-col sticky ${withNav? 'h-[calc(100vh-98px)] top-24':' top-0 h-screen'} text-[#3f3f3f] left-0 pb-6 bg-[#fff] z-99 border-r border-[#d9d9d9] shadow-sm hover:shadow-md transition-all`}
       >
-      <Link to='/' className='flex items-center gap-4 py-6 px-4 border-[#080930] border-b'>
+      <Link to='/' className='flex items-center gap-4 py-6 px-4 border-[#d9d9d9] border-b'>
         <div className='w-10 aspect-square'>
-          <img src={'/logo-light.svg'} alt='Valeria logo'/>
+          <img src={'/logo.png'} alt='Valeria logo'/>
 
         </div>
         <p className='text-2xl font-[Elms_Sans]'>Valeria</p>
@@ -158,7 +158,7 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
       {/* Navigation Links */}
       <div className='flex-col text-md justify-center px-4 flow-root rootspace-y-3 grow overflow-y-auto font-[Outfit]'>
         {getLinks(user).map((set, x) => (
-          <div key={x} className='space-y-2.5 py-4 not-last:border-b border-[#0b0044]'>
+          <div key={x} className='space-y-2.5 py-4 not-last:border-b border-[#d9d9d9]'>
           {/* {set.title&&<h3 className='text-[#1f1f1f] text-sm font-bold px-2 font-[Sans]'>{set.title}</h3>} */}
           <ul className='flex flex-col text-md justify-center gap-1'>
             {set.links.map((link,i)=>
@@ -179,14 +179,14 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
                       location.pathname))
                       ||
                       link.keywords?.find(k=>location.pathname.includes(k))
-                    )? 'bg-primary-100 text-primary-950 border-none ' : 'border-transparent hover:bg-primary-100/90 hover:text-primary-950'
+                    )? 'bg-primary-500 text-primary-50 border-none ' : 'border-transparent bg-white hover:bg-primary-100/90 hover:text-primary-950'
                     :
-                    'border-primary-950 pointer-events-none'
+                    'border-[#acacac] pointer-events-none'
                   }
                 `}
               >
                 {!link.active&&
-                  <div className='flex items-center gap-2 font-medium justify-center absolute top-0 left-0 h-full w-full bg-black/20 text-sm text-white'>
+                  <div className='flex items-center gap-2 font-medium justify-center absolute top-0 left-0 h-full w-full bg-black/10 text-sm text-white'>
                     <div className='flex items-center justify-center bg-black/70 gap-1 p-1.5 rounded-lg px-2 pr-3'>
                       <HiLockClosed className=' text-xl'/>
                       Coming soon
@@ -206,7 +206,7 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
         </div>
         ))}
       </div>
-        <div className='flex items-center gap-2 p-4 bg-primary-800  border-[#ebebeb]'>
+        <div className='flex items-center gap-2 p-4 bg-[#f7f7f7] border-y border-[#d9d9d9]'>
           <div className='w-10 rounded-full overflow-hidden border border-[#ebebeb] aspect-square'>
             <img src={user?.avatarUrl||'/'} onError={(e)=> {
               e.currentTarget.onerror=null; e.currentTarget.src='/imgs/avatar.webp'
@@ -218,17 +218,17 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
 
       {/* Mobile dashboard drawer, toggled via event */}
       <DarkBackground show={showMobile} hide={()=>setShowMobile(false)} direction='left'/>
-      <div className={`block lg:hidden fixed left-0 top-0 bottom-0 ${showMobile? 'translate-x-0':'-translate-x-full'} bg-[#0b0c4f] text-white z-120 p-4 duration-300 overflow-y-auto border-r border-[#d3d3d3] shadow-md `}>
-        <Link to='/' className='flex items-center gap-4 py-4 border-b border-[#080930]'>
+      <div className={`block lg:hidden fixed left-0 top-0 bottom-0 ${showMobile? 'translate-x-0':'-translate-x-full'} bg-[#fff] text-[#3f3f3f] z-120 p-4 duration-300 overflow-y-auto border-r border-[#d3d3d3] shadow-md `}>
+        <Link to='/' className='flex items-center gap-4 py-4 border-b border-[#d9d9d9]'>
           <div className='w-10 aspect-square'>
-            <img src={'/logo-light.svg'} alt='Valeria logo'/>
+            <img src={'/logo.png'} alt='Valeria logo'/>
           </div>
           <p className='text-2xl font-[Elms_Sans]'>Valeria</p>
           {/* <button onClick={()=>setShowMobile(false)} className='ml-auto text-xl'>×</button> */}
         </Link>
         <div className='flex-col text-md justify-center flow-root root'>
           {getLinks(user).map((set, x) => (
-          <div key={x} className='space-y-2.5 py-4 not-last:border-b border-[#080930]'>
+          <div key={x} className='space-y-2.5 py-4 not-last:border-b border-[#d9d9d9]'>
               {/* {set.title&&<h3 className='text-[#1f1f1f] text-sm font-bold px-2 font-[Sans]'>{set.title}</h3>} */}
               <ul className='flex flex-col text-md justify-center gap-1'>
                 {set.links.map((link,i)=>
@@ -245,14 +245,14 @@ const Sidebar: React.FC<{withNav: boolean}> = ({withNav=false}) => {
                         ||
                         link.keywords?.find(k=>location.pathname.includes(k))
                         )? 
-                        'bg-primary-100 text-primary-950 border-none ' : 'border-transparent hover:bg-primary-100/90 hover:text-primary-950'
+                        'bg-primary-500 text-primary-50 border-none ' : 'border-transparent bg-white hover:bg-primary-100/90 hover:text-primary-950'
                         :
-                        'border-primary-950 pointer-events-none'
+                        'border-[#acacac] pointer-events-none'
                       }
                     rounded-lg overflow-hidden flex items-center gap-3.5 duration-150 text-sm hover:bg-gray-50`}
                   >
                     {!link.active&&
-                      <div className='flex items-center gap-2 font-medium justify-center absolute top-0 left-0 h-full w-full bg-black/20 text-sm text-white'>
+                      <div className='flex items-center gap-2 font-medium justify-center absolute top-0 left-0 h-full w-full bg-black/10 text-sm text-white'>
                         <div className='flex items-center justify-center bg-black/70 gap-1 p-1.5 rounded-lg px-2 pr-3'>
                           <HiLockClosed className=' text-xl'/>
                           Coming soon

@@ -24,7 +24,7 @@ const PrivateRoutes = ({withNav=false, dashboard=false}) => {
           <>
           <Sidebar withNav={withNav}/> 
           <div className={`grow bg-[#f3f3f3] min-w-0`}>
-            <div className='flex gap-6 items-center p-4 md:p-6 z-10 sticky top-0 bg-[#0b0c4f] text-white font-[Outfit] shadow-sm border-b border-[#080930] shadow-black/10'>
+            <div className='flex gap-6 items-center p-4 md:p-6 z-10 sticky top-0 bg-white text-[#3f3f3f] font-[Outfit] shadow-xs border-b border-[#d9d9d9] shadow-black/5'>
               <RiMenuFill
               className='text-xl sm:text-2xl lg:hidden'
                 onClick={()=>{
