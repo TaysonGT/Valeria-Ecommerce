@@ -1,5 +1,5 @@
-import { FormEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { SubmitEvent, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useAuth } from '../../context/AuthContext'
 import { toast } from 'react-toastify'
 
@@ -21,7 +21,7 @@ const Register = () => {
     setFormState((prev) => ({ ...prev, [field]: value }))
   }
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (formState.password !== formState.validPassword) {
       toast.error('Passwords do not match')
