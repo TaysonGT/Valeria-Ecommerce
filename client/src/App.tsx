@@ -21,10 +21,12 @@ import ProductDetails from './pages/Dashboard/ProductDetails';
 import DashboardOrdersPage from './pages/Dashboard/Orders';
 import DashboardOrderDetailsPage from './pages/Dashboard/Order';
 import DashboardHomePage from './pages/Dashboard/Overview';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
 
   return (
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
     <AuthProvider>
       <BrowserRouter>
         <SearchProvider>
@@ -63,6 +65,7 @@ function App() {
         </SearchProvider>
       </BrowserRouter>
     </AuthProvider>
+  </GoogleOAuthProvider>
   )
 }
 

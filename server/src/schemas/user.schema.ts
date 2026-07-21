@@ -7,8 +7,10 @@ export interface IUser extends Document {
   email: string;
   gender: string;
   role: 'customer' | 'admin' | 'warehouse' | 'carrier';
-  passwordHash: string;
-  passwordSalt: string;
+  passwordHash?: string;
+  passwordSalt?: string;
+  provider: 'local' | 'google'
+  googleId?: string;
   paymentDetails?: {
     cardBrand: string;
     last4: string;
@@ -37,8 +39,25 @@ const UserSchema = new Schema<IUser>(
       enum: ['customer', 'admin', 'warehouse', 'carrier'], 
       default: 'customer' 
     },
-    passwordHash: { type: String, required: true },
-    passwordSalt: { type: String, required: true },
+    passwordHash: {
+      type: String,
+      required: function (this: IUser) {
+        return this.provider === 'local';
+      },
+    },
+    passwordSalt: {
+      type: String,
+      required: function (this: IUser) {
+        return this.provider === 'local';
+      },
+    },
+    provider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local',
+      required: true,
+    },
+    googleId: { type: String, unique: true, sparse: true },
     paymentDetails: {
       cardBrand: String,
       last4: String,

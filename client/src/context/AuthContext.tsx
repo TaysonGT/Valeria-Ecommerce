@@ -68,8 +68,12 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
         return response.data.user
       }
     } catch (error: any) {
-      throw new Error(error.response.data?.message || 'Unable to sign in')
+      throw new Error(error.message || 'Unable to sign in')
     }
+  }
+
+  const loginWithGoogle = (newToken: string, newUser: UserType) => {
+    saveSession(newToken, newUser)
   }
 
   const register = async (payload: SignupDataType) => {
@@ -79,7 +83,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
         return response.data.user
       }
     } catch (error: any) {
-      throw new Error(error.response.data?.message || 'Unable to register')
+      throw new Error(error.message || 'Unable to register')
     }
   }
 
@@ -106,6 +110,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
       token,
       loading,
       login,
+      loginWithGoogle,
       register,
       logout,
       refreshCurrentUser,

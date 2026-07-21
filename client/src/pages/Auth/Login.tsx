@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useAuth } from '../../context/AuthContext'
 import { toast } from 'react-toastify'
+import axios from 'axios'
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
-  const { login, loading: authLoading } = useAuth()
+  const { login, loading: authLoading, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -26,6 +28,21 @@ const Login = () => {
       setLoading(false)
     }
   }
+
+  const handleOAuth = async (response: any) => {
+    try {
+      const { data } = await axios.post('/users/auth/google', {
+        credential: response.credential,
+      })
+      if (data?.success) {
+        loginWithGoogle(data.token, data.user)
+        navigate(location.state?.from || '/', { replace: true })
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Google sign-in failed')
+    }
+  }
+
   useEffect(()=>{
     if(loginSuccess&&!authLoading&&!loading){
       const from = location.state?.from || '/';
@@ -70,12 +87,22 @@ const Login = () => {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-        <p className='mt-6 text-center text-sm text-gray-600'>
+        <div className='my-4 pt-4 border-t border-[#d9d9d9]'>
+          <GoogleLogin
+            // clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+            // buttonText="Login with Google"
+            onSuccess={handleOAuth}
+            onError={() => console.error("Login Failed:")}
+            // cookiePolicy="single_host_origin"
+          />
+        </div>
+        <p className='text-center text-sm text-gray-600'>
           New here?{' '}
           <span onClick={() => navigate('/auth/register')} className='cursor-pointer  font-medium text-black'>
             Create an account
           </span>
         </p>
+        
       </div>
     </div>
   )

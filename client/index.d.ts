@@ -18,6 +18,7 @@ interface ImportMetaEnv {
   readonly VITE_CLOUDINARY_API_KEY: string;
   readonly VITE_CLOUDINARY_API_SECRET: string;
   readonly VITE_CLOUDINARY_UPLOAD_PRESET: string;
+  readonly VITE_GOOGLE_OAUTH_CLIENT_ID: string;
 }
 
 interface ImportMeta {
