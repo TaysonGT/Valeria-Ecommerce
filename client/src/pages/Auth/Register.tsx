@@ -1,11 +1,15 @@
 import { SubmitEvent, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { useAuth } from '../../context/AuthContext'
 import { toast } from 'react-toastify'
+import { GoogleLogin } from '@react-oauth/google'
+import axios from 'axios'
 
 const Register = () => {
-  const { register } = useAuth()
+  const { register, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
   const [formState, setFormState] = useState({
     username: '',
     firstname: '',
@@ -19,6 +23,20 @@ const Register = () => {
 
   const onChange = (field: string, value: string) => {
     setFormState((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleOAuth = async (response: any) => {
+    try {
+      const { data } = await axios.post('/users/auth/google', {
+        credential: response.credential,
+      })
+      if (data?.success) {
+        loginWithGoogle(data.token, data.user)
+        navigate(location.state?.from || '/', { replace: true })
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Google sign-in failed')
+    }
   }
 
   const onSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
@@ -46,29 +64,6 @@ const Register = () => {
         <form onSubmit={onSubmit} className='grid gap-4 mt-8'>
           <div className='grid gap-4 md:grid-cols-2'>
             <label className='block'>
-              <span className='text-sm font-medium px-2 mb-1 block'>Username</span>
-              <input
-                value={formState.username}
-                onChange={(e) => onChange('username', e.target.value)}
-                className='w-full rounded-xl border border-[#949494] px-4 py-3 focus:border-black focus:outline-none'
-                placeholder='username'
-                required
-              />
-            </label>
-            <label className='block'>
-              <span className='text-sm font-medium px-2 mb-1 block'>Email</span>
-              <input
-                type='email'
-                value={formState.email}
-                onChange={(e) => onChange('email', e.target.value)}
-                className='w-full rounded-xl border border-[#949494] px-4 py-3 focus:border-black focus:outline-none'
-                placeholder='email@example.com'
-                required
-              />
-            </label>
-          </div>
-          <div className='grid gap-4 md:grid-cols-2'>
-            <label className='block'>
               <span className='text-sm font-medium px-2 mb-1 block'>First Name</span>
               <input
                 value={formState.firstname}
@@ -91,18 +86,29 @@ const Register = () => {
           </div>
           <div className='grid gap-4 md:grid-cols-2'>
             <label className='block'>
-              <span className='text-sm font-medium px-2 mb-1 block'>Gender</span>
-              <select
-                value={formState.gender}
-                onChange={(e) => onChange('gender', e.target.value)}
-                className='w-full rounded-xl border border-[#949494] bg-white px-4 py-3 focus:border-black focus:outline-none'
+              <span className='text-sm font-medium px-2 mb-1 block'>Username</span>
+              <input
+                value={formState.username}
+                onChange={(e) => onChange('username', e.target.value)}
+                className='w-full rounded-xl border border-[#949494] px-4 py-3 focus:border-black focus:outline-none'
+                placeholder='username'
                 required
-              >
-                <option value=''>Select gender</option>
-                <option value='female'>Female</option>
-                <option value='male'>Male</option>
-              </select>
+              />
             </label>
+            <label className='block'>
+              <span className='text-sm font-medium px-2 mb-1 block'>Email</span>
+              <input
+                type='email'
+                value={formState.email}
+                onChange={(e) => onChange('email', e.target.value)}
+                className='w-full rounded-xl border border-[#949494] px-4 py-3 focus:border-black focus:outline-none'
+                placeholder='email@example.com'
+                required
+              />
+            </label>
+          </div>
+          
+          <div className='grid gap-4 md:grid-cols-2'>
             <label className='block'>
               <span className='text-sm font-medium px-2 mb-1 block'>Password</span>
               <input
@@ -114,17 +120,30 @@ const Register = () => {
                 required
               />
             </label>
+            <label className='block'>
+              <span className='text-sm font-medium px-2 mb-1 block'>Confirm Password</span>
+              <input
+                type='password'
+                value={formState.validPassword}
+                onChange={(e) => onChange('validPassword', e.target.value)}
+                className='w-full rounded-xl border border-[#949494] px-4 py-3 focus:border-black focus:outline-none'
+                placeholder='Confirm password'
+                required
+              />
+            </label>
           </div>
           <label className='block'>
-            <span className='text-sm font-medium px-2 mb-1 block'>Confirm Password</span>
-            <input
-              type='password'
-              value={formState.validPassword}
-              onChange={(e) => onChange('validPassword', e.target.value)}
-              className='w-full rounded-xl border border-[#949494] px-4 py-3 focus:border-black focus:outline-none'
-              placeholder='Confirm password'
+            <span className='text-sm font-medium px-2 mb-1 block'>Gender</span>
+            <select
+              value={formState.gender}
+              onChange={(e) => onChange('gender', e.target.value)}
+              className='w-full rounded-xl border border-[#949494] bg-white px-4 py-3 focus:border-black focus:outline-none'
               required
-            />
+            >
+              <option value=''>Select gender</option>
+              <option value='female'>Female</option>
+              <option value='male'>Male</option>
+            </select>
           </label>
           <button
             type='submit'
@@ -133,6 +152,15 @@ const Register = () => {
           >
             {loading ? 'Creating account...' : 'Register'}
           </button>
+          <div className=''>
+            <GoogleLogin
+              // clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              // buttonText="Login with Google"
+              onSuccess={handleOAuth}
+              onError={() => console.error("Login Failed:")}
+              // cookiePolicy="single_host_origin"
+            />
+          </div>
           <p className='text-center text-sm text-gray-600'>
             Already have an account?{' '}
             <span onClick={() => navigate('/auth/login')} className='cursor-pointer font-medium text-black'>

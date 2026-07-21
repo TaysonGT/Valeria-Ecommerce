@@ -87,9 +87,39 @@ export class UserService {
   
   validateCredentials = async (username: string, password: string) => {
     const user = await this.findUserByUsername(username)
-    if (!user) return null
+    if (!user||!user.passwordHash||!user.passwordSalt) return null
     const hashed = this.hashPassword(password, user.passwordSalt)
     if (hashed !== user.passwordHash) return null
+    return user
+  }
+
+  findOrCreateGoogleUser = async (payload: {
+    googleId: string
+    email: string
+    firstname: string
+    lastname: string
+  }) => {
+    let user = await User.findOne({ googleId: payload.googleId })
+    if (user) return user
+
+    const existingByEmail = await this.findUserByEmail(payload.email)
+    if (existingByEmail) {
+      throw new Error('An account with this email already exists')
+    }
+
+    const username = payload.email.split('@')[0] + '-' + payload.googleId.slice(-5)
+
+    user = new User({
+      username,
+      firstname: payload.firstname,
+      lastname: payload.lastname,
+      email: payload.email,
+      gender: 'unspecified',
+      provider: 'google',
+      googleId: payload.googleId,
+    })
+
+    await user.save()
     return user
   }
 }

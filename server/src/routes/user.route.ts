@@ -14,5 +14,8 @@ userRouter.post('/auth/login', (req, res, next) => {
 userRouter.get('/me', auth, (req, res, next) => {
   void userController.me(req as any, res).catch(next)
 })
+userRouter.post('/auth/google', (req, res, next) => {
+  void userController.googleLogin(req, res).catch(next)
+})
 
 export default userRouter

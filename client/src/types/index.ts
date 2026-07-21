@@ -98,6 +98,7 @@ export type AuthContextType = {
   token: string | null;
   loading: boolean;
   login: (username: string, password: string) => Promise<UserType>;
+  loginWithGoogle: (newToken: string, newUser: UserType) => void;
   register: (payload: SignupDataType) => Promise<UserType>;
   logout: () => void;
   refreshCurrentUser: () => void;
