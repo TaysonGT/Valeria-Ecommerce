@@ -31,7 +31,8 @@ function App() {
       <BrowserRouter>
         <SearchProvider>
           <ToastContainer
-            position='top-left'
+              className={'top-16! lg:top-24!'}
+            position='top-right'
             autoClose={2000}
           />
           <CartProvider>

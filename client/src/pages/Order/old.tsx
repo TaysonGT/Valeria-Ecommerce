@@ -9,8 +9,6 @@ import { MdCreditCard, MdEmail, MdLocationPin, MdPerson, MdReceipt } from 'react
 import { Button } from '../../components/ui/Button'
 import ShippingStatusBig, { fulfillmentStatuses } from '../../components/ui/ShippingStatusBig'
 import { toast } from 'react-toastify'
-import ShippingStatus from '../../components/ui/ShippingStatus'
-import { paymentMethods, paymentStatuses } from '../Dashboard/Order'
 
 const OrderPage = () => {
   const { orderId } = useParams()
@@ -44,51 +42,25 @@ const OrderPage = () => {
   }, [token, loading, orderId])
 
   return (
-    <div className='min-h-screen font-[Outfit] bg-[#fafafa] w-full'>
-      <div className='mx-auto space-y-6 w-full h-full'>
+    <div className='min-h-screen font-[Outfit] bg-[#fafafa]'>
+      <div className='mx-auto space-y-6'>
         {isLoading ? (
-          <div className='flex justify-center items-center w-full h-full py-20'>
+          <div className='flex justify-center py-20'>
             <Loader size={36} thickness={7} />
           </div>
         ) : order ? (
-          <div className='lg:p-10 p-4'>
-            <div className='flex justify-between lg:items-center flex-col lg:flex-row gap-6 gap-y-2 border-b pb-4 border-[#d9d9d9]'>
-              <h1 className='md:text-3xl text-2xl'>Order Details</h1>
-              <span className='font-[Sans] p-1 px-3 rounded-lg bg-[#292929] text-white self-start'>{order.orderNumber||order?._id}</span>
+          <div className='p-6 lg:px-10'>
+            <div className='flex justify-between items-center border-b pb-4 border-[#d9d9d9]'>
+              <h1 className='text-3xl '>Order Details</h1>
+              <span className='font-[Sans] p-1 px-3 rounded-lg bg-[#292929] text-white self-start'>{order.orderNumber||order?._id}  </span>
             </div>
-            <div className='flex flex-col items-center gap-4 p-4 sm:p-6 bg-[#fefefe] border border-[#d9d9d9] border-t-0'>
+            <div className='flex flex-col items-center gap-4 p-6 bg-[#fefefe] border border-[#d9d9d9] border-t-0'>
               {order.fulfillmentStatus!=='cancelled' &&<p className=' font-bold text-primary-700'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message}</p>}
-              <div className='md:block hidden'>
+              <div className=''>
                 <ShippingStatusBig status={order.fulfillmentStatus} timestamps={order.statusTimestamps} />
               </div>
-              <div className='md:hidden w-full'>
-                <div className='bg-white border-[#d9d9d9] border p-6 text-base md:gap-14 flex flex-wrap w-full'>
-                  <div className='flex-1 flex flex-col items-center'>
-                    <label className='text-[#787878] text-sm font-bold'>Delivery Status</label>
-                    <div className='text-3xl p-2 mt-2 bg-[#0d6efd] text-white rounded-full'>
-                      {fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.icon}
-                    </div>
-                    <p className='text-[#0d6efd] mt-2.5'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.label||'-'}</p>
-                    <p className='text-sm text-[#787878]'>{formatDateDisplay(order.statusTimestamps?.[order.fulfillmentStatus])}</p>
-                    {order.paymentStatus === 'pending' && (
-                      <p className='text-base text-[#0d6efd] mt-2'>{fulfillmentStatuses.find(s => s.value === order.fulfillmentStatus)?.message||'-'}</p>
-                    )}
-                  </div>
-                  <div className='flex-1 flex flex-col items-center'>
-                    <label className='text-[#787878] text-sm font-bold'>Payment Status</label>
-                    <div className={`text-3xl relative p-2 mt-2 rounded-full ${`${paymentStatuses.find(s => s.value === order?.paymentStatus)?.color} text-white`||'bg-gray-300 text-gray-600'}`} style={{backgroundColor: '#000'}}>
-                      {paymentMethods.find(m => m.value === order?.paymentMethod)?.icon}
-                      <span className='rounded-full p-1 text-base text-white absolute -top-2 -left-2' style={{backgroundColor: paymentStatuses.find(s => s.value === order?.paymentStatus)?.color}}>{paymentStatuses.find(s => s.value === order?.paymentStatus)?.icon}</span>
-                    </div>
-                    <p className={'mt-2.5'} style={{color: '#000'}}>
-                      {paymentStatuses.find(s => s.value === order?.paymentStatus)?.label || '-'}
-                    </p>
-                    <p className='text-sm text-[#787878]'>{formatDateDisplay(order.paymentDetails?.paidAt)}</p>
-                  </div>
-                </div>
-              </div>
             </div>
-            <div className='grid lg:grid-cols-[2fr_1fr] gap-6 py-4 items-start lg:mt-4'>
+            <div className='grid grid-cols-[2fr_1fr] gap-6 py-4 items-start mt-4'>
               {/* LEFT SECTION */}
               <div className='space-y-4'>
                 <div className='bg-[#fdfdfd] shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
@@ -96,20 +68,20 @@ const OrderPage = () => {
                     Ordered Items
                   </div>
                   <div className='bg-white shadow-sm rounded-sm overflow-hidden border border-[#d3d3d3]'>
-                    <table className='text-sm sm:text-base w-full float-left text-left'>
+                    <table className='text-base w-full float-left text-left'>
                       <thead className='bg-[#f7f7f7] text-[#393939]'>
                         <tr className='border-b border-[#d3d3d3]'>
-                          <th className='py-2 px-4 md:table-cell hidden'>ID</th>
+                          <th className='py-2 px-4'>ID</th>
                           <th className='py-2 px-4'>Product</th>
                           <th className='py-2 px-4 text-center'>Size</th>
                           <th className='py-2 px-4 text-center'>Quantity</th>
                           <th className='py-2 px-4 text-center'>Total</th>
                         </tr>
                       </thead>
-                      <tbody className='bg-white text-sm sm:text-base'>
+                      <tbody className='bg-white text-base'>
                         {order?.items.map((item, idx) => (                  
-                          <tr key={idx} className='odd:bg-[#fcfcfc] not-last:border-b border-[#e8e8e8]'>
-                            <td className='py-2 px-4 md:table-cell hidden'>{item.productId.slice(-7)}</td>
+                          <tr key={idx} className='odd:bg-[#fcfcfc]'>
+                            <td className='py-2 px-4 '>{item.productId.slice(-7)}</td>
                             <td className='py-2 px-4 flex gap-4 items-center'>
                               <div className='relative h-12 aspect-square rounded-xl overflow-hidden shrink-0'>
                                 <img className='h-full w-full object-cover object-top' src={item.productSnapshot?.imgs[0]?.url||'/logo.png'} alt="" />
@@ -132,7 +104,7 @@ const OrderPage = () => {
                   <div className='flex justify-between border-t border-gray-200 pt-4 text-lg font-semibold'><span>Total</span><span>{formatNumber(order.grandTotal)}</span></div>
                 </div>
                 <div className='flex justify-start'>
-                  <Button variant='danger' size='lg' className='w-full sm:w-auto justify-center font-bold cursor-pointer text-white' disabled={order.fulfillmentStatus==='cancelled'}>
+                  <Button variant='danger' size='lg' className='justify-center font-bold cursor-pointer text-white' disabled={order.fulfillmentStatus==='cancelled'}>
                     Cancel Order
                   </Button>
                 </div>

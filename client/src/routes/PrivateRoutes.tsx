@@ -19,11 +19,11 @@ const PrivateRoutes = ({withNav=false, dashboard=false}) => {
   return (
     <div className={`relative max-w-screen w-full font-[Outfit]`}> 
       {withNav&& <Navbar /> }
-      <div className={`relative flex items-start w-full h-full ${withNav&&'pt-24'}`}>
+      <div className={`relative flex items-start w-full h-full ${(!dashboard&&withNav)&&'pt-16 lg:pt-18'}`}>
         {dashboard?
           <>
           <Sidebar withNav={withNav}/> 
-          <div className={`grow bg-[#f3f3f3] min-w-0`}>
+          <div className={`grow bg-[#f3f3f3] min-w-0 ${(dashboard&&withNav)&&'pt-16 md:pt-24'}`}>
             <div className='flex gap-6 items-center p-4 md:p-6 z-10 sticky top-0 bg-white text-[#3f3f3f] font-[Outfit] shadow-xs border-b border-[#d9d9d9] shadow-black/5'>
               <RiMenuFill
               className='text-xl sm:text-2xl lg:hidden'

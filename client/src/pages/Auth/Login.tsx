@@ -39,7 +39,7 @@ const Login = () => {
         navigate(location.state?.from || '/', { replace: true })
       }
     } catch (error: any) {
-      toast.error(error.message || 'Google sign-in failed')
+      toast.error(error.response.data?.message || 'Google sign-in failed')
     }
   }
 

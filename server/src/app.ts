@@ -30,6 +30,7 @@ app.use('/reports', reportingRouter)
 
 
 const startServer = async()=>{
+  console.log('Connecting to MongoDB...')
   await mongoose.connect(process.env.MONGODB_URI||'mongodb://localhost:27017/valeria')
   .then(() => {
       console.log('connected to MongoDB!')
