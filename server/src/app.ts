@@ -7,7 +7,10 @@ import userRouter from './routes/user.route'
 import orderRouter from './routes/order.route'
 import mongoose from 'mongoose'
 import reportingRouter from './routes/reporting.route'
-require('dotenv').config();
+
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 const allowedOrigins = process.env.NODE_ENV == 'production' ? process.env.FRONTEND_URL : true
 
